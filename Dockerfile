@@ -30,7 +30,7 @@ ENV MICROSERVICE_HOME /usr/microservices
 ENV OMP_THREAD_LIMIT 1
 
 # Set the name of the jar
-ENV APP_FILE ocr.api-unversioned.jar
+ENV APP_FILE ocr-api-unversioned.jar
 
 ENV LC_ALL C
 

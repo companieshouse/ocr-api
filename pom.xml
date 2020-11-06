@@ -18,7 +18,7 @@
         <!-- lookup parent from repository -->
      </parent>
     <groupId>uk.gov.companieshouse</groupId>
-    <artifactId>ocr.api</artifactId>
+    <artifactId>ocr-api</artifactId>
     <version>unversioned</version>
     <name>ocr-api</name>
     <description>API for document OCR</description>
