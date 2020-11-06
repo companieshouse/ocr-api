@@ -11,13 +11,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class ExtractTextResultDTO {
 
-    @JsonProperty("extracted-text")
+    @JsonProperty("extracted_text")
     private String extractedText;
 
+    @JsonProperty("average-confidence-score")
     private int averageConfidenceScore;
 
+    @JsonProperty("lowest-confidence-score")
     private int lowestConfidenceScore;
 
+    @JsonProperty("processing-time-ms")
     private long processingTimeMs;
 
     public String getExtractedText() {
