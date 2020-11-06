@@ -30,3 +30,6 @@ target
 .vscode
 testfiles
 .DS_STORE
+
+# Any Sample files you want to use on a temporary basis
+/samples
