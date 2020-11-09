@@ -14,13 +14,13 @@ public class ExtractTextResultDTO {
     @JsonProperty("extracted_text")
     private String extractedText;
 
-    @JsonProperty("average-confidence-score")
+    @JsonProperty("average_confidence_score")
     private int averageConfidenceScore;
 
-    @JsonProperty("lowest-confidence-score")
+    @JsonProperty("lowest_confidence_score")
     private int lowestConfidenceScore;
 
-    @JsonProperty("processing-time-ms")
+    @JsonProperty("processing_time_ms")
     private long processingTimeMs;
 
     public String getExtractedText() {

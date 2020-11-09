@@ -56,7 +56,7 @@ public class IntegrationTest {
 
         var body = new LinkedMultiValueMap<String, Object>();
         body.add("file", fileBytes);
-        body.add("external_reference_id","test-ref-id");
+        body.add("externalReferenceId","test-ref-id");
 
         var requestEntity = new HttpEntity<>(body, headers);
 

@@ -25,7 +25,7 @@ The initial drop of this microservice converts TIFF files to text.
 Example:
 
 ``` bash
-curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F external_reference_id="curl test reference"  http://localhost:8080/api/ocr/image/extractText
+curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F externalReferenceId="curl test reference"  http://localhost:8080/api/ocr/image/extractText
 ```
 
 ### Using maven

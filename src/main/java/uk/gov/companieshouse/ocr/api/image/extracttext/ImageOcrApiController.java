@@ -29,7 +29,7 @@ public class ImageOcrApiController {
 
     @PostMapping("/api/ocr/image/extractText")
     public @ResponseBody ResponseEntity<ExtractTextResultDTO> extractTextFromImageFileViaAPI(
-            @RequestParam("file") MultipartFile file, @RequestParam("external_reference_id") String externalReferenceId) throws IOException, TesseractException {
+            @RequestParam("file") MultipartFile file, @RequestParam("externalReferenceId") String externalReferenceId) throws IOException, TesseractException {
 
         var controllerStopWatch = new StopWatch();
         controllerStopWatch.start();
@@ -52,7 +52,7 @@ public class ImageOcrApiController {
      Occurs when the  `.join()` method is called after calling an `async` method AND an untrapped exception is thown within that method
      */
     @ExceptionHandler(CompletionException.class)
-    public ResponseEntity<Object> handleCompletionException(CompletionException e) {
+    private ResponseEntity<Object> handleCompletionException(CompletionException e) {
 
         if (e.getCause() instanceof TextConversionException) {
 
@@ -67,7 +67,7 @@ public class ImageOcrApiController {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> uncaughtException(Exception e) {
+    private ResponseEntity<Object> uncaughtException(Exception e) {
 
         LOG.error(null, e);
 
