@@ -25,8 +25,9 @@ public class ImageOcrTransformer {
 
          extractTextResultDTO.setLowestConfidenceScore(Math.round(textConversionResult.getDocumentConfidence().getMinimum()));
 
-         extractTextResultDTO.setProcessingTimeMs(textConversionResult.getExtractTextProcessingTime());
+         extractTextResultDTO.setOcrProcessingTimeMs(textConversionResult.getExtractTextProcessingTime());
 
+         extractTextResultDTO.setResponseId(textConversionResult.getResponseId());
 
         return extractTextResultDTO;
     }

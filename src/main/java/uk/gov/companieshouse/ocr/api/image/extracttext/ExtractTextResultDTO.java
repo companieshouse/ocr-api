@@ -20,8 +20,14 @@ public class ExtractTextResultDTO {
     @JsonProperty("lowest_confidence_score")
     private int lowestConfidenceScore;
 
-    @JsonProperty("processing_time_ms")
-    private long processingTimeMs;
+    @JsonProperty("ocr_processing_time_ms")
+    private long ocrProcessingTimeMs;
+
+    @JsonProperty("total_processing_time_ms")
+    private long totalProcessingTimeMs;   
+
+    @JsonProperty("response_id ")
+    private String responseId;
 
     public String getExtractedText() {
         return extractedText;
@@ -47,13 +53,28 @@ public class ExtractTextResultDTO {
         this.lowestConfidenceScore = lowestConfidenceScore;
     }
 
-    public long getProcessingTimeMs() {
-        return processingTimeMs;
+    public long getOcrProcessingTimeMs() {
+        return ocrProcessingTimeMs;
     }
 
-    public void setProcessingTimeMs(long processingTimeMs) {
-        this.processingTimeMs = processingTimeMs;
+    public void setOcrProcessingTimeMs(long ocrProcessingTimeMs) {
+        this.ocrProcessingTimeMs = ocrProcessingTimeMs;
     }
 
+    public long getTotalProcessingTimeMs() {
+        return totalProcessingTimeMs;
+    }
+
+    public void setTotalProcessingTimeMs(long totalProcessingTimeMs) {
+        this.totalProcessingTimeMs = totalProcessingTimeMs;
+    }
+
+    public String getResponseId() {
+        return responseId;
+    }
+
+    public void setResponseId(String responseId) {
+        this.responseId = responseId;
+    }
     
 }

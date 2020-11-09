@@ -22,27 +22,30 @@ import uk.gov.companieshouse.ocr.api.OcrApiApplication;
 @RestController
 public class ImageOcrApiController {
 
+    public static final String TIFF_EXTRACT_TEXT_PARTIAL_URL = "/api/ocr/image/tiff/extractText";
+
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
     @Autowired
     private ImageOcrService imageOcrService;
 
-    @PostMapping("/api/ocr/image/extractText")
+    @PostMapping(TIFF_EXTRACT_TEXT_PARTIAL_URL)
     public @ResponseBody ResponseEntity<ExtractTextResultDTO> extractTextFromImageFileViaAPI(
-            @RequestParam("file") MultipartFile file, @RequestParam("externalReferenceId") String externalReferenceId) throws IOException, TesseractException {
+            @RequestParam("file") MultipartFile file, @RequestParam("responseId") String responseId) throws IOException, TesseractException {
 
         var controllerStopWatch = new StopWatch();
         controllerStopWatch.start();
         
-        LOG.infoContext(externalReferenceId,"Processing file [" + file.getOriginalFilename() + "] Content type [" + file.getContentType() + "]", null);
+        LOG.infoContext(responseId,"Processing file [" + file.getOriginalFilename() + "] Content type [" + file.getContentType() + "]", null);
 
         var timeOnQueueStopWatch = new StopWatch();
         timeOnQueueStopWatch.start();
-        var result = ImageOcrTransformer.mapModelToApi( imageOcrService.extractTextFromImage(file, externalReferenceId, timeOnQueueStopWatch).join());
+        var result = ImageOcrTransformer.mapModelToApi( imageOcrService.extractTextFromImage(file, responseId, timeOnQueueStopWatch).join());
 
         controllerStopWatch.stop();
+        result.setTotalProcessingTimeMs(controllerStopWatch.getTime());
     
-        LOG.infoContext(externalReferenceId, "Finished processing file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
+        LOG.infoContext(responseId, "Finished processing file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
            controllerStopWatch.toString() + "]", null);
 
         return new ResponseEntity<ExtractTextResultDTO>(result, HttpStatus.OK);
@@ -57,7 +60,7 @@ public class ImageOcrApiController {
         if (e.getCause() instanceof TextConversionException) {
 
             var cause = (TextConversionException) e.getCause();
-            logError(cause.getExternalReferenceId(), cause);
+            logError(cause.getResponseId(), cause);
         }
         else {
             logError(null, e);
@@ -74,9 +77,9 @@ public class ImageOcrApiController {
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private void logError(String externalReferenceId, Exception e) {
+    private void logError(String responseId, Exception e) {
 
-        LOG.errorContext(externalReferenceId,  e, null);
+        LOG.errorContext(responseId,  e, null);
     }
 
 }

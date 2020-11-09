@@ -23,12 +23,14 @@ import org.springframework.web.client.RestTemplate;
 
 import net.sourceforge.tess4j.TesseractException;
 import uk.gov.companieshouse.ocr.api.image.extracttext.ExtractTextResultDTO;
+import uk.gov.companieshouse.ocr.api.image.extracttext.ImageOcrApiController;
 
 @Tag("integration-test")
 public class IntegrationTest {
 
     private static final Path RESOURCES_PATH = Paths.get("src", "test", "resources");
     private static final String SAMPLE_TIFF = "sample-articles-of-association.tif";
+    private static final String TEST_RESPONSE_ID = "test-response-id";
 
     @Test
     public void verifySuccessfulTextExtractFromTesseract() throws IOException, TesseractException {
@@ -40,7 +42,9 @@ public class IntegrationTest {
 
         assertEquals(90, result.getAverageConfidenceScore());
         assertEquals(68, result.getLowestConfidenceScore());
-        assertNotNull(result.getProcessingTimeMs());
+        assertNotNull(result.getOcrProcessingTimeMs());
+        assertNotNull(result.getTotalProcessingTimeMs());
+        assertEquals(TEST_RESPONSE_ID, result.getResponseId());
         assertThat(result.getExtractedText(), containsString("SAMPLE LTD"));
     }
 
@@ -56,7 +60,7 @@ public class IntegrationTest {
 
         var body = new LinkedMultiValueMap<String, Object>();
         body.add("file", fileBytes);
-        body.add("externalReferenceId","test-ref-id");
+        body.add("responseId", TEST_RESPONSE_ID);
 
         var requestEntity = new HttpEntity<>(body, headers);
 
@@ -65,7 +69,7 @@ public class IntegrationTest {
             url = "http://localhost:8080";
         }
 
-        url += "/api/ocr/image/extractText";
+        url += ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL;
         System.out.println("Using API URL [" + url + "]");
 
         var restTemplate = new RestTemplate();

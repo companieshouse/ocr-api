@@ -4,15 +4,15 @@ public class TextConversionException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    private final String externalReferenceId;
+    private final String responseId;
 
-    public TextConversionException(String externalReferenceId, Throwable cause) {
+    public TextConversionException(String responseId, Throwable cause) {
         super(cause);
-        this.externalReferenceId = externalReferenceId;
+        this.responseId = responseId;
     }
 
-    public String getExternalReferenceId() {
-        return externalReferenceId;
+    public String getResponseId() {
+        return responseId;
     } 
     
 }

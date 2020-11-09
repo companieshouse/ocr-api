@@ -31,22 +31,22 @@ public class ImageOcrService {
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
     @Async
-    public CompletableFuture<TextConversionResult> extractTextFromImage(MultipartFile file, String externalReferenceId, StopWatch timeOnQueueStopWatch) throws IOException, TesseractException {
+    public CompletableFuture<TextConversionResult> extractTextFromImage(MultipartFile file, String responseId, StopWatch timeOnQueueStopWatch) throws IOException, TesseractException {
 
         timeOnQueueStopWatch.stop();
-        LOG.infoContext(externalReferenceId, "Time waiting on queue " + timeOnQueueStopWatch.toString(), null);
+        LOG.infoContext(responseId, "Time waiting on queue " + timeOnQueueStopWatch.toString(), null);
 
-        final var textConversionResult = new TextConversionResult(timeOnQueueStopWatch.getTime()); 
+        final var textConversionResult = new TextConversionResult(responseId, timeOnQueueStopWatch.getTime()); 
 
         try(ImageInputStream is = ImageIO.createImageInputStream(new ByteArrayInputStream(file.getBytes()))) {
             ImageReader reader = createImageReader(is);
-            extractTextFromImageViaApi(externalReferenceId, reader, textConversionResult);
+            extractTextFromImageViaApi(reader, textConversionResult);
         }
 
         return CompletableFuture.completedFuture(textConversionResult);
     }
 
-    private void extractTextFromImageViaApi(String externalReferenceId, ImageReader reader, TextConversionResult textConversionResult) {
+    private void extractTextFromImageViaApi(ImageReader reader, TextConversionResult textConversionResult) {
         TessAPI api = null;
         TessBaseAPI handle = null;
 
@@ -59,24 +59,24 @@ public class ImageOcrService {
             int totalPages = reader.getNumImages(true); 
             textConversionResult.setTotalPages(totalPages);
 
-            LOG.debugContext(externalReferenceId, "Number of pages to process " + totalPages, null);
+            LOG.debugContext(textConversionResult.getResponseId(), "Number of pages to process " + totalPages, null);
 
             StringBuilder documentText = new StringBuilder();
             for (int currentPage = 0; currentPage < totalPages; currentPage++) {
 
                 textConversionResult.addPage();
 
-                LOG.infoContext(externalReferenceId, "Processed " + (currentPage * 100) / totalPages + "%", null);
+                LOG.infoContext(textConversionResult.getResponseId(), "Processed " + (currentPage * 100) / totalPages + "%", null);
 
                 documentText.append(extractTextOnCurrentPage(reader, textConversionResult, api, handle, currentPage));
             }
 
             textConversionResult.completeSuccess(documentText.toString());
 
-            LOG.infoContext(externalReferenceId,"Document MetaData", textConversionResult.metaDataMap());
+            LOG.infoContext(textConversionResult.getResponseId(),"Document MetaData", textConversionResult.metaDataMap());
 
         } catch (IOException ex) {
-            var tce = new TextConversionException(externalReferenceId, ex);
+            var tce = new TextConversionException(textConversionResult.getResponseId(), ex);
             throw tce;
         } finally {
             api.TessBaseAPIDelete(handle);

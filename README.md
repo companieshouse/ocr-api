@@ -20,12 +20,12 @@ The initial drop of this microservice converts TIFF files to text.
 
 ### Using curl
 
-- To call API for TIFF, POST `http://localhost:8080//api/ocr/image/extractText` passing in a file parameter as the tiff file to OCR and the "external_reference_id" field
+- To call API for TIFF, POST `http://localhost:8080//api/ocr/image/tiff/extractText` passing in a file parameter as the tiff file to OCR and the "responseId" field
 
 Example:
 
 ``` bash
-curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F externalReferenceId="curl test reference"  http://localhost:8080/api/ocr/image/extractText
+curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id"  http://localhost:8080/api/ocr/image/tiff/extractText
 ```
 
 ### Using maven

@@ -8,10 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang.time.StopWatch;
 
 /**
- * Domain Class to contain the result of a Text conversion
- * 
- * 
- * 
+ * Domain Class to contain the result of a Text conversion  
  */
 public class TextConversionResult {
 
@@ -24,12 +21,14 @@ public class TextConversionResult {
 
     private Integer totalPages;
 
-    private final long timeOnExecuterQueue;
-
     private StopWatch extractTextWatch = new StopWatch();
 
+    private final long timeOnExecuterQueue; 
+    private final String responseId;
 
-    public TextConversionResult(long timeOnExecuterQueue) {
+
+    public TextConversionResult(String responseId, long timeOnExecuterQueue) {
+        this.responseId = responseId;
         this.timeOnExecuterQueue = timeOnExecuterQueue;
         extractTextWatch.start();
     }
@@ -85,6 +84,10 @@ public class TextConversionResult {
 
     public long getExtractTextProcessingTime() {
         return extractTextWatch.getTime();
+    }
+
+    public String getResponseId() {
+        return responseId;
     }
     
 }
