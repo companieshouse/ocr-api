@@ -52,7 +52,7 @@ public class ImageOcrApiController {
      Occurs when the  `.join()` method is called after calling an `async` method AND an untrapped exception is thown within that method
      */
     @ExceptionHandler(CompletionException.class)
-    private ResponseEntity<Object> handleCompletionException(CompletionException e) {
+    public ResponseEntity<Object> handleCompletionException(CompletionException e) {
 
         if (e.getCause() instanceof TextConversionException) {
 
@@ -67,7 +67,7 @@ public class ImageOcrApiController {
     }
 
     @ExceptionHandler(Exception.class)
-    private ResponseEntity<Object> uncaughtException(Exception e) {
+    public ResponseEntity<Object> uncaughtException(Exception e) {
 
         LOG.error(null, e);
 
