@@ -37,6 +37,8 @@ public class ImageOcrApiController {
     @Autowired
     private ImageOcrService imageOcrService;
 
+    private ImageOcrTransformer transformer = new ImageOcrTransformer();
+
     @PostMapping(TIFF_EXTRACT_TEXT_PARTIAL_URL)
     public @ResponseBody ResponseEntity<ExtractTextResultDTO> extractTextFromTiff(
             @RequestParam(FILE_REQUEST_PARAMETER_NAME) MultipartFile file, @RequestParam(RESPONSE_ID_REQUEST_PARAMETER_NAME) String responseId) throws IOException, TesseractException {
@@ -48,7 +50,7 @@ public class ImageOcrApiController {
 
         var timeOnQueueStopWatch = new StopWatch();
         timeOnQueueStopWatch.start();
-        var result = ImageOcrTransformer.mapModelToApi( imageOcrService.extractTextFromImage(file, responseId, timeOnQueueStopWatch).join());
+        var result = transformer.mapModelToApi( imageOcrService.extractTextFromImage(file, responseId, timeOnQueueStopWatch).join());
 
         controllerStopWatch.stop();
         result.setTotalProcessingTimeMs(controllerStopWatch.getTime());
