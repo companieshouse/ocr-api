@@ -17,8 +17,14 @@ public class TextConversionResult {
     private Confidence documentConfidence = new Confidence();
     private Confidence currentPageConfidence;
 
+    /**
+     *  pageConfidences are NOT stored for blank pages (that have a zero confidence due to their "blankness")
+     */
     private List<Confidence> pageConfidences = new ArrayList<Confidence>();
 
+    /**
+     * totalPages includes blank pages
+     */
     private Integer totalPages;
 
     private StopWatch extractTextWatch = new StopWatch();
@@ -42,6 +48,7 @@ public class TextConversionResult {
         extractTextWatch.stop();
     }
 
+    // Useful for logging the metadata via Structured logging
     public Map<String, Object> metaDataMap() {
 
         var metadata = new HashMap<String, Object>();

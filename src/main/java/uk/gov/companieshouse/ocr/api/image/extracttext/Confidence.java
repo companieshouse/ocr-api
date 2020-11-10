@@ -6,31 +6,19 @@ public class Confidence {
         private Float sum = 0f;
 
         public Float getAverage() {
-            return sum / ((float) numberOfDataPoints);
+            return numberOfDataPoints != 0 ? sum / ((float) numberOfDataPoints) : null;
         }
 
         public Float getMinimum() {
             return minimum;
         }
 
-        public void setMinimum(Float minimum) {
-            this.minimum = minimum;
-        }
-
         public int getNumberOfDataPoints() {
             return numberOfDataPoints;
         }
 
-        public void setNumberOfDataPoints(int numberOfDataPoints) {
-            this.numberOfDataPoints = numberOfDataPoints;
-        }
-
         public Float getSum() {
             return sum;
-        }
-
-        public void setSum(Float sum) {
-            this.sum = sum;
         }
 
         public void addConfidenceValue(float confidenceValue) {
@@ -47,6 +35,5 @@ public class Confidence {
             return "Confidence [average=" + getAverage() + ", minimum=" + minimum + ", numberOfDataPoints="
                     + numberOfDataPoints + ", sum=" + sum + "]";
         }
-
-        
+      
 }

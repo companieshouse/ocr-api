@@ -3,11 +3,7 @@ package uk.gov.companieshouse.ocr.api.image.extracttext;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Results returned to a client on a successful API call { "extracted-text":
- * "This is the extracted extracted from the document",
- * "average-confidence-score": "96", "lowest-confidence-score": "45",
- * "processing-time-ms": "27363" }
- * 
+ * Results returned to a client on a successful API call
  */
 public class ExtractTextResultDTO {
 

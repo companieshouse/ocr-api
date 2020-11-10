@@ -46,7 +46,6 @@ public class ImageOcrService {
         }
 
         return CompletableFuture.completedFuture(textConversionResult);
-        //return textConversionResult;
     }
 
     private void extractTextFromImageViaApi(ImageReader reader, TextConversionResult textConversionResult) {
