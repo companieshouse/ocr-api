@@ -67,7 +67,6 @@ public class TextConversionResult {
         this.totalPages = totalPages;
     }
 
-
 	public void addConfidence(float confidence) {
         documentConfidence.addConfidenceValue(confidence);
         currentPageConfidence.addConfidenceValue(confidence);
@@ -78,8 +77,12 @@ public class TextConversionResult {
         pageConfidences.add(currentPageConfidence);
     }
 
-    public Confidence getDocumentConfidence() {
-        return documentConfidence;
+    public Float getDocumentAverageConfidence() {
+        return documentConfidence.getAverage();
+    }
+
+    public Float getDocumentMinimumConfidence() {
+        return documentConfidence.getMinimum();
     }
 
     public long getExtractTextProcessingTime() {

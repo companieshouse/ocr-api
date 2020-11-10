@@ -16,18 +16,17 @@ public class ImageOcrTransformer {
     }
 
     public static ExtractTextResultDTO mapModelToApi(TextConversionResult textConversionResult) {
-
+ 
         var extractTextResultDTO = new ExtractTextResultDTO();
 
-         extractTextResultDTO.setAverageConfidenceScore(Math.round(textConversionResult.getDocumentConfidence().getAverage()));
+        extractTextResultDTO.setExtractedText(textConversionResult.getExtractedText());
 
-         extractTextResultDTO.setExtractedText(textConversionResult.getExtractedText());
+        extractTextResultDTO.setAverageConfidenceScore(Math.round(textConversionResult.getDocumentAverageConfidence()));
+        extractTextResultDTO.setLowestConfidenceScore(Math.round(textConversionResult.getDocumentMinimumConfidence()));
 
-         extractTextResultDTO.setLowestConfidenceScore(Math.round(textConversionResult.getDocumentConfidence().getMinimum()));
+        extractTextResultDTO.setOcrProcessingTimeMs(textConversionResult.getExtractTextProcessingTime());
 
-         extractTextResultDTO.setOcrProcessingTimeMs(textConversionResult.getExtractTextProcessingTime());
-
-         extractTextResultDTO.setResponseId(textConversionResult.getResponseId());
+        extractTextResultDTO.setResponseId(textConversionResult.getResponseId());
 
         return extractTextResultDTO;
     }

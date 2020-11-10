@@ -22,10 +22,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import net.sourceforge.tess4j.TesseractException;
+import uk.gov.companieshouse.ocr.api.groups.TestType;
 import uk.gov.companieshouse.ocr.api.image.extracttext.ExtractTextResultDTO;
 import uk.gov.companieshouse.ocr.api.image.extracttext.ImageOcrApiController;
 
-@Tag("integration-test")
+@Tag(TestType.INTEGRATION)
 public class IntegrationTest {
 
     private static final Path RESOURCES_PATH = Paths.get("src", "test", "resources");

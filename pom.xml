@@ -19,7 +19,7 @@
     <properties>
         <java.version>11</java.version>
         
-        <included.tests>unit</included.tests>
+        <included.tests>unit-test</included.tests>
 
         <apache-commons-lang.version>2.6</apache-commons-lang.version>
         <structured-logging.version>1.9.4</structured-logging.version>
@@ -82,6 +82,12 @@
 	      <artifactId>junit-jupiter-engine</artifactId>
 	      <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+         </dependency>
         
     </dependencies>
     

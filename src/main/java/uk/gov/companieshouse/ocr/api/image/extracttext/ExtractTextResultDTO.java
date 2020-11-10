@@ -26,7 +26,7 @@ public class ExtractTextResultDTO {
     @JsonProperty("total_processing_time_ms")
     private long totalProcessingTimeMs;   
 
-    @JsonProperty("response_id ")
+    @JsonProperty("response_id")
     private String responseId;
 
     public String getExtractedText() {

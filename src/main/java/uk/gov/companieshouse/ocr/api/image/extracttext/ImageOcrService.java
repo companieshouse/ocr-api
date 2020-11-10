@@ -31,7 +31,9 @@ public class ImageOcrService {
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
     @Async
-    public CompletableFuture<TextConversionResult> extractTextFromImage(MultipartFile file, String responseId, StopWatch timeOnQueueStopWatch) throws IOException, TesseractException {
+    public CompletableFuture<TextConversionResult> 
+    //public TextConversionResult
+    extractTextFromImage(MultipartFile file, String responseId, StopWatch timeOnQueueStopWatch) throws IOException, TesseractException {
 
         timeOnQueueStopWatch.stop();
         LOG.infoContext(responseId, "Time waiting on queue " + timeOnQueueStopWatch.toString(), null);
@@ -44,6 +46,7 @@ public class ImageOcrService {
         }
 
         return CompletableFuture.completedFuture(textConversionResult);
+        //return textConversionResult;
     }
 
     private void extractTextFromImageViaApi(ImageReader reader, TextConversionResult textConversionResult) {
