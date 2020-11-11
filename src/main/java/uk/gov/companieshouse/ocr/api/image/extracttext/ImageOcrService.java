@@ -18,7 +18,6 @@ import net.sourceforge.tess4j.ITessAPI;
 import net.sourceforge.tess4j.ITessAPI.TessBaseAPI;
 import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
 import net.sourceforge.tess4j.TessAPI;
-import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
@@ -32,8 +31,7 @@ public class ImageOcrService {
 
     @Async
     public CompletableFuture<TextConversionResult> 
-    //public TextConversionResult
-    extractTextFromImage(MultipartFile file, String responseId, StopWatch timeOnQueueStopWatch) throws IOException, TesseractException {
+    extractTextFromImage(MultipartFile file, String responseId, StopWatch timeOnQueueStopWatch) throws IOException {
 
         timeOnQueueStopWatch.stop();
         LOG.infoContext(responseId, "Time waiting on queue " + timeOnQueueStopWatch.toString(), null);
@@ -59,7 +57,6 @@ public class ImageOcrService {
             api.TessBaseAPIInit3(handle, TesseractConstants.TRAINING_DATA_PATH, TesseractConstants.ENGLISH_LANGUAGE);
 
             int totalPages = reader.getNumImages(true); 
-            textConversionResult.setTotalPages(totalPages);
 
             LOG.debugContext(textConversionResult.getResponseId(), "Number of pages to process " + totalPages, null);
 
@@ -78,8 +75,7 @@ public class ImageOcrService {
             LOG.infoContext(textConversionResult.getResponseId(),"Document MetaData", textConversionResult.metaDataMap());
 
         } catch (IOException ex) {
-            var tce = new TextConversionException(textConversionResult.getResponseId(), ex);
-            throw tce;
+            throw new TextConversionException(textConversionResult.getResponseId(), ex);
         } finally {
             api.TessBaseAPIDelete(handle);
         }
@@ -119,17 +115,16 @@ public class ImageOcrService {
 
     private ImageReader createImageReader(ImageInputStream is) throws IOException {
         if (is == null || is.length() == 0) {
-            throw new IOException("Invalid input stream");
+            throw new IOException("Empty image input stream");
         }
 
         Iterator<ImageReader> iterator = ImageIO.getImageReaders(is);
         if (iterator == null || !iterator.hasNext()) {
-            throw new IOException("Image file format not supported by ImageIO: ");
+            throw new IOException("No file readers found for image content (when using ImageIO)");
         }
 
         // Get first compatible reader
-        var reader = (ImageReader) iterator.next();
-        iterator = null;
+        var reader = iterator.next();
         reader.setInput(is);
         return reader;
     }

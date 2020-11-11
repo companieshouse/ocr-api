@@ -18,14 +18,9 @@ public class TextConversionResult {
     private Confidence currentPageConfidence;
 
     /**
-     *  pageConfidences are NOT stored for blank pages (that have a zero confidence due to their "blankness")
+     *  pageConfidences - one per page
      */
     private List<Confidence> pageConfidences = new ArrayList<Confidence>();
-
-    /**
-     * totalPages includes blank pages
-     */
-    private Integer totalPages;
 
     private StopWatch extractTextWatch = new StopWatch();
 
@@ -55,7 +50,7 @@ public class TextConversionResult {
 
         metadata.put("timeOnExecuterQueue", Long.valueOf(timeOnExecuterQueue));
         metadata.put("extractTextWatch", extractTextWatch.toString());
-        metadata.put("totalPages", totalPages);
+        metadata.put("totalPages", pageConfidences.size());
         metadata.put("documentConfidence", documentConfidence);
         metadata.put("pageConfidences", pageConfidences);
 
@@ -67,11 +62,7 @@ public class TextConversionResult {
     }
 
     public Integer getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(Integer totalPages) {
-        this.totalPages = totalPages;
+        return pageConfidences.size();
     }
 
 	public void addConfidence(float confidence) {

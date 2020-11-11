@@ -22,6 +22,7 @@
         <included.tests>unit-test</included.tests>
 
         <apache-commons-lang.version>2.6</apache-commons-lang.version>
+        <environment-reader.version>1.3.8</environment-reader.version>
         <structured-logging.version>1.9.4</structured-logging.version>
         <tess4j.version>4.5.3</tess4j.version>
     </properties>
@@ -56,6 +57,12 @@
             <artifactId>structured-logging</artifactId>
             <version>${structured-logging.version}</version>
          </dependency>     
+
+         <dependency>
+            <groupId>uk.gov.companieshouse</groupId>
+            <artifactId>environment-reader-library</artifactId>
+            <version>${environment-reader.version}</version>
+        </dependency>
          
          <!-- needed to add this for CH structured logging (errors on v3 of this linrary-->
          <dependency> 

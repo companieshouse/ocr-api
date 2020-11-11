@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.environment.impl.EnvironmentReaderImpl;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
@@ -12,9 +14,11 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 @EnableAsync
 public class ThreadConfig {
 
-    private final static int DEFAULT_THREAD_POOL_SIZE = 4; 
+    private static final int DEFAULT_THREAD_POOL_SIZE = 4; 
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
+
+    private EnvironmentReader reader = new EnvironmentReaderImpl();
 
     @Bean (name="taskExecutor")
     public ThreadPoolTaskExecutor taskExecutor() {
@@ -33,17 +37,8 @@ public class ThreadConfig {
 
     private int getThreadPoolSize() {
 
-        var configuredThreadPoolSize = System.getenv("OCR_TESSERACT_THREAD_POOL_SIZE");
-        int threadPoolSize = DEFAULT_THREAD_POOL_SIZE;
-
-        try{
-            threadPoolSize = Integer.parseInt(configuredThreadPoolSize);
-        }  
-           catch (NumberFormatException nfe)
-        {
-            LOG.error("Can not get the OCR_TESSERACT_THREAD_POOL_SIZE, using default = NumberFormatException: " + nfe.getMessage());
-        }
-
-        return threadPoolSize;
+        var configuredThreadPoolSize = reader.getOptionalInteger("OCR_TESSERACT_THREAD_POOL_SIZE");
+        
+        return (configuredThreadPoolSize != null) ? configuredThreadPoolSize :  DEFAULT_THREAD_POOL_SIZE;
     }
 }

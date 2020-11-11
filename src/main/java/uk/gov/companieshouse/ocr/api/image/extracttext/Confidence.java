@@ -35,5 +35,6 @@ public class Confidence {
             return "Confidence [average=" + getAverage() + ", minimum=" + minimum + ", numberOfDataPoints="
                     + numberOfDataPoints + ", sum=" + sum + "]";
         }
+        
       
 }

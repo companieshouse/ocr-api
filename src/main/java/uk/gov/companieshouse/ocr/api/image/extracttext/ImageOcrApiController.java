@@ -58,7 +58,7 @@ public class ImageOcrApiController {
         LOG.infoContext(responseId, "Finished processing file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
            controllerStopWatch.toString() + "]", null);
 
-        return new ResponseEntity<ExtractTextResultDTO>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /*
@@ -74,12 +74,12 @@ public class ImageOcrApiController {
             logError(cause.getResponseId(), cause);
             errorResponse.setErrorMessage(TEXT_CONVERSION_ERROR_MESSAGE);
             errorResponse.setResponseId(cause.getResponseId());
-            return new ResponseEntity<ErrorResponseDTO>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         else {
             logError(null, e);
             errorResponse.setErrorMessage(GENERAL_SERVICE_ERROR_MESSAGE);
-            return new ResponseEntity<ErrorResponseDTO>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -91,7 +91,7 @@ public class ImageOcrApiController {
         var errorResponse = new ErrorResponseDTO();
         errorResponse.setErrorMessage(CONTROLLER_ERROR_MESSAGE);
 
-        return new ResponseEntity<ErrorResponseDTO>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private void logError(String responseId, Exception e) {

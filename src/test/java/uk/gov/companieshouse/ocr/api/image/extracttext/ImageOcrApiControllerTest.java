@@ -32,8 +32,8 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 @WebMvcTest(controllers = ImageOcrApiController.class)
 public class ImageOcrApiControllerTest {
 
-    private final static String FILE_TEXT = "I am a tiff image of articles of association";
-    private final static String RESPONSE_ID = "test-response-id";
+    private static final String FILE_TEXT = "I am a tiff image of articles of association";
+    private static final String RESPONSE_ID = "test-response-id";
 
     @Autowired
     private MockMvc mockMvc;
