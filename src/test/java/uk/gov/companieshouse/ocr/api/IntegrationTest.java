@@ -2,8 +2,8 @@ package uk.gov.companieshouse.ocr.api;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -43,8 +42,7 @@ public class IntegrationTest {
 
         assertEquals(90, result.getAverageConfidenceScore());
         assertEquals(68, result.getLowestConfidenceScore());
-        assertNotNull(result.getOcrProcessingTimeMs());
-        assertNotNull(result.getTotalProcessingTimeMs());
+        assertTrue(result.getTotalProcessingTimeMs() > 0l);
         assertEquals(TEST_RESPONSE_ID, result.getResponseId());
         assertThat(result.getExtractedText(), containsString("SAMPLE LTD"));
     }

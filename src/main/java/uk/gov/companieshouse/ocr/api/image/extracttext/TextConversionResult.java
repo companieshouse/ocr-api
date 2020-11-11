@@ -20,7 +20,7 @@ public class TextConversionResult {
     /**
      *  pageConfidences - one per page
      */
-    private List<Confidence> pageConfidences = new ArrayList<Confidence>();
+    private List<Confidence> pageConfidences = new ArrayList<>();
 
     private StopWatch extractTextWatch = new StopWatch();
 
