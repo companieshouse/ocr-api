@@ -7,21 +7,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class ExtractTextResultDTO {
 
+    /**
+     *  The text for the OCR request
+     */
     @JsonProperty("extracted_text")
     private String extractedText;
 
+    /**
+     *  average value (line by line) of the Tesseract confidence (0 to 100) of the OCR conversion process
+     */
     @JsonProperty("average_confidence_score")
     private int averageConfidenceScore;
 
+    /**
+     *  the lowest value (line by line) of the Tesseract confidence (0 to 100) of the OCR conversion process
+     */
     @JsonProperty("lowest_confidence_score")
     private int lowestConfidenceScore;
 
+    /**
+     *  Time for the OCT Text conversion process itself 
+     */
     @JsonProperty("ocr_processing_time_ms")
     private long ocrProcessingTimeMs;
 
     @JsonProperty("total_processing_time_ms")
     private long totalProcessingTimeMs;   
 
+    /**
+     *  The input responseId of the OCR request
+     */
     @JsonProperty("response_id")
     private String responseId;
 

@@ -1,5 +1,8 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
+/**
+ *  This represents the confidence that Tesseract has when it converts image to text on a set of data points (e.g. the whole document or a page).
+ */
 public class Confidence {
         private Float minimum = null;
         private int numberOfDataPoints = 0;
@@ -35,6 +38,4 @@ public class Confidence {
             return "Confidence [average=" + getAverage() + ", minimum=" + minimum + ", numberOfDataPoints="
                     + numberOfDataPoints + ", sum=" + sum + "]";
         }
-        
-      
 }

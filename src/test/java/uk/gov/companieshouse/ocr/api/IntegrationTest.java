@@ -88,5 +88,4 @@ public class IntegrationTest {
         Files.write(txtPath, text.getBytes());
     }
 
-
 }
