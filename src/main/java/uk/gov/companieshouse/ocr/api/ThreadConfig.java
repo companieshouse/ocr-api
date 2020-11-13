@@ -26,7 +26,8 @@ public class ThreadConfig {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
         var threadPoolSize = getThreadPoolSize();
-        LOG.info("Using a thread pool of " + threadPoolSize);
+        var processors = Runtime.getRuntime().availableProcessors();
+        LOG.info("Using a thread pool of [" + threadPoolSize + "] with available processors of [" + processors + "]");
 
         executor.setCorePoolSize(threadPoolSize);
         executor.setMaxPoolSize(threadPoolSize);
