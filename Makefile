@@ -43,8 +43,6 @@ ifneq ($(OS),Darwin)
 endif
 	mvn package -DskipTests=true
 	$(eval tmpdir:=$(shell mktemp -d build-XXXXXXXXXX))
-	cp ./start.sh $(tmpdir)
-	cp ./*routes.yaml $(tmpdir)
 	cp ./target/$(artifact_name)-$(version).jar $(tmpdir)/$(artifact_name).jar
 ifeq ($(OS),Darwin)
 	cp ./target/$(artifact_name)-$(version).jar ./$(artifact_name).jar
