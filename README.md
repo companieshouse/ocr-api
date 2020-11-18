@@ -12,7 +12,7 @@ The initial drop of this microservice converts TIFF files to text.
 
 ## Usage
 
-- Run `mvn clean package` to build JAR and run the unit tests **(using Java 11)**
+- Run `make dev` to build JAR (versioned in target and unversioned in top level d) and run the unit tests **(using Java 11)**
 - Run `docker build -t ocr-api .` to build the docker image
 - Run `docker run -e HUMAN_LOG=1 -e LOGLEVEL=debug -t -i -p 8080:8080 ocr-api` to run the docker image
 

@@ -29,7 +29,7 @@ test-unit: clean
 
 .PHONY: dev
 dev: clean
-	mvn package -DskipTests=true
+	mvn package
 	cp target/$(artifact_name)-unversioned.jar $(artifact_name).jar
 
 .PHONY: package
