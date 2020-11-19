@@ -30,7 +30,7 @@ ENV MICROSERVICE_HOME /usr/microservices
 ENV OMP_THREAD_LIMIT 1
 
 # Set the name of the jar
-ENV APP_FILE ocr-api-unversioned.jar
+ENV APP_FILE ocr-api.jar
 
 ENV LC_ALL C
 
@@ -41,7 +41,7 @@ EXPOSE 8080
 COPY docker-resources/configure-maven /usr/local/bin/configure-maven
 
 # Copy our JAR
-COPY target/$APP_FILE /app.jar
+COPY $APP_FILE /app.jar
 
 # Launch the Spring Boot application
 ENV JAVA_OPTS=""
