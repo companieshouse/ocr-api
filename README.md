@@ -62,6 +62,12 @@ Example:
 curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id"  http://localhost:8080/api/ocr/image/tiff/extractText
 ```
 
+For heath check:
+
+``` bash
+curl -w '%{http_code}' http://localhost:8080/healthcheck
+```
+
 ### Using maven
 
 Tests use jUnit5 tags and use the maven property "included.tests" to specify which ones to run
