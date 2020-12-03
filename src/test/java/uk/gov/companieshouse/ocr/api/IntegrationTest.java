@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +32,8 @@ public class IntegrationTest {
     private static final Path RESOURCES_PATH = Paths.get("src", "test", "resources");
     private static final String SAMPLE_TIFF = "sample-articles-of-association.tif";
     private static final String TEST_RESPONSE_ID = "test-response-id";
+
+    private String apiEndpoint = "ocr-api"; // no Spring context so hard code it
 
     @Test
     public void verifySuccessfulTextExtractFromTesseract() throws IOException, TesseractException {
@@ -68,7 +71,7 @@ public class IntegrationTest {
             url = "http://localhost:8080";
         }
 
-        url += ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL;
+        url += apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL;
         System.out.println("Using API URL [" + url + "]");
 
         var restTemplate = new RestTemplate();

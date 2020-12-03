@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
@@ -35,6 +36,9 @@ public class ImageOcrApiControllerTest {
     private static final String FILE_TEXT = "I am a tiff image of articles of association";
     private static final String RESPONSE_ID = "test-response-id";
 
+    @Value("${api.endpoint}")
+    private String apiEndpoint;
+    
     @Autowired
     private MockMvc mockMvc;
   
@@ -65,7 +69,7 @@ public class ImageOcrApiControllerTest {
         when(imageOcrService.extractTextFromImage(eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
                 .thenReturn(CompletableFuture.completedFuture(mockResults));
 
-        mockMvc.perform(multipart(ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+        mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
                 .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.extracted_text", is(FILE_TEXT)))
                 .andExpect(jsonPath("$.response_id", is(RESPONSE_ID)))
@@ -78,7 +82,7 @@ public class ImageOcrApiControllerTest {
     @Test
     public void shouldCatchUncaughtExceptionInController() throws Exception {
 
-        mockMvc.perform(multipart(ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+        mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
                 .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error_message", is(ImageOcrApiController.CONTROLLER_ERROR_MESSAGE)))
                 .andExpect(jsonPath("$.response_id").doesNotExist());
@@ -90,7 +94,7 @@ public class ImageOcrApiControllerTest {
         when(imageOcrService.extractTextFromImage(eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
         .thenThrow(new CompletionException("General", new IOException("IOException test")));
 
-        mockMvc.perform(multipart(ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+        mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
                 .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error_message", is(ImageOcrApiController.GENERAL_SERVICE_ERROR_MESSAGE)))
                 .andExpect(jsonPath("$.response_id").doesNotExist());
@@ -102,7 +106,7 @@ public class ImageOcrApiControllerTest {
         when(imageOcrService.extractTextFromImage(eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
         .thenThrow(new CompletionException("General", new TextConversionException(RESPONSE_ID, new IOException("Wrapped IOException test"))));
 
-        mockMvc.perform(multipart(ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+        mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
                 .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error_message", is(ImageOcrApiController.TEXT_CONVERSION_ERROR_MESSAGE)))
                 .andExpect(jsonPath("$.response_id", is(RESPONSE_ID)));
