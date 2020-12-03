@@ -54,18 +54,18 @@ OCR_TESSERACT_THREAD_POOL_SIZE              | Number of threads to run the Tesse
 
 ### Using curl
 
-- To call API for TIFF, POST `http://localhost:8080//api/ocr/image/tiff/extractText` passing in a file parameter as the tiff file to OCR and the "responseId" field
+- To call API for TIFF, POST `http://localhost:8080/ocr-apr/api/ocr/image/tiff/extractText` passing in a file parameter as the tiff file to OCR and the "responseId" field
 
 Example:
 
 ``` bash
-curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id"  http://localhost:8080/api/ocr/image/tiff/extractText
+curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id"  http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
 ```
 
 For heath check:
 
 ``` bash
-curl -w '%{http_code}' http://localhost:8080/healthcheck
+curl -w '%{http_code}' http://localhost:8080/ocr-api/healthcheck
 ```
 
 ### Using maven
