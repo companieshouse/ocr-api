@@ -27,6 +27,14 @@
         <tess4j.version>4.5.3</tess4j.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>sonar-pr-analysis</id>
+            <properties>
+                <sonar.pullrequest.base>main</sonar.pullrequest.base>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
 
