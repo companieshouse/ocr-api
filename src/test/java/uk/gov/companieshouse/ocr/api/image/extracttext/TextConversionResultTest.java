@@ -44,6 +44,7 @@ public class TextConversionResultTest {
         assertEquals(71.6f, textConversionResult.getDocumentAverageConfidence());
         assertEquals(20.0f, textConversionResult.getDocumentMinimumConfidence());
         assertEquals(RESPONSE_ID, textConversionResult.getResponseId());
+        assertEquals(CONTEXT_ID, textConversionResult.getContextId());
 
         var metaDataMap = textConversionResult.metaDataMap();
         assertEquals(TIME_ON_EXECUTOR_QUEUE, metaDataMap.get("timeOnExecuterQueue"));
@@ -76,6 +77,7 @@ public class TextConversionResultTest {
         assertEquals(71.6f, textConversionResult.getDocumentAverageConfidence());
         assertEquals(20.0f, textConversionResult.getDocumentMinimumConfidence());
         assertEquals(RESPONSE_ID, textConversionResult.getResponseId());
+        assertEquals(CONTEXT_ID, textConversionResult.getContextId());
 
         var metaDataMap = textConversionResult.metaDataMap();
         assertEquals(TIME_ON_EXECUTOR_QUEUE, metaDataMap.get("timeOnExecuterQueue"));
@@ -111,6 +113,7 @@ public class TextConversionResultTest {
         assertEquals(71.6f, textConversionResult.getDocumentAverageConfidence());
         assertEquals(20.0f, textConversionResult.getDocumentMinimumConfidence());
         assertEquals(RESPONSE_ID, textConversionResult.getResponseId());
+        assertEquals(CONTEXT_ID, textConversionResult.getContextId());
 
         var metaDataMap = textConversionResult.metaDataMap();
         assertEquals(TIME_ON_EXECUTOR_QUEUE, metaDataMap.get("timeOnExecuterQueue"));
@@ -133,6 +136,7 @@ public class TextConversionResultTest {
         assertNull(textConversionResult.getDocumentAverageConfidence());
         assertNull(textConversionResult.getDocumentMinimumConfidence());
         assertEquals(RESPONSE_ID, textConversionResult.getResponseId());
+        assertEquals(CONTEXT_ID, textConversionResult.getContextId());
 
         var metaDataMap = textConversionResult.metaDataMap();
         assertEquals(TIME_ON_EXECUTOR_QUEUE, metaDataMap.get("timeOnExecuterQueue"));

@@ -13,6 +13,7 @@ public class ImageOcrTransformer {
 
         extractTextResultDTO.setOcrProcessingTimeMs(textConversionResult.getExtractTextProcessingTime());
 
+        extractTextResultDTO.setContextId(textConversionResult.getContextId());
         extractTextResultDTO.setResponseId(textConversionResult.getResponseId());
 
         return extractTextResultDTO;
