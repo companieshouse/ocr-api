@@ -12,6 +12,7 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 @Tag(TestType.UNIT)
 public class TextConversionResultTest {
 
+    private static final String CONTEXT_ID = "test-context-id";
     private static final String RESPONSE_ID = "test-response-id";
     private static final long TIME_ON_EXECUTOR_QUEUE = 210l;
     private static final String TEXT_TEXT = "Boring Text for text results";
@@ -21,7 +22,7 @@ public class TextConversionResultTest {
 
     @BeforeEach
     public void setup() {
-        this.textConversionResult = new TextConversionResult(RESPONSE_ID, TIME_ON_EXECUTOR_QUEUE);
+        this.textConversionResult = new TextConversionResult(CONTEXT_ID, RESPONSE_ID, TIME_ON_EXECUTOR_QUEUE);
     }
 
     @Test

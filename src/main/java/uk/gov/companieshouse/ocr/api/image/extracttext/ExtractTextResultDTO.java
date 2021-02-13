@@ -8,6 +8,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ExtractTextResultDTO {
 
     /**
+     *  The input contextId of the OCR request
+     */
+    @JsonProperty("context_id")
+    private String contextId;
+
+    /**
      *  The text for the OCR request
      */
     @JsonProperty("extracted_text")
@@ -39,6 +45,15 @@ public class ExtractTextResultDTO {
      */
     @JsonProperty("response_id")
     private String responseId;
+
+    
+    public String getContextId() {
+        return contextId;
+    }
+
+    public void setContextId(String contextId) {
+        this.contextId = contextId;
+    }
 
     public String getExtractedText() {
         return extractedText;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.CompletionException;
 
 import org.apache.commons.lang.time.StopWatch;
+import org.codehaus.plexus.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ public class ImageOcrApiController {
     public static final String TIFF_EXTRACT_TEXT_PARTIAL_URL = "/api/ocr/image/tiff/extractText";
 
     static final String RESPONSE_ID_REQUEST_PARAMETER_NAME = "responseId";
+    static final String CONTEXT_ID_REQUEST_PARAMETER_NAME = "contextId";
     static final String FILE_REQUEST_PARAMETER_NAME = "file";
 
     static final String GENERAL_SERVICE_ERROR_MESSAGE = "Unexpected Error In OCR Conversion";
@@ -43,21 +45,28 @@ public class ImageOcrApiController {
 
     @PostMapping(TIFF_EXTRACT_TEXT_PARTIAL_URL)
     public @ResponseBody ResponseEntity<ExtractTextResultDTO> extractTextFromTiff(
-            @RequestParam(FILE_REQUEST_PARAMETER_NAME) MultipartFile file, @RequestParam(RESPONSE_ID_REQUEST_PARAMETER_NAME) String responseId) throws IOException, TesseractException {
+            @RequestParam(FILE_REQUEST_PARAMETER_NAME) MultipartFile file, 
+            @RequestParam(RESPONSE_ID_REQUEST_PARAMETER_NAME) String responseId,
+            @RequestParam(name = CONTEXT_ID_REQUEST_PARAMETER_NAME, required = false) String contextId
+            ) throws IOException, TesseractException {
 
         var controllerStopWatch = new StopWatch();
         controllerStopWatch.start();
+
+        if (StringUtils.isBlank(contextId)) {
+            contextId = responseId;
+        }
         
-        LOG.infoContext(responseId,"Processing file [" + file.getOriginalFilename() + "] Content type [" + file.getContentType() + "]", null);
+        LOG.infoContext(contextId,"Processing file [" + file.getOriginalFilename() + "] Content type [" + file.getContentType() + "]", null);
 
         var timeOnQueueStopWatch = new StopWatch();
         timeOnQueueStopWatch.start();
-        var result = transformer.mapModelToApi( imageOcrService.extractTextFromImage(file, responseId, timeOnQueueStopWatch).join());
+        var result = transformer.mapModelToApi( imageOcrService.extractTextFromImage(contextId, file, responseId, timeOnQueueStopWatch).join());
 
         controllerStopWatch.stop();
         result.setTotalProcessingTimeMs(controllerStopWatch.getTime());
     
-        LOG.infoContext(responseId, "Finished processing file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
+        LOG.infoContext(contextId, "Finished processing file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
            controllerStopWatch.toString() + "]", null);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -73,8 +82,9 @@ public class ImageOcrApiController {
         if (e.getCause() instanceof TextConversionException) {
 
             var cause = (TextConversionException) e.getCause();
-            logError(cause.getResponseId(), cause);
+            logError(cause.getContextId(), cause);
             errorResponse.setErrorMessage(TEXT_CONVERSION_ERROR_MESSAGE);
+            errorResponse.setContextId(cause.getContextId());
             errorResponse.setResponseId(cause.getResponseId());
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
