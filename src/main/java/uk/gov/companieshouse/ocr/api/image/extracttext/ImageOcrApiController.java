@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import net.sourceforge.tess4j.TesseractException;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.ocr.api.OcrApiApplication;
@@ -48,7 +47,7 @@ public class ImageOcrApiController {
             @RequestParam(FILE_REQUEST_PARAMETER_NAME) MultipartFile file, 
             @RequestParam(RESPONSE_ID_REQUEST_PARAMETER_NAME) String responseId,
             @RequestParam(name = CONTEXT_ID_REQUEST_PARAMETER_NAME, required = false) String contextId
-            ) throws IOException, TesseractException {
+            ) throws IOException {
 
         var controllerStopWatch = new StopWatch();
         controllerStopWatch.start();

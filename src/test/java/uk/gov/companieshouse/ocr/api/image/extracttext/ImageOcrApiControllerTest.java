@@ -59,7 +59,7 @@ public class ImageOcrApiControllerTest {
     }
 
     @Test
-    public void shouldextractTextFromTiffNoContextId() throws Exception {
+    void shouldextractTextFromTiffNoContextId() throws Exception {
 
         when(mockResults.getExtractedText()).thenReturn(FILE_TEXT);
         when(mockResults.getDocumentAverageConfidence()).thenReturn(90f);
@@ -81,7 +81,7 @@ public class ImageOcrApiControllerTest {
     }
 
     @Test
-    public void shouldextractTextFromTiffWithContextId() throws Exception {
+    void shouldextractTextFromTiffWithContextId() throws Exception {
 
         when(mockResults.getExtractedText()).thenReturn(FILE_TEXT);
         when(mockResults.getDocumentAverageConfidence()).thenReturn(90f);
@@ -104,7 +104,7 @@ public class ImageOcrApiControllerTest {
     }
 
     @Test
-    public void shouldCatchUncaughtExceptionInController() throws Exception {
+    void shouldCatchUncaughtExceptionInController() throws Exception {
 
         mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
                 .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
@@ -113,7 +113,7 @@ public class ImageOcrApiControllerTest {
     }
 
     @Test
-    public void shouldCatchFutureExceptionInController() throws Exception {
+    void shouldCatchFutureExceptionInController() throws Exception {
 
         when(imageOcrService.extractTextFromImage(eq(CONTEXT_ID), eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
         .thenThrow(new CompletionException("General", new IOException("IOException test")));
@@ -126,7 +126,7 @@ public class ImageOcrApiControllerTest {
     }
 
     @Test
-    public void shouldCatchFutureExceptionWithApplicationErrorInController() throws Exception {
+    void shouldCatchFutureExceptionWithApplicationErrorInController() throws Exception {
 
         when(imageOcrService.extractTextFromImage(eq(CONTEXT_ID), eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
         .thenThrow(new CompletionException("General", new TextConversionException(CONTEXT_ID, RESPONSE_ID, new IOException("Wrapped IOException test"))));
