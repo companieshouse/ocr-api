@@ -54,7 +54,7 @@ OCR_TESSERACT_THREAD_POOL_SIZE              | Number of threads to run the Tesse
 
 ### Using curl
 
-- To call API for TIFF, POST `http://localhost:8080/ocr-apr/api/ocr/image/tiff/extractText` passing in a file parameter as the tiff file to OCR and the "responseId" field
+- To call API for TIFF, POST `http://localhost:8080/ocr-apr/api/ocr/image/tiff/extractText` passing in a file parameter as the tiff file to OCR and the "responseId" field (optionally add a "contextId" where you want context logging to be more than the "responseId")
 
 Example:
 
