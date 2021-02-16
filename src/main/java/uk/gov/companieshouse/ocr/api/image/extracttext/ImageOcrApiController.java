@@ -3,8 +3,8 @@ package uk.gov.companieshouse.ocr.api.image.extracttext;
 import java.io.IOException;
 import java.util.concurrent.CompletionException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
-import org.codehaus.plexus.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
