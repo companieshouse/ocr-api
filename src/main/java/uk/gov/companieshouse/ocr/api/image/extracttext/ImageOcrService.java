@@ -31,12 +31,12 @@ public class ImageOcrService {
 
     @Async
     public CompletableFuture<TextConversionResult> 
-    extractTextFromImage(MultipartFile file, String responseId, StopWatch timeOnQueueStopWatch) throws IOException {
+    extractTextFromImage(String contextId, MultipartFile file, String responseId, StopWatch timeOnQueueStopWatch) throws IOException {
 
         timeOnQueueStopWatch.stop();
-        LOG.infoContext(responseId, "Time waiting on queue " + timeOnQueueStopWatch.toString(), null);
+        LOG.infoContext(contextId, "Time waiting on queue " + timeOnQueueStopWatch.toString(), null);
 
-        final var textConversionResult = new TextConversionResult(responseId, timeOnQueueStopWatch.getTime()); 
+        final var textConversionResult = new TextConversionResult(contextId, responseId, timeOnQueueStopWatch.getTime()); 
 
         try(ImageInputStream is = ImageIO.createImageInputStream(new ByteArrayInputStream(file.getBytes()))) {
             ImageReader reader = createImageReader(is);
@@ -58,24 +58,24 @@ public class ImageOcrService {
 
             int totalPages = reader.getNumImages(true); 
 
-            LOG.debugContext(textConversionResult.getResponseId(), "Number of pages to process " + totalPages, null);
+            LOG.debugContext(textConversionResult.getContextId(), "Number of pages to process " + totalPages, null);
 
             StringBuilder documentText = new StringBuilder();
             for (int currentPage = 0; currentPage < totalPages; currentPage++) {
 
                 textConversionResult.addPage();
 
-                LOG.infoContext(textConversionResult.getResponseId(), "Processed " + (currentPage * 100) / totalPages + "%", null);
+                LOG.infoContext(textConversionResult.getContextId(), "Processed " + (currentPage * 100) / totalPages + "%", null);
 
                 documentText.append(extractTextOnCurrentPage(reader, textConversionResult, api, handle, currentPage));
             }
 
             textConversionResult.completeSuccess(documentText.toString());
 
-            LOG.infoContext(textConversionResult.getResponseId(),"Document MetaData", textConversionResult.metaDataMap());
+            LOG.infoContext(textConversionResult.getContextId(),"Document MetaData", textConversionResult.metaDataMap());
 
         } catch (IOException ex) {
-            throw new TextConversionException(textConversionResult.getResponseId(), ex);
+            throw new TextConversionException(textConversionResult.getContextId(), textConversionResult.getResponseId(), ex);
         } finally {
             api.TessBaseAPIDelete(handle);
         }
@@ -104,9 +104,9 @@ public class ImageOcrService {
                 var confidence = api.TessResultIteratorConfidence(ri, level);
                 if (symbol != null) {
                     textConversionResult.addConfidence(confidence);
-                    LOG.trace("Confidence is " + confidence + " for " + symbol.getString(0));
+                    LOG.traceContext(textConversionResult.getContextId(), "Confidence is " + confidence + " for " + symbol.getString(0), null);
                 } else {
-                    LOG.debug("Confidence is " + confidence + " for blank line" );
+                    LOG.debugContext(textConversionResult.getContextId(), "Confidence is " + confidence + " for blank line", null);
                 }
             } while (api.TessResultIteratorNext(ri, level) == ITessAPI.TRUE);
         }

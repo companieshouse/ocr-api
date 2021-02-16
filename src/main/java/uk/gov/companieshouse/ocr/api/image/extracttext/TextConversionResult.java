@@ -24,11 +24,13 @@ public class TextConversionResult {
 
     private StopWatch extractTextWatch = new StopWatch();
 
+    private final String contextId;
     private final long timeOnExecuterQueue; 
     private final String responseId;
 
 
-    public TextConversionResult(String responseId, long timeOnExecuterQueue) {
+    public TextConversionResult(String contextId, String responseId, long timeOnExecuterQueue) {
+        this.contextId = contextId;
         this.responseId = responseId;
         this.timeOnExecuterQueue = timeOnExecuterQueue;
         extractTextWatch.start();
@@ -89,6 +91,10 @@ public class TextConversionResult {
 
     public String getResponseId() {
         return responseId;
+    }
+
+    public String getContextId() {
+        return contextId;
     }
     
 }

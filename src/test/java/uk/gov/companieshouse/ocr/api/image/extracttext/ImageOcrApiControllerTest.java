@@ -33,6 +33,7 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 @WebMvcTest(controllers = ImageOcrApiController.class)
 public class ImageOcrApiControllerTest {
 
+    private static final String CONTEXT_ID = "test-context-id";
     private static final String FILE_TEXT = "I am a tiff image of articles of association";
     private static final String RESPONSE_ID = "test-response-id";
 
@@ -58,7 +59,7 @@ public class ImageOcrApiControllerTest {
     }
 
     @Test
-    public void shouldextractTextFromTiff() throws Exception {
+    void shouldextractTextFromTiffNoContextId() throws Exception {
 
         when(mockResults.getExtractedText()).thenReturn(FILE_TEXT);
         when(mockResults.getDocumentAverageConfidence()).thenReturn(90f);
@@ -66,7 +67,7 @@ public class ImageOcrApiControllerTest {
         when(mockResults.getResponseId()).thenReturn(RESPONSE_ID);
         when(mockResults.getExtractTextProcessingTime()).thenReturn(3200l);
 
-        when(imageOcrService.extractTextFromImage(eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
+        when(imageOcrService.extractTextFromImage(eq(RESPONSE_ID), eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
                 .thenReturn(CompletableFuture.completedFuture(mockResults));
 
         mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
@@ -80,7 +81,30 @@ public class ImageOcrApiControllerTest {
     }
 
     @Test
-    public void shouldCatchUncaughtExceptionInController() throws Exception {
+    void shouldextractTextFromTiffWithContextId() throws Exception {
+
+        when(mockResults.getExtractedText()).thenReturn(FILE_TEXT);
+        when(mockResults.getDocumentAverageConfidence()).thenReturn(90f);
+        when(mockResults.getDocumentMinimumConfidence()).thenReturn(80f);
+        when(mockResults.getResponseId()).thenReturn(RESPONSE_ID);
+        when(mockResults.getExtractTextProcessingTime()).thenReturn(3200l);
+
+        when(imageOcrService.extractTextFromImage(eq(CONTEXT_ID), eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
+                .thenReturn(CompletableFuture.completedFuture(mockResults));
+
+        mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+                .param(ImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
+                .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.extracted_text", is(FILE_TEXT)))
+                .andExpect(jsonPath("$.response_id", is(RESPONSE_ID)))
+                .andExpect(jsonPath("$.ocr_processing_time_ms", is(3200)))
+                .andExpect(jsonPath("$.total_processing_time_ms", org.hamcrest.Matchers.any(Integer.class)))
+                .andExpect(jsonPath("$.average_confidence_score", is(90)))
+                .andExpect(jsonPath("$.lowest_confidence_score", is(80)));
+    }
+
+    @Test
+    void shouldCatchUncaughtExceptionInController() throws Exception {
 
         mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
                 .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
@@ -89,24 +113,26 @@ public class ImageOcrApiControllerTest {
     }
 
     @Test
-    public void shouldCatchFutureExceptionInController() throws Exception {
+    void shouldCatchFutureExceptionInController() throws Exception {
 
-        when(imageOcrService.extractTextFromImage(eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
+        when(imageOcrService.extractTextFromImage(eq(CONTEXT_ID), eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
         .thenThrow(new CompletionException("General", new IOException("IOException test")));
 
         mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+                .param(ImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
                 .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error_message", is(ImageOcrApiController.GENERAL_SERVICE_ERROR_MESSAGE)))
                 .andExpect(jsonPath("$.response_id").doesNotExist());
     }
 
     @Test
-    public void shouldCatchFutureExceptionWithApplicationErrorInController() throws Exception {
+    void shouldCatchFutureExceptionWithApplicationErrorInController() throws Exception {
 
-        when(imageOcrService.extractTextFromImage(eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
-        .thenThrow(new CompletionException("General", new TextConversionException(RESPONSE_ID, new IOException("Wrapped IOException test"))));
+        when(imageOcrService.extractTextFromImage(eq(CONTEXT_ID), eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
+        .thenThrow(new CompletionException("General", new TextConversionException(CONTEXT_ID, RESPONSE_ID, new IOException("Wrapped IOException test"))));
 
         mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+                .param(ImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
                 .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error_message", is(ImageOcrApiController.TEXT_CONVERSION_ERROR_MESSAGE)))
                 .andExpect(jsonPath("$.response_id", is(RESPONSE_ID)));

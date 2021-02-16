@@ -28,7 +28,7 @@ public class HealthCheckControllerTest {
     private String apiEndpoint;
 
 	@Test
-	public void validateIsHealthy() throws Exception {
+	void validateIsHealthy() throws Exception {
 
            mockMvc.perform(MockMvcRequestBuilders.get(apiEndpoint + HealthCheckController.HEALTH_CHECK_PARTIAL_URL))
 		   .andExpect(status().isOk())

@@ -1,6 +1,6 @@
 # ocr-api
 
-A microservice to extract text from images. This uses Tess4J which itself is a small (Java Native Access) wrapper around Tesseract. As well as returning the extracted text some metadata relating to this service is also returned [data returned](src/main/java/uk/gov/companieshouse/ocr/api/image/extracttext/ExtractTextResultDTO.java)
+A microservice to extract text from images. This uses Tess4J which itself is a small (Java Native Access) wrapper around Tesseract. As well as returning the extracted text some metadata relating to this service is also returned [data returned](src/main/java/uk/gov/companieshouse/ocr/api/image/extracttext/ExtractTextResultDTO.java). Optionally a "context id" can be sent for use in context logging. If it is not sent then the "request id" is used for context logging.
 
 The initial drop of this microservice converts TIFF files to text.
 
@@ -54,11 +54,15 @@ OCR_TESSERACT_THREAD_POOL_SIZE              | Number of threads to run the Tesse
 
 ### Using curl
 
-- To call API for TIFF, POST `http://localhost:8080/ocr-apr/api/ocr/image/tiff/extractText` passing in a file parameter as the tiff file to OCR and the "responseId" field
+- To call API for TIFF, POST `http://localhost:8080/ocr-apr/api/ocr/image/tiff/extractText` passing in a file parameter as the tiff file to OCR and the "responseId" field (optionally add a "contextId" where you want context logging to be more than the "responseId")
 
 Example:
 
 ``` bash
+# With Context ID
+curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id" -F contextId="CHIPS-AA-34568493" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
+
+# Without Context ID
 curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id"  http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
 ```
 
