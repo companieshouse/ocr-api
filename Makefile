@@ -25,7 +25,7 @@ test: clean
 
 .PHONY: test-unit
 test-unit: clean
-	mvn test -Dincluded.tests="unit"
+	mvn test -Dincluded.tests="unit-test"
 
 .PHONY: dev
 dev: clean
