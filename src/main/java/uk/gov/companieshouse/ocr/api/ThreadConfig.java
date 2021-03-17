@@ -20,12 +20,23 @@ public class ThreadConfig {
 
     private EnvironmentReader reader = new EnvironmentReaderImpl();
 
+    private final int threadPoolSize;
+
+    public ThreadConfig() {
+        this.threadPoolSize = findThreadPoolSize();
+    }
+
+    private int findThreadPoolSize() {
+
+        var configuredThreadPoolSize = reader.getOptionalInteger("OCR_TESSERACT_THREAD_POOL_SIZE");
+        return (configuredThreadPoolSize != null) ? configuredThreadPoolSize :  DEFAULT_THREAD_POOL_SIZE;
+    }
+
     @Bean (name="taskExecutor")
     public ThreadPoolTaskExecutor taskExecutor() {
 
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
-        var threadPoolSize = getThreadPoolSize();
         var processors = Runtime.getRuntime().availableProcessors();
         LOG.info("Using a thread pool of [" + threadPoolSize + "] with available processors of [" + processors + "]");
 
@@ -36,10 +47,8 @@ public class ThreadConfig {
         return executor;
     }
 
-    private int getThreadPoolSize() {
-
-        var configuredThreadPoolSize = reader.getOptionalInteger("OCR_TESSERACT_THREAD_POOL_SIZE");
-        
-        return (configuredThreadPoolSize != null) ? configuredThreadPoolSize :  DEFAULT_THREAD_POOL_SIZE;
+    public int getThreadPoolSize() {
+        return threadPoolSize;
     }
+
 }
