@@ -4,22 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class StatisticsDTO {
 
-    @JsonProperty("queue_size")
-    int queueSize;
-
     @JsonProperty("instance_uuid")
     String instanceUuid;
 
+    @JsonProperty("queue_size")
+    int queueSize;
+
     @JsonProperty("tesseract_thread_pool_size")
     int tesseractThreadPoolSize;
-
-    public int getQueueSize() {
-        return queueSize;
-    }
-
-    public void setQueueSize(int queueSize) {
-        this.queueSize = queueSize;
-    }
 
     public String getInstanceUuid() {
         return instanceUuid;
@@ -28,6 +20,14 @@ public class StatisticsDTO {
     public void setInstanceUuid(String instanceUuid) {
         this.instanceUuid = instanceUuid;
     } 
+
+    public int getQueueSize() {
+        return queueSize;
+    }
+
+    public void setQueueSize(int queueSize) {
+        this.queueSize = queueSize;
+    }
 
     public int getTesseractThreadPoolSize() {
         return tesseractThreadPoolSize;

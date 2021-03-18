@@ -56,7 +56,7 @@ public class ImageOcrApiController {
             contextId = responseId;
         }
         
-        LOG.infoContext(contextId,"Processing file [" + file.getOriginalFilename() + "] Content type [" + file.getContentType() + "]", null);
+        LOG.infoContext(contextId,"Received from client file [" + file.getOriginalFilename() + "] Content type [" + file.getContentType() + "]", null);
 
         var timeOnQueueStopWatch = new StopWatch();
         timeOnQueueStopWatch.start();
@@ -65,7 +65,7 @@ public class ImageOcrApiController {
         controllerStopWatch.stop();
         result.setTotalProcessingTimeMs(controllerStopWatch.getTime());
     
-        LOG.infoContext(contextId, "Finished processing file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
+        LOG.infoContext(contextId, "Finished file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
            controllerStopWatch.toString() + "]", null);
 
         return new ResponseEntity<>(result, HttpStatus.OK);

@@ -23,8 +23,8 @@ public class StatisticsService {
 
         StatisticsDTO statistics = new StatisticsDTO();
         statistics.setQueueSize(taskExecutor.getThreadPoolExecutor().getQueue().size());
-        statistics.setInstanceUuid(INSTANCE_UUID);
         statistics.setTesseractThreadPoolSize(threadConfig.getThreadPoolSize());
+        statistics.setInstanceUuid(INSTANCE_UUID);
 
         return statistics;           
     }

@@ -34,7 +34,7 @@ public class ImageOcrService {
     extractTextFromImage(String contextId, MultipartFile file, String responseId, StopWatch timeOnQueueStopWatch) throws IOException {
 
         timeOnQueueStopWatch.stop();
-        LOG.infoContext(contextId, "Time waiting on queue " + timeOnQueueStopWatch.toString(), null);
+        LOG.infoContext(contextId, "Converting File to Text - Time waiting on queue " + timeOnQueueStopWatch.toString(), null);
 
         final var textConversionResult = new TextConversionResult(contextId, responseId, timeOnQueueStopWatch.getTime()); 
 
