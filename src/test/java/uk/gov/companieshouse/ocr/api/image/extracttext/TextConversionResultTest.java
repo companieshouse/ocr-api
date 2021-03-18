@@ -26,7 +26,7 @@ public class TextConversionResultTest {
     }
 
     @Test
-    public void singlePageResults5Datapoints() {
+    void singlePageResults5Datapoints() {
 
         textConversionResult.addPage();
 
@@ -56,7 +56,7 @@ public class TextConversionResultTest {
     }
 
     @Test
-    public void multiPageResultsDatapoints() {
+    void multiPageResultsDatapoints() {
 
         textConversionResult.addPage();
 
@@ -90,7 +90,7 @@ public class TextConversionResultTest {
     }
 
     @Test
-    public void multiPageResultsWithBlankPageDatapoints() {
+    void multiPageResultsWithBlankPageDatapoints() {
 
         textConversionResult.addPage();
 
@@ -126,7 +126,7 @@ public class TextConversionResultTest {
     }
 
     @Test
-    public void blankDocument() {
+    void blankDocument() {
 
         textConversionResult.addPage();
 

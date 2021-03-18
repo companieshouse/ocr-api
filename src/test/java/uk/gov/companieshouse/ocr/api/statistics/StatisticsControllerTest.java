@@ -23,34 +23,32 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 @WebMvcTest(controllers = StatisticsController.class)
 public class StatisticsControllerTest {
 
-	private final static String TEST_UUID = "UUID_123";
-	private final static int TEST_QUEUE_SIZE = 1;
-	private final static int TEST_TESSERACT_POOL_SIZE = 3;
+    private final static String TEST_UUID = "UUID_123";
+    private final static int TEST_QUEUE_SIZE = 1;
+    private final static int TEST_TESSERACT_POOL_SIZE = 3;
 
-	@Autowired
-	private MockMvc mockMvc;
-	
-	@Value("${api.endpoint}")
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Value("${api.endpoint}")
     private String apiEndpoint;
 
-	@MockBean
+    @MockBean
     private StatisticsService mockStatisticsService;
 
-	@Test
-	public void shouldGetStatistics() throws Exception {
+    @Test
+    void shouldGetStatistics() throws Exception {
 
-		StatisticsDTO testStatistics = new StatisticsDTO();
-		testStatistics.setInstanceUuid(TEST_UUID);
-		testStatistics.setQueueSize(TEST_QUEUE_SIZE);
-		testStatistics.setTesseractThreadPoolSize(TEST_TESSERACT_POOL_SIZE);
-		
-		when(mockStatisticsService.create()).thenReturn(testStatistics);
+        StatisticsDTO testStatistics = new StatisticsDTO();
+        testStatistics.setInstanceUuid(TEST_UUID);
+        testStatistics.setQueueSize(TEST_QUEUE_SIZE);
+        testStatistics.setTesseractThreadPoolSize(TEST_TESSERACT_POOL_SIZE);
 
-		mockMvc.perform(MockMvcRequestBuilders.get(apiEndpoint + StatisticsController.STATS_PARTIAL_URL))
-		.andExpect(status().isOk())
-		.andExpect(jsonPath("$.instance_uuid", is(TEST_UUID)))
-		.andExpect(jsonPath("$.queue_size", is(TEST_QUEUE_SIZE)))
-		.andExpect(jsonPath("$.tesseract_thread_pool_size", is(TEST_TESSERACT_POOL_SIZE)));
-	}
- }
+        when(mockStatisticsService.create()).thenReturn(testStatistics);
 
+        mockMvc.perform(MockMvcRequestBuilders.get(apiEndpoint + StatisticsController.STATS_PARTIAL_URL))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.instance_uuid", is(TEST_UUID)))
+                .andExpect(jsonPath("$.queue_size", is(TEST_QUEUE_SIZE)))
+                .andExpect(jsonPath("$.tesseract_thread_pool_size", is(TEST_TESSERACT_POOL_SIZE)));
+    }
+}
