@@ -22,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import net.sourceforge.tess4j.TesseractException;
 import uk.gov.companieshouse.ocr.api.groups.TestType;
-import uk.gov.companieshouse.ocr.api.image.extracttext.ExtractTextResultDTO;
+import uk.gov.companieshouse.ocr.api.image.extracttext.ExtractTextResultDto;
 import uk.gov.companieshouse.ocr.api.image.extracttext.ImageOcrApiController;
 
 @Tag(TestType.INTEGRATION)
@@ -54,7 +54,7 @@ public class IntegrationTest {
         return new FileSystemResource(filePath);
     }
 
-    private ExtractTextResultDTO extractText(FileSystemResource fileBytes) {
+    private ExtractTextResultDto extractText(FileSystemResource fileBytes) {
 
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -74,7 +74,7 @@ public class IntegrationTest {
         System.out.println("Using API URL [" + url + "]");
 
         var restTemplate = new RestTemplate();
-        var response = restTemplate.postForEntity(url, requestEntity, ExtractTextResultDTO.class);
+        var response = restTemplate.postForEntity(url, requestEntity, ExtractTextResultDto.class);
 
         return response.getBody();
     }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  *  The response to the client when an error occurs (the context and/or response id might not be present due to the asynchonous nature of the processing in this microservice)
  */
-public class ErrorResponseDTO {
+public class ErrorResponseDto {
 
     @JsonProperty("context_id")
     private String contextId;

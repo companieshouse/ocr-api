@@ -31,7 +31,7 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 @Tag(TestType.UNIT)
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = ImageOcrApiController.class)
-public class ImageOcrApiControllerTest {
+class ImageOcrApiControllerTest {
 
     private static final String CONTEXT_ID = "test-context-id";
     private static final String FILE_TEXT = "I am a tiff image of articles of association";

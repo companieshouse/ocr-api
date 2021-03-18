@@ -12,9 +12,11 @@ The initial drop of this microservice converts TIFF files to text.
 
 ## Usage
 
+Set the environmental variables OCR_TESSERACT_THREAD_POOL_SIZE, HUMAN_LOG and LOGLEVEL
+
 - Run `make dev` to build JAR (versioned in target and unversioned in top level d) and run the unit tests **(using Java 11)**
 - Run `docker build -t ocr-api .` to build the docker image
-- Run `docker run -e HUMAN_LOG=1 -e LOGLEVEL=debug -t -i -p 8080:8080 ocr-api` to run the docker image
+- Run `docker run -e OCR_TESSERACT_THREAD_POOL_SIZE -e HUMAN_LOG -e LOGLEVEL -t -i -p 8080:8080 ocr-api` to run the docker image
 
 ## Tesseract Training data
 
@@ -44,11 +46,19 @@ See:
 
 ## Environment Variables
 
-The following is a list of mandatory environment variables for the service to run:
+The following is a list of application specific environment variables for the service to run:
 
 Name                                        | Description                                                               | Example Value
 ------------------------------------------- | ------------------------------------------------------------------------- | ------------------------
 OCR_TESSERACT_THREAD_POOL_SIZE              | Number of threads to run the Tesseract Conversion process                 | 4  (default value)
+
+## The stats end point
+
+Name                       | Description
+---------------------------| ------------------------------------------------------------
+queue_size                 | The number of items on the internal queue waiting to be processed by the Tesseract threads
+instance_uuid              | UUID for when multiple instance of ocr-api are running in the same AWS ECS Cluster (or instance restarts)
+tesseract_thread_pool_size | The number of Java threads used in the Tesseract image to text conversion (static)  
 
 ## Testing Locally
 
@@ -70,6 +80,12 @@ For heath check:
 
 ``` bash
 curl -w '%{http_code}' http://localhost:8080/ocr-api/healthcheck
+```
+
+For statistics endpoint:
+
+``` bash
+curl -w '%{http_code}' http://localhost:8080/ocr-api/statistics
 ```
 
 ### Using maven

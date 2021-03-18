@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.ocr.api.OcrApiApplication;
-import uk.gov.companieshouse.ocr.api.common.ErrorResponseDTO;
+import uk.gov.companieshouse.ocr.api.common.ErrorResponseDto;
 
 @RequestMapping("${api.endpoint}")
 @RestController
@@ -43,7 +43,7 @@ public class ImageOcrApiController {
     private ImageOcrTransformer transformer = new ImageOcrTransformer();
 
     @PostMapping(TIFF_EXTRACT_TEXT_PARTIAL_URL)
-    public @ResponseBody ResponseEntity<ExtractTextResultDTO> extractTextFromTiff(
+    public @ResponseBody ResponseEntity<ExtractTextResultDto> extractTextFromTiff(
             @RequestParam(FILE_REQUEST_PARAMETER_NAME) MultipartFile file, 
             @RequestParam(RESPONSE_ID_REQUEST_PARAMETER_NAME) String responseId,
             @RequestParam(name = CONTEXT_ID_REQUEST_PARAMETER_NAME, required = false) String contextId
@@ -56,7 +56,7 @@ public class ImageOcrApiController {
             contextId = responseId;
         }
         
-        LOG.infoContext(contextId,"Processing file [" + file.getOriginalFilename() + "] Content type [" + file.getContentType() + "]", null);
+        LOG.infoContext(contextId,"Received from client file [" + file.getOriginalFilename() + "] Content type [" + file.getContentType() + "]", null);
 
         var timeOnQueueStopWatch = new StopWatch();
         timeOnQueueStopWatch.start();
@@ -65,7 +65,7 @@ public class ImageOcrApiController {
         controllerStopWatch.stop();
         result.setTotalProcessingTimeMs(controllerStopWatch.getTime());
     
-        LOG.infoContext(contextId, "Finished processing file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
+        LOG.infoContext(contextId, "Finished file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
            controllerStopWatch.toString() + "]", null);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -75,9 +75,9 @@ public class ImageOcrApiController {
      Occurs when the  `.join()` method is called after calling an `async` method AND an untrapped exception is thown within that method
      */
     @ExceptionHandler(CompletionException.class)
-    public ResponseEntity<ErrorResponseDTO> handleCompletionException(CompletionException e) {
+    public ResponseEntity<ErrorResponseDto> handleCompletionException(CompletionException e) {
 
-        var errorResponse = new ErrorResponseDTO();
+        var errorResponse = new ErrorResponseDto();
         if (e.getCause() instanceof TextConversionException) {
 
             var cause = (TextConversionException) e.getCause();
@@ -95,11 +95,11 @@ public class ImageOcrApiController {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> uncaughtException(Exception e) {
+    public ResponseEntity<ErrorResponseDto> uncaughtException(Exception e) {
 
         LOG.error(null, e);
 
-        var errorResponse = new ErrorResponseDTO();
+        var errorResponse = new ErrorResponseDto();
         errorResponse.setErrorMessage(CONTROLLER_ERROR_MESSAGE);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
