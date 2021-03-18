@@ -34,17 +34,17 @@ public class StatisticsServiceTest {
     private StatisticsService statisticsService;
 
     @Test
-	void create() {
+    void create() {
 
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
         when(mockTaskExecutor.getThreadPoolExecutor()).thenReturn(threadPoolExecutor);
         when(mockThreadConfig.getThreadPoolSize()).thenReturn(TEST_TESSERACT_POOL_SIZE);
 
-		StatisticsDTO statistics = statisticsService.create();
+        StatisticsDTO statistics = statisticsService.create();
 
-		assertNotNull(statistics.getInstanceUuid());
-		assertEquals(0, statistics.getQueueSize());
-		assertEquals(TEST_TESSERACT_POOL_SIZE, statistics.getTesseractThreadPoolSize());
-	}
+        assertNotNull(statistics.getInstanceUuid());
+        assertEquals(0, statistics.getQueueSize());
+        assertEquals(TEST_TESSERACT_POOL_SIZE, statistics.getTesseractThreadPoolSize());
+    }
 
 }
