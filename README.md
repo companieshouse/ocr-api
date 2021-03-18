@@ -1,6 +1,6 @@
 # ocr-api
 
-A microservice to extract text from images. This uses Tess4J which itself is a small (Java Native Access) wrapper around Tesseract. As well as returning the extracted text some metadata relating to this service is also returned [data returned](src/main/java/uk/gov/companieshouse/ocr/api/image/extracttext/ExtractTextResultDTO.java). Optionally a "context id" can be sent for use in context logging. If it is not sent then the "request id" is used for context logging.
+A microservice to extract text from images. This uses Tess4J which itself is a small (Java Native Access) wrapper around Tesseract. As well as returning the extracted text some metadata relating to this service is also returned [data returned](src/main/java/uk/gov/companieshouse/ocr/api/image/extracttext/ExtractTextResultDto.java). Optionally a "context id" can be sent for use in context logging. If it is not sent then the "request id" is used for context logging.
 
 The initial drop of this microservice converts TIFF files to text.
 

@@ -13,6 +13,8 @@ public class StatisticsDto {
     @JsonProperty("tesseract_thread_pool_size")
     int tesseractThreadPoolSize;
 
+    /*  ------ Accessors ------- */
+
     public String getInstanceUuid() {
         return instanceUuid;
     }
