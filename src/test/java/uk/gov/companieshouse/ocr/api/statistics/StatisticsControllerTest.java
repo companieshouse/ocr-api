@@ -39,12 +39,12 @@ public class StatisticsControllerTest {
     @Test
     void shouldGetStatistics() throws Exception {
 
-        StatisticsDTO testStatistics = new StatisticsDTO();
+        StatisticsDto testStatistics = new StatisticsDto();
         testStatistics.setInstanceUuid(TEST_UUID);
         testStatistics.setQueueSize(TEST_QUEUE_SIZE);
         testStatistics.setTesseractThreadPoolSize(TEST_TESSERACT_POOL_SIZE);
 
-        when(mockStatisticsService.create()).thenReturn(testStatistics);
+        when(mockStatisticsService.generateStatistics()).thenReturn(testStatistics);
 
         mockMvc.perform(MockMvcRequestBuilders.get(apiEndpoint + StatisticsController.STATS_PARTIAL_URL))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.instance_uuid", is(TEST_UUID)))

@@ -2,21 +2,21 @@ package uk.gov.companieshouse.ocr.api.image.extracttext;
 
 public class ImageOcrTransformer {
 
-    public ExtractTextResultDTO mapModelToApi(TextConversionResult textConversionResult) {
+    public ExtractTextResultDto mapModelToApi(TextConversionResult textConversionResult) {
  
-        var extractTextResultDTO = new ExtractTextResultDTO();
+        var extractTextResultDto = new ExtractTextResultDto();
 
-        extractTextResultDTO.setExtractedText(textConversionResult.getExtractedText());
+        extractTextResultDto.setExtractedText(textConversionResult.getExtractedText());
 
-        extractTextResultDTO.setAverageConfidenceScore(Math.round(textConversionResult.getDocumentAverageConfidence()));
-        extractTextResultDTO.setLowestConfidenceScore(Math.round(textConversionResult.getDocumentMinimumConfidence()));
+        extractTextResultDto.setAverageConfidenceScore(Math.round(textConversionResult.getDocumentAverageConfidence()));
+        extractTextResultDto.setLowestConfidenceScore(Math.round(textConversionResult.getDocumentMinimumConfidence()));
 
-        extractTextResultDTO.setOcrProcessingTimeMs(textConversionResult.getExtractTextProcessingTime());
+        extractTextResultDto.setOcrProcessingTimeMs(textConversionResult.getExtractTextProcessingTime());
 
-        extractTextResultDTO.setContextId(textConversionResult.getContextId());
-        extractTextResultDTO.setResponseId(textConversionResult.getResponseId());
+        extractTextResultDto.setContextId(textConversionResult.getContextId());
+        extractTextResultDto.setResponseId(textConversionResult.getResponseId());
 
-        return extractTextResultDTO;
+        return extractTextResultDto;
     }
     
 }

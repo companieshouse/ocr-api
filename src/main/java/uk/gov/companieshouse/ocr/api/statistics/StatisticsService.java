@@ -19,9 +19,9 @@ public class StatisticsService {
     @Autowired
     private ThreadPoolTaskExecutor taskExecutor;
 
-    public StatisticsDTO create() {
+    public StatisticsDto generateStatistics() {
 
-        StatisticsDTO statistics = new StatisticsDTO();
+        StatisticsDto statistics = new StatisticsDto();
         statistics.setQueueSize(taskExecutor.getThreadPoolExecutor().getQueue().size());
         statistics.setTesseractThreadPoolSize(threadConfig.getThreadPoolSize());
         statistics.setInstanceUuid(INSTANCE_UUID);

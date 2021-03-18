@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Results returned to a client on a successful API call
  */
-public class ExtractTextResultDTO {
+public class ExtractTextResultDto {
 
     /**
      *  The input contextId of the OCR request

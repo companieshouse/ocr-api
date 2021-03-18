@@ -18,9 +18,9 @@ public class StatisticsController {
     private StatisticsService statisticsService;
 
     @GetMapping(STATS_PARTIAL_URL)
-    public @ResponseBody ResponseEntity<StatisticsDTO> getStatistics() {
+    public @ResponseBody ResponseEntity<StatisticsDto> getStatistics() {
 
-        return new ResponseEntity<>(statisticsService.create(), HttpStatus.OK);
+        return new ResponseEntity<>(statisticsService.generateStatistics(), HttpStatus.OK);
     }
     
 }

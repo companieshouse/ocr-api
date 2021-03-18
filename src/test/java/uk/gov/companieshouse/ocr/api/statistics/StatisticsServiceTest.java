@@ -34,13 +34,13 @@ public class StatisticsServiceTest {
     private StatisticsService statisticsService;
 
     @Test
-    void create() {
+    void generateStatistics() {
 
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
         when(mockTaskExecutor.getThreadPoolExecutor()).thenReturn(threadPoolExecutor);
         when(mockThreadConfig.getThreadPoolSize()).thenReturn(TEST_TESSERACT_POOL_SIZE);
 
-        StatisticsDTO statistics = statisticsService.create();
+        StatisticsDto statistics = statisticsService.generateStatistics();
 
         assertNotNull(statistics.getInstanceUuid());
         assertEquals(0, statistics.getQueueSize());

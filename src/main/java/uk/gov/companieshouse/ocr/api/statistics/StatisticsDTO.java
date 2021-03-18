@@ -2,7 +2,7 @@ package uk.gov.companieshouse.ocr.api.statistics;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class StatisticsDTO {
+public class StatisticsDto {
 
     @JsonProperty("instance_uuid")
     String instanceUuid;
