@@ -46,6 +46,7 @@ public class ExtractTextResultDto {
     @JsonProperty("response_id")
     private String responseId;
 
+    /*  ------ Accessors ------- */
     
     public String getContextId() {
         return contextId;
