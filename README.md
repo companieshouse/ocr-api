@@ -60,7 +60,7 @@ queue_size                 | The number of items on the internal queue waiting t
 instance_uuid              | UUID for when multiple instance of ocr-api are running in the same AWS ECS Cluster (or instance restarts)
 tesseract_thread_pool_size | The number of Java threads used in the Tesseract image to text conversion (static)  
 
-## Testing Locally
+## Testing Deployment
 
 ### Using curl
 
