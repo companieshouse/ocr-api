@@ -20,14 +20,14 @@ Set the environmental variables OCR_TESSERACT_THREAD_POOL_SIZE, HUMAN_LOG and LO
 
 ## Tesseract Training data
 
-This is used by the Tesseract engine to help in the text recognisition. We store the currently used data within configuration management for consistency and speed of the docker build.
+This is used by the Tesseract engine to help in the text recognition. We store the currently used data within configuration management for consistency and speed of the docker build.
 
 To Update the training data, download the `eng.traineddata` file from one of the following URL (note that using the "best" data slows down the time of the OCR conversion and has not yet be shown to significantly make it better):
 
 - [Standard data](https://github.com/tesseract-ocr/tessdata)
 - [Best data](https://github.com/tesseract-ocr/tessdata_best)
 
-Store the data file in `docker-resources/tessdata/` with a timestamp and adjust the Dockerfile to use it.
+Store the data file in `docker-resources/tessdata/` with a timestamp and adjust the Docker file to use it.
 
 ## Metadata
 

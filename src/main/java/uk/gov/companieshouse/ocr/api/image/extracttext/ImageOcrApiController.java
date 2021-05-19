@@ -60,15 +60,19 @@ public class ImageOcrApiController {
 
         var timeOnQueueStopWatch = new StopWatch();
         timeOnQueueStopWatch.start();
-        var result = transformer.mapModelToApi( imageOcrService.extractTextFromImage(contextId, file, responseId, timeOnQueueStopWatch).join());
+        var textConversionResult =  imageOcrService.extractTextFromImage(contextId, file, responseId, timeOnQueueStopWatch).join();
+
+        var extractTextResult =  transformer.mapModelToApi(textConversionResult);
 
         controllerStopWatch.stop();
-        result.setTotalProcessingTimeMs(controllerStopWatch.getTime());
+        extractTextResult.setTotalProcessingTimeMs(controllerStopWatch.getTime());
+
+        var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult);
     
         LOG.infoContext(contextId, "Finished file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
-           controllerStopWatch.toString() + "]", null);
+           controllerStopWatch.toString() + "]", monitoringFields.toMap());
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(extractTextResult, HttpStatus.OK);
     }
 
     /*
