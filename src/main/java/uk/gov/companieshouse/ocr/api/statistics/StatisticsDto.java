@@ -1,5 +1,8 @@
 package uk.gov.companieshouse.ocr.api.statistics;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class StatisticsDto {
@@ -37,6 +40,17 @@ public class StatisticsDto {
 
     public void setTesseractThreadPoolSize(int tesseractThreadPoolSize) {
         this.tesseractThreadPoolSize = tesseractThreadPoolSize;
+    }
+
+    public Map<String, Object> toMap() {
+
+        Map<String, Object> map = new LinkedHashMap<>();
+
+        map.put("instanceUuid", instanceUuid);
+        map.put("queueSize", queueSize);
+        map.put("tesseractThreadPoolSize", tesseractThreadPoolSize);
+
+        return  map;        
     }
 
 }

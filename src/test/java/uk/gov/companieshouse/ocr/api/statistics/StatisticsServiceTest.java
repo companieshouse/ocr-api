@@ -20,7 +20,7 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 
 @Tag(TestType.UNIT)
 @ExtendWith(MockitoExtension.class)
-public class StatisticsServiceTest {
+class StatisticsServiceTest {
 
     private final static int TEST_TESSERACT_POOL_SIZE = 3;
 

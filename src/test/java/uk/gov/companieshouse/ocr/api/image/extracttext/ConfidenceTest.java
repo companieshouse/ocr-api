@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.ocr.api.groups.TestType;
 
 @Tag(TestType.UNIT)
-public class ConfidenceTest {
+class ConfidenceTest {
 
 	private Confidence confidence;
 
@@ -20,7 +20,7 @@ public class ConfidenceTest {
 	}
 
 	@Test
-	public void shouldaddThreeValuesOK() {
+	void shouldaddThreeValuesOK() {
 		
 		confidence.addConfidenceValue(62.2f);
 		confidence.addConfidenceValue(70.8f);
@@ -34,7 +34,7 @@ public class ConfidenceTest {
 	}
 
 	@Test
-	public void shouldWorkWithoutAddingValues() {
+	void shouldWorkWithoutAddingValues() {
 
 		assertNull(confidence.getAverage());
 		assertNull(confidence.getMinimum());
