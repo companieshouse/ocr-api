@@ -21,7 +21,7 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 @Tag(TestType.UNIT)
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = StatisticsController.class)
-public class StatisticsControllerTest {
+class StatisticsControllerTest {
 
     private final static String TEST_UUID = "UUID_123";
     private final static int TEST_QUEUE_SIZE = 1;

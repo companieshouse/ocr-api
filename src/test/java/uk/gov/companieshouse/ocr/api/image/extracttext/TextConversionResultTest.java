@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.ocr.api.groups.TestType;
 
 @Tag(TestType.UNIT)
-public class TextConversionResultTest {
+class TextConversionResultTest {
 
     private static final String CONTEXT_ID = "test-context-id";
     private static final String RESPONSE_ID = "test-response-id";
