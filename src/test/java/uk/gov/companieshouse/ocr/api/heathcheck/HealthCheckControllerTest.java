@@ -26,26 +26,26 @@ import uk.gov.companieshouse.ocr.api.statistics.StatisticsService;
 class HealthCheckControllerTest {
 
     @Autowired
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@MockBean
+    @MockBean
     private StatisticsService mockStatisticsService; // used in logging
-	
-	@Value("${api.endpoint}")
+    
+    @Value("${api.endpoint}")
     private String apiEndpoint;
 
-	@Test
-	void validateIsHealthy() throws Exception {
+    @Test
+    void validateIsHealthy() throws Exception {
 
-		StatisticsDto testStatistics = new StatisticsDto();
+        StatisticsDto testStatistics = new StatisticsDto();
         testStatistics.setInstanceUuid("test-uuid");
         testStatistics.setQueueSize(2);
         testStatistics.setTesseractThreadPoolSize(4);
 
         when(mockStatisticsService.generateStatistics()).thenReturn(testStatistics);
 
-           mockMvc.perform(MockMvcRequestBuilders.get(apiEndpoint + HealthCheckController.HEALTH_CHECK_PARTIAL_URL))
-		   .andExpect(status().isOk())
-		   .andExpect(content().string(containsString(HealthCheckController.HEALTH_CHECK_MESSAGE)));
-	}
+        mockMvc.perform(MockMvcRequestBuilders.get(apiEndpoint + HealthCheckController.HEALTH_CHECK_PARTIAL_URL))
+           .andExpect(status().isOk())
+           .andExpect(content().string(containsString(HealthCheckController.HEALTH_CHECK_MESSAGE)));
+    }
 }

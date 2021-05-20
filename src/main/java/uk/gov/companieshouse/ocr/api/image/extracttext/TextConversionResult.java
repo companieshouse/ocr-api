@@ -67,12 +67,12 @@ public class TextConversionResult {
         return pageConfidences.size();
     }
 
-	public void addConfidence(float confidence) {
+    public void addConfidence(float confidence) {
         documentConfidence.addConfidenceValue(confidence);
         currentPageConfidence.addConfidenceValue(confidence);
-	}
+    }
 
-	public void addPage() {
+    public void addPage() {
         currentPageConfidence = new Confidence();
         pageConfidences.add(currentPageConfidence);
     }
