@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -36,8 +35,8 @@ class ConfidenceTest {
 	@Test
 	void shouldWorkWithoutAddingValues() {
 
-		assertNull(confidence.getAverage());
-		assertNull(confidence.getMinimum());
+		assertEquals(0f, confidence.getAverage());
+		assertEquals(0f, confidence.getMinimum());
 		assertEquals(0, confidence.getNumberOfDataPoints());
 		assertEquals(0f, confidence.getSum());
 	}

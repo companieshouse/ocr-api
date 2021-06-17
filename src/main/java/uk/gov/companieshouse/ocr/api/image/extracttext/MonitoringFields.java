@@ -18,6 +18,8 @@ public class MonitoringFields {
 
     private final Integer totalPages;
 
+    private final int fileSize;
+
     public MonitoringFields(TextConversionResult textConversionResult, ExtractTextResultDto extractTextResultDto) {
 
         this.averageConfidenceScore = extractTextResultDto.getAverageConfidenceScore();
@@ -26,6 +28,7 @@ public class MonitoringFields {
         this.totalProcessingTimeMs = extractTextResultDto.getTotalProcessingTimeMs();
         this.timeOnExecuterQueue = textConversionResult.getTimeOnExecuterQueue();
         this.totalPages = textConversionResult.getTotalPages();
+        this.fileSize = textConversionResult.getFileSize();
     }
 
     public int getAverageConfidenceScore() {
@@ -52,6 +55,10 @@ public class MonitoringFields {
         return totalPages;
     }
 
+    public int getFileSize() {
+        return fileSize;
+    }
+
     public Map<String, Object> toMap() {
 
         Map<String, Object> map = new LinkedHashMap<>();
@@ -62,6 +69,7 @@ public class MonitoringFields {
         map.put("totalProcessingTimeMs", totalProcessingTimeMs);
         map.put("timeOnExecuterQueue", timeOnExecuterQueue);
         map.put("totalPages", totalPages);
+        map.put("fileSize", fileSize);
 
         return  map;        
     }

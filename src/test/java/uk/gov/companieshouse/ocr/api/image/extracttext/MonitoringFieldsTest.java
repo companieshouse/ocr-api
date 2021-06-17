@@ -15,11 +15,12 @@ class MonitoringFieldsTest {
     private static final int LOWEST_CONFIDENCE_SCORE = 5;
     private static final long OCR_PROCESSING_TIME_MS = 8321;
     private static final long OCR_TOTAL_PROCESSING_TIME_MS = 8842;
+    private static final int FILE_SIZE = 12345;
 
     @Test
     void objectConstructed() {
         
-        var textConversionResult = new TextConversionResult("context-id", "response-id", TIME_ON_EXECUTOR_QUEUE);
+        var textConversionResult = new TextConversionResult("context-id", "response-id", TIME_ON_EXECUTOR_QUEUE, FILE_SIZE);
         textConversionResult.addPage();
         textConversionResult.addPage();
 
@@ -37,6 +38,7 @@ class MonitoringFieldsTest {
         assertEquals(OCR_PROCESSING_TIME_MS, monitoringFields.getOcrProcessingTimeMs());
         assertEquals(OCR_TOTAL_PROCESSING_TIME_MS, monitoringFields.getTotalProcessingTimeMs());
         assertEquals(2, monitoringFields.getTotalPages());
+        assertEquals(FILE_SIZE, monitoringFields.getFileSize());
 
     }
 

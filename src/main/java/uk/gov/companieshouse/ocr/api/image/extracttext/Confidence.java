@@ -9,11 +9,11 @@ public class Confidence {
         private Float sum = 0f;
 
         public Float getAverage() {
-            return numberOfDataPoints != 0 ? sum / ((float) numberOfDataPoints) : null;
+            return numberOfDataPoints != 0 ? sum / ((float) numberOfDataPoints) : 0.0f;
         }
 
         public Float getMinimum() {
-            return minimum;
+            return minimum != null ? minimum : 0.0f;
         }
 
         public int getNumberOfDataPoints() {
@@ -35,7 +35,7 @@ public class Confidence {
 
         @Override
         public String toString() {
-            return "Confidence [average=" + getAverage() + ", minimum=" + minimum + ", numberOfDataPoints="
+            return "Confidence [average=" + getAverage() + ", minimum=" + getMinimum() + ", numberOfDataPoints="
                     + numberOfDataPoints + ", sum=" + sum + "]";
         }
 }
