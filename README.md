@@ -70,7 +70,9 @@ Example:
 
 ``` bash
 # With Context ID
-curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id" -F contextId="CHIPS-AA-34568493" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
+curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id" -F contextId="SAMPLE_ARTICLES" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
+curl -F file=@"src/test/resources/blank-articles.tif" -F responseId="curl test response id" -F contextId="BLANK-TIFF" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
+curl -F file=@"src/test/resources/empty-articles.tif" -F responseId="curl test response id" -F contextId="EMPTY-TIFF" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
 
 # Without Context ID
 curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id"  http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText

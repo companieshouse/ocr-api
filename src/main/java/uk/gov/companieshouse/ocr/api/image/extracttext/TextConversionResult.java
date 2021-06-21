@@ -27,13 +27,19 @@ public class TextConversionResult {
     private final String contextId;
     private final long timeOnExecuterQueue; 
     private final String responseId;
+    private final int fileSize;
 
 
-    public TextConversionResult(String contextId, String responseId, long timeOnExecuterQueue) {
+    public TextConversionResult(String contextId, String responseId, long timeOnExecuterQueue, int fileSize) {
         this.contextId = contextId;
         this.responseId = responseId;
         this.timeOnExecuterQueue = timeOnExecuterQueue;
+        this.fileSize = fileSize;
         extractTextWatch.start();
+    }
+
+    public static TextConversionResult createForZeroLengthFile(String contextId, String responseId, long timeOnExecuterQueue) {
+        return new TextConversionResult(contextId, responseId, timeOnExecuterQueue, 0);
     }
 
     public String getExtractedText() {
@@ -53,8 +59,9 @@ public class TextConversionResult {
         metadata.put("timeOnExecuterQueue", Long.valueOf(timeOnExecuterQueue));
         metadata.put("extractTextWatch", extractTextWatch.toString());
         metadata.put("totalPages", pageConfidences.size());
-        metadata.put("documentConfidence", documentConfidence);
         metadata.put("pageConfidences", pageConfidences);
+        metadata.put("documentConfidence", documentConfidence);
+        metadata.put("fileSize", fileSize);
 
         return  metadata;        
     }
@@ -95,6 +102,10 @@ public class TextConversionResult {
 
     public String getContextId() {
         return contextId;
+    }
+
+    public int getFileSize() {
+        return fileSize;
     }
     
 }

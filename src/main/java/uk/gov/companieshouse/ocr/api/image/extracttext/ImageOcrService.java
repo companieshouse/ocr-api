@@ -36,11 +36,15 @@ public class ImageOcrService {
 
         timeOnQueueStopWatch.stop();
 
+        if (file.getBytes().length == 0) {
+            return CompletableFuture.completedFuture(TextConversionResult.createForZeroLengthFile(contextId, responseId, timeOnQueueStopWatch.getTime()));
+        }
+
         var logDataMap = new HashMap<String, Object>();
         logDataMap.put("timeOnExecuterQueue", Long.valueOf(timeOnQueueStopWatch.getTime()));
         LOG.infoContext(contextId, "Converting File to Text - Time waiting on queue " + timeOnQueueStopWatch.toString(), logDataMap); 
 
-        final var textConversionResult = new TextConversionResult(contextId, responseId, timeOnQueueStopWatch.getTime()); 
+        final var textConversionResult = new TextConversionResult(contextId, responseId, timeOnQueueStopWatch.getTime(), file.getBytes().length); 
 
         try(ImageInputStream is = ImageIO.createImageInputStream(new ByteArrayInputStream(file.getBytes()))) {
             ImageReader reader = createImageReader(is);

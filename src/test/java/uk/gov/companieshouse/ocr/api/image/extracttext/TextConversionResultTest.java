@@ -16,13 +16,13 @@ class TextConversionResultTest {
     private static final String RESPONSE_ID = "test-response-id";
     private static final long TIME_ON_EXECUTOR_QUEUE = 210l;
     private static final String TEXT_TEXT = "Boring Text for text results";
-
+    private static final int FILE_SIZE = 12345;
 
     private TextConversionResult textConversionResult;
 
     @BeforeEach
     public void setup() {
-        this.textConversionResult = new TextConversionResult(CONTEXT_ID, RESPONSE_ID, TIME_ON_EXECUTOR_QUEUE);
+        this.textConversionResult = new TextConversionResult(CONTEXT_ID, RESPONSE_ID, TIME_ON_EXECUTOR_QUEUE, FILE_SIZE);
     }
 
     @Test
@@ -45,6 +45,7 @@ class TextConversionResultTest {
         assertEquals(20.0f, textConversionResult.getDocumentMinimumConfidence());
         assertEquals(RESPONSE_ID, textConversionResult.getResponseId());
         assertEquals(CONTEXT_ID, textConversionResult.getContextId());
+        assertEquals(FILE_SIZE, textConversionResult.getFileSize());
 
         var metaDataMap = textConversionResult.metaDataMap();
         assertEquals(TIME_ON_EXECUTOR_QUEUE, metaDataMap.get("timeOnExecuterQueue"));
@@ -53,6 +54,7 @@ class TextConversionResultTest {
         assertEquals(expectedDocumentConfidence, metaDataMap.get("documentConfidence").toString());
         var expectedPageConfidences = "[Confidence [average=71.6, minimum=20.0, numberOfDataPoints=5, sum=358.0]]";
         assertEquals(expectedPageConfidences, metaDataMap.get("pageConfidences").toString());
+        assertEquals(FILE_SIZE, metaDataMap.get("fileSize"));
     }
 
     @Test
@@ -78,6 +80,7 @@ class TextConversionResultTest {
         assertEquals(20.0f, textConversionResult.getDocumentMinimumConfidence());
         assertEquals(RESPONSE_ID, textConversionResult.getResponseId());
         assertEquals(CONTEXT_ID, textConversionResult.getContextId());
+        assertEquals(FILE_SIZE, textConversionResult.getFileSize());
 
         var metaDataMap = textConversionResult.metaDataMap();
         assertEquals(TIME_ON_EXECUTOR_QUEUE, metaDataMap.get("timeOnExecuterQueue"));
@@ -86,6 +89,7 @@ class TextConversionResultTest {
         assertEquals(expectedDocumentConfidence, metaDataMap.get("documentConfidence").toString());
         var expectedPageConfidences = "[Confidence [average=64.333336, minimum=20.0, numberOfDataPoints=3, sum=193.0], Confidence [average=82.5, minimum=66.0, numberOfDataPoints=2, sum=165.0]]";
         assertEquals(expectedPageConfidences, metaDataMap.get("pageConfidences").toString());
+        assertEquals(FILE_SIZE, metaDataMap.get("fileSize"));
 
     }
 
@@ -114,14 +118,16 @@ class TextConversionResultTest {
         assertEquals(20.0f, textConversionResult.getDocumentMinimumConfidence());
         assertEquals(RESPONSE_ID, textConversionResult.getResponseId());
         assertEquals(CONTEXT_ID, textConversionResult.getContextId());
+        assertEquals(FILE_SIZE, textConversionResult.getFileSize());
 
         var metaDataMap = textConversionResult.metaDataMap();
         assertEquals(TIME_ON_EXECUTOR_QUEUE, metaDataMap.get("timeOnExecuterQueue"));
         assertEquals(3, metaDataMap.get("totalPages"));
         var expectedDocumentConfidence = "Confidence [average=71.6, minimum=20.0, numberOfDataPoints=5, sum=358.0]";
         assertEquals(expectedDocumentConfidence, metaDataMap.get("documentConfidence").toString());
-        var expectedPageConfidences = "[Confidence [average=64.333336, minimum=20.0, numberOfDataPoints=3, sum=193.0], Confidence [average=null, minimum=null, numberOfDataPoints=0, sum=0.0], Confidence [average=82.5, minimum=66.0, numberOfDataPoints=2, sum=165.0]]";
+        var expectedPageConfidences = "[Confidence [average=64.333336, minimum=20.0, numberOfDataPoints=3, sum=193.0], Confidence [average=0.0, minimum=0.0, numberOfDataPoints=0, sum=0.0], Confidence [average=82.5, minimum=66.0, numberOfDataPoints=2, sum=165.0]]";
         assertEquals(expectedPageConfidences, metaDataMap.get("pageConfidences").toString());
+        assertEquals(FILE_SIZE, metaDataMap.get("fileSize"));
 
     }
 
@@ -133,18 +139,20 @@ class TextConversionResultTest {
         assertNull(textConversionResult.getExtractedText());
         assertEquals(TIME_ON_EXECUTOR_QUEUE, textConversionResult.getTimeOnExecuterQueue());
         assertEquals(1, textConversionResult.getTotalPages());
-        assertNull(textConversionResult.getDocumentAverageConfidence());
-        assertNull(textConversionResult.getDocumentMinimumConfidence());
+        assertEquals(0f, textConversionResult.getDocumentAverageConfidence());
+        assertEquals(0f, textConversionResult.getDocumentMinimumConfidence());
         assertEquals(RESPONSE_ID, textConversionResult.getResponseId());
         assertEquals(CONTEXT_ID, textConversionResult.getContextId());
+        assertEquals(FILE_SIZE, textConversionResult.getFileSize());
 
         var metaDataMap = textConversionResult.metaDataMap();
         assertEquals(TIME_ON_EXECUTOR_QUEUE, metaDataMap.get("timeOnExecuterQueue"));
         assertEquals(1, metaDataMap.get("totalPages"));
-        var expectedDocumentConfidence = "Confidence [average=null, minimum=null, numberOfDataPoints=0, sum=0.0]";
+        var expectedDocumentConfidence = "Confidence [average=0.0, minimum=0.0, numberOfDataPoints=0, sum=0.0]";
         assertEquals(expectedDocumentConfidence, metaDataMap.get("documentConfidence").toString());
-        var expectedPageConfidences = "[Confidence [average=null, minimum=null, numberOfDataPoints=0, sum=0.0]]";
+        var expectedPageConfidences = "[Confidence [average=0.0, minimum=0.0, numberOfDataPoints=0, sum=0.0]]";
         assertEquals(expectedPageConfidences, metaDataMap.get("pageConfidences").toString());
+        assertEquals(FILE_SIZE, metaDataMap.get("fileSize"));
     }
 
 }
