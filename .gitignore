@@ -31,6 +31,7 @@ target
 testfiles
 .DS_STORE
 .DS_Store
+.factorypath
 
 # Any Sample files you want to use on a temporary basis
 /samples
