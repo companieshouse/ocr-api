@@ -5,11 +5,10 @@
 
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
-        <artifactId>companies-house-spring-boot-parent</artifactId>
-        <version>1.4.0</version>
-        <relativePath />
-        <!-- lookup parent from repository -->
-     </parent>
+        <artifactId>companies-house-parent</artifactId>
+        <version>1.3.0</version>
+        <relativePath/>
+    </parent>
     <groupId>uk.gov.companieshouse</groupId>
     <artifactId>ocr-api</artifactId>
     <version>unversioned</version>
@@ -25,6 +24,15 @@
         <environment-reader.version>1.3.8</environment-reader.version>
         <structured-logging.version>1.9.4</structured-logging.version>
         <tess4j.version>4.5.3</tess4j.version>
+
+        <!-- Spring General -->
+        <spring-boot-dependencies.version>2.4.2</spring-boot-dependencies.version>
+        <spring-boot-maven-plugin.version>2.4.2</spring-boot-maven-plugin.version>
+
+         <!-- Maven -->
+         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+         <sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
     </properties>
 
     <profiles>
@@ -35,6 +43,18 @@
             </properties>
         </profile>
     </profiles>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
 
@@ -103,22 +123,59 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
          </dependency>
+
+         <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>${sonar-maven-plugin.version}</version>
+        </dependency>
+
         
     </dependencies>
     
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <!-- <version>2.22.0</version> -->
+                <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                	<groups>${included.tests}</groups>
+                    <groups>${included.tests}</groups>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                  <source>${java.version}</source>
+                  <target>${java.version}</target>
+                </configuration>
+            </plugin>
+             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>2.7.0</version>
+                <configuration>
+                    <container>
+                        <expandClasspathDependencies>true</expandClasspathDependencies>
+                    </container>
                 </configuration>
             </plugin>
         </plugins>
