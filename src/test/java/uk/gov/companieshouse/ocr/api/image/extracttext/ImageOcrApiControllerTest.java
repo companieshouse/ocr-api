@@ -77,7 +77,8 @@ class ImageOcrApiControllerTest {
                 .andExpect(jsonPath("$.ocr_processing_time_ms", is(3200)))
                 .andExpect(jsonPath("$.total_processing_time_ms", org.hamcrest.Matchers.any(Integer.class)))
                 .andExpect(jsonPath("$.average_confidence_score", is(90)))
-                .andExpect(jsonPath("$.lowest_confidence_score", is(80)));
+                .andExpect(jsonPath("$.lowest_confidence_score", is(80)))
+                .andExpect(jsonPath("$.result_code", is(0)));
     }
 
     @Test
@@ -100,7 +101,8 @@ class ImageOcrApiControllerTest {
                 .andExpect(jsonPath("$.ocr_processing_time_ms", is(3200)))
                 .andExpect(jsonPath("$.total_processing_time_ms", org.hamcrest.Matchers.any(Integer.class)))
                 .andExpect(jsonPath("$.average_confidence_score", is(90)))
-                .andExpect(jsonPath("$.lowest_confidence_score", is(80)));
+                .andExpect(jsonPath("$.lowest_confidence_score", is(80)))
+                .andExpect(jsonPath("$.result_code", is(0)));
     }
 
     @Test
