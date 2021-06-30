@@ -14,6 +14,12 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 @EnableAsync
 public class ThreadConfig {
 
+    public static final String IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN = "imageToTextTaskExecutor";
+    public static final String OCR_REQUEST_EXECUTOR_BEAN = "ocrRequestTaskExecutor"; 
+
+    private static final String IMAGE_TO_TEXT_THREAD_NAME_PREFIX= "image-to-text-thread-";
+    private static final String OCR_REQUEST_THREAD_NAME_PREFIX= "ocr-request-thread-";
+
     private static final int DEFAULT_THREAD_POOL_SIZE = 4; 
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
@@ -32,17 +38,29 @@ public class ThreadConfig {
         return (configuredThreadPoolSize != null) ? configuredThreadPoolSize :  DEFAULT_THREAD_POOL_SIZE;
     }
 
-    @Bean (name="taskExecutor")
-    public ThreadPoolTaskExecutor taskExecutor() {
+    @Bean (name=IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN)
+    public ThreadPoolTaskExecutor imageToTextTaskExecutor() {
 
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
         var processors = Runtime.getRuntime().availableProcessors();
-        LOG.info("Using a thread pool of [" + threadPoolSize + "] with available processors of [" + processors + "]");
+        LOG.info("Using a thread pool of [" + threadPoolSize + "] with available processors of [" + processors + "] for " + IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN);
 
         executor.setCorePoolSize(threadPoolSize);
         executor.setMaxPoolSize(threadPoolSize);
-        executor.setThreadNamePrefix("task_executor_thread");
+        executor.setThreadNamePrefix(IMAGE_TO_TEXT_THREAD_NAME_PREFIX);
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean (name=OCR_REQUEST_EXECUTOR_BEAN)
+    public ThreadPoolTaskExecutor taskExecutor() {
+
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        LOG.info("Creating a thread pool for the " + OCR_REQUEST_EXECUTOR_BEAN);
+
+        executor.setThreadNamePrefix(OCR_REQUEST_THREAD_NAME_PREFIX);
         executor.initialize();
         return executor;
     }

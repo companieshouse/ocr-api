@@ -28,7 +28,7 @@ class StatisticsServiceTest {
     private ThreadConfig mockThreadConfig;
 
     @Mock
-    private ThreadPoolTaskExecutor mockTaskExecutor;
+    private ThreadPoolTaskExecutor mockImageToTextTaskExecutor;
 
     @InjectMocks
     private StatisticsService statisticsService;
@@ -37,7 +37,7 @@ class StatisticsServiceTest {
     void generateStatistics() {
 
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
-        when(mockTaskExecutor.getThreadPoolExecutor()).thenReturn(threadPoolExecutor);
+        when(mockImageToTextTaskExecutor.getThreadPoolExecutor()).thenReturn(threadPoolExecutor);
         when(mockThreadConfig.getThreadPoolSize()).thenReturn(TEST_TESSERACT_POOL_SIZE);
 
         StatisticsDto statistics = statisticsService.generateStatistics();

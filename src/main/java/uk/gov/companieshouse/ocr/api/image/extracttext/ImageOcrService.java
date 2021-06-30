@@ -23,6 +23,7 @@ import net.sourceforge.tess4j.util.ImageIOHelper;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.ocr.api.OcrApiApplication;
+import uk.gov.companieshouse.ocr.api.ThreadConfig;
 import uk.gov.companieshouse.ocr.api.tesseract.TesseractConstants;
 
 @Service
@@ -30,7 +31,7 @@ public class ImageOcrService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
-    @Async
+    @Async(ThreadConfig.IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN)
     public CompletableFuture<TextConversionResult> 
     extractTextFromImage(String contextId, MultipartFile file, String responseId, StopWatch timeOnQueueStopWatch) throws IOException {
 
@@ -42,6 +43,7 @@ public class ImageOcrService {
 
         var logDataMap = new HashMap<String, Object>();
         logDataMap.put("timeOnExecuterQueue", Long.valueOf(timeOnQueueStopWatch.getTime()));
+        logDataMap.put("threadName",  Thread.currentThread().getName());
         LOG.infoContext(contextId, "Converting File to Text - Time waiting on queue " + timeOnQueueStopWatch.toString(), logDataMap); 
 
         final var textConversionResult = new TextConversionResult(contextId, responseId, timeOnQueueStopWatch.getTime(), file.getBytes().length); 

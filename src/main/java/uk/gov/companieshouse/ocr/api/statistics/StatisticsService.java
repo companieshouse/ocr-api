@@ -3,6 +3,7 @@ package uk.gov.companieshouse.ocr.api.statistics;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +18,13 @@ public class StatisticsService {
     private ThreadConfig threadConfig;
 
     @Autowired
-    private ThreadPoolTaskExecutor taskExecutor;
+    @Qualifier(ThreadConfig.IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN)
+    private ThreadPoolTaskExecutor imageToTextTaskExecutor;
 
     public StatisticsDto generateStatistics() {
 
         StatisticsDto statistics = new StatisticsDto();
-        statistics.setQueueSize(taskExecutor.getThreadPoolExecutor().getQueue().size());
+        statistics.setQueueSize(imageToTextTaskExecutor.getThreadPoolExecutor().getQueue().size());
         statistics.setTesseractThreadPoolSize(threadConfig.getThreadPoolSize());
         statistics.setInstanceUuid(INSTANCE_UUID);
 

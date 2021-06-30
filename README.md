@@ -78,7 +78,16 @@ curl -F file=@"src/test/resources/empty-articles.tif" -F responseId="curl test r
 curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id"  http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
 ```
 
-For heath check:
+For Asynchronous Endpoint
+
+``` bash
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"app_id": "curl-test","image_endpoint": "http://testurl.com/cff/servlet/viewArticles?transaction_id=9613245852", "converted_text_endpoint": "http://testurl.com/ocr-results/", "response_id": "9613245852"}' \
+  http://localhost:8080/ocr-api/api/ocr/image/tiff/extractTextRequest
+```
+
+For health check:
 
 ``` bash
 curl -w '%{http_code}' http://localhost:8080/ocr-api/healthcheck
