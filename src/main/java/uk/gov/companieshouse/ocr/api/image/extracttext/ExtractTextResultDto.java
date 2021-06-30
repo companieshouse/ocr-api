@@ -46,6 +46,14 @@ public class ExtractTextResultDto {
     @JsonProperty("response_id")
     private String responseId;
 
+    /**
+	 * To store the result of the OCR Service. The values will be:
+	 * = 0 : SUCCESS
+	 * > 0 : ERROR within the service
+	 */
+	@JsonProperty("result_code")
+	private int resultCode;
+
     /*  ------ Accessors ------- */
     
     public String getContextId() {
@@ -103,5 +111,13 @@ public class ExtractTextResultDto {
     public void setResponseId(String responseId) {
         this.responseId = responseId;
     }
+
+    public int getResultCode() {
+		return resultCode;
+	}
+
+	public void setResultCode(int resultCode) {
+		this.resultCode = resultCode;
+	}
     
 }
