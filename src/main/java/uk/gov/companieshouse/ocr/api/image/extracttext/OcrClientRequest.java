@@ -8,10 +8,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class OcrClientRequest {
 
     @JsonProperty("app_id")
-    private String applicationID;
+    private String applicationId;
 
     @JsonProperty("response_id")
-    private String responseID;
+    private String responseId;
 
     @JsonProperty("image_endpoint")
     private String imageEndpoint;
@@ -19,20 +19,20 @@ public class OcrClientRequest {
     @JsonProperty("converted_text_endpoint")
     private String convertedTextEndpoint;
 
-    public String getApplicationID() {
-        return applicationID;
+    public String getApplicationId() {
+        return applicationId;
     }
 
-    public void setApplicationID(String applicationID) {
-        this.applicationID = applicationID;
+    public void setApplicationId(String applicationId) {
+        this.applicationId = applicationId;
     }
 
-    public String getResponseID() {
-        return responseID;
+    public String getResponseId() {
+        return responseId;
     }
 
-    public void setResponseID(String responseID) {
-        this.responseID = responseID;
+    public void setResponseId(String responseId) {
+        this.responseId = responseId;
     }
 
     public String getImageEndpoint() {

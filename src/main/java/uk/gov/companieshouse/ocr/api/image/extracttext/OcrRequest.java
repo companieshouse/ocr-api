@@ -9,9 +9,9 @@ import org.apache.commons.lang.StringUtils;
  */
 public class OcrRequest {
 
-    private final String applicationID;
+    private final String applicationId;
 
-    private final String responseID;
+    private final String responseId;
 
     private final String imageEndpoint;
 
@@ -22,20 +22,20 @@ public class OcrRequest {
     private final LocalDateTime timeRequestReceived;
 
     public OcrRequest(OcrClientRequest clientRequest, LocalDateTime timeRequestReceived) {
-        applicationID = StringUtils.trim(clientRequest.getApplicationID());
-        responseID = StringUtils.trim(clientRequest.getResponseID());
+        applicationId = StringUtils.trim(clientRequest.getApplicationId());
+        responseId = StringUtils.trim(clientRequest.getResponseId());
         imageEndpoint = StringUtils.trim(clientRequest.getImageEndpoint());
         convertedTextEndpoint = StringUtils.trim(clientRequest.getConvertedTextEndpoint());
-        contextId = applicationID + '-' + responseID;
+        contextId = applicationId + '-' + responseId;
         this.timeRequestReceived = timeRequestReceived;
     }
 
-    public String getApplicationID() {
-        return applicationID;
+    public String getApplicationId() {
+        return applicationId;
     }
 
-    public String getResponseID() {
-        return responseID;
+    public String getResponseId() {
+        return responseId;
     }
 
     public String getImageEndpoint() {
