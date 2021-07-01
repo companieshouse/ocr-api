@@ -1,6 +1,8 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -52,6 +54,20 @@ public class OcrRequest {
 
     public LocalDateTime getTimeRequestReceived() {
         return timeRequestReceived;
+    }
+
+    public Map<String, Object> toMap() {
+
+        Map<String, Object> map = new LinkedHashMap<>();
+
+        map.put("applicationId", applicationId);
+        map.put("responseId", responseId);
+        map.put("imageEndpoint", imageEndpoint);
+        map.put("convertedTextEndpoint", convertedTextEndpoint);
+        map.put("contextId", contextId);
+        map.put("timeRequestReceived", timeRequestReceived);
+
+        return  map;        
     }
 
 }

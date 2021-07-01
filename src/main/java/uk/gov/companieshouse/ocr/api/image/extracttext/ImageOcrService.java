@@ -2,8 +2,8 @@ package uk.gov.companieshouse.ocr.api.image.extracttext;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.concurrent.CompletableFuture;
 
 import javax.imageio.ImageIO;
@@ -41,7 +41,7 @@ public class ImageOcrService {
             return CompletableFuture.completedFuture(TextConversionResult.createForZeroLengthFile(contextId, responseId, timeOnQueueStopWatch.getTime()));
         }
 
-        var logDataMap = new HashMap<String, Object>();
+        var logDataMap = new LinkedHashMap<String, Object>();
         logDataMap.put("timeOnExecuterQueue", Long.valueOf(timeOnQueueStopWatch.getTime()));
         logDataMap.put("threadName",  Thread.currentThread().getName());
         LOG.infoContext(contextId, "Converting File to Text - Time waiting on queue " + timeOnQueueStopWatch.toString(), logDataMap); 

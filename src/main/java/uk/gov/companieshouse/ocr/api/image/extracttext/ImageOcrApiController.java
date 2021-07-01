@@ -43,6 +43,9 @@ public class ImageOcrApiController {
     @Autowired
     private ImageOcrService imageOcrService;
 
+    @Autowired
+    private OcrRequestService ocrRequestService;
+
     private ImageOcrTransformer transformer = new ImageOcrTransformer();
 
 
@@ -51,6 +54,10 @@ public class ImageOcrApiController {
 
         OcrRequest ocrRequest = new OcrRequest(clientRequest, LocalDateTime.now());
         LOG.infoContext(ocrRequest.getContextId(),"Received OCR request", null);
+
+        ocrRequestService.handleRequest(ocrRequest);
+
+        LOG.infoContext(ocrRequest.getContextId(),"OCR request now being handled asynchronously", null);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
