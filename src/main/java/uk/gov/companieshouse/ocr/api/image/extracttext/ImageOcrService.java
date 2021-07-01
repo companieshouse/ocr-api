@@ -56,6 +56,33 @@ public class ImageOcrService {
         return CompletableFuture.completedFuture(textConversionResult);
     }
 
+    @Async(ThreadConfig.IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN)
+    public CompletableFuture<TextConversionResult> 
+    extractTextFromImageBytes(String contextId, byte[] imageBytes, String responseId, StopWatch timeOnQueueStopWatch) throws IOException {
+
+        timeOnQueueStopWatch.stop();
+
+
+        if (imageBytes.length == 0) {
+            return CompletableFuture.completedFuture(TextConversionResult.createForZeroLengthFile(contextId, responseId, timeOnQueueStopWatch.getTime()));
+        }
+        imageBytes = null;
+
+        var logDataMap = new LinkedHashMap<String, Object>();
+        logDataMap.put("timeOnExecuterQueue", Long.valueOf(timeOnQueueStopWatch.getTime()));
+        logDataMap.put("threadName",  Thread.currentThread().getName());
+        LOG.infoContext(contextId, "Converting File to Text - Time waiting on queue " + timeOnQueueStopWatch.toString(), logDataMap); 
+
+        final var textConversionResult = new TextConversionResult(contextId, responseId, timeOnQueueStopWatch.getTime(), imageBytes.length); 
+
+        try(ImageInputStream is = ImageIO.createImageInputStream(new ByteArrayInputStream(imageBytes))) {
+            ImageReader reader = createImageReader(is);
+            extractTextFromImageViaApi(reader, textConversionResult);
+        } 
+
+        return CompletableFuture.completedFuture(textConversionResult);
+    }
+
     private void extractTextFromImageViaApi(ImageReader reader, TextConversionResult textConversionResult) {
         TessAPI api = null;
         TessBaseAPI handle = null;

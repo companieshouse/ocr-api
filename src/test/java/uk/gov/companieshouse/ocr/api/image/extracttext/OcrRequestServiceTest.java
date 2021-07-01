@@ -22,23 +22,27 @@ class OcrRequestServiceTest {
     @Mock
     private ImageRestClient imageRestClient;
 
+    @Mock
+    private ImageOcrService imageOcrService;
+
     @InjectMocks
     private OcrRequestService ocrRequestService;
 
     private final OcrRequest ocrRequest = TestObjectMother.getStandardOcrRequest();
 
-
+/*
     @Test
     void successfulOcrRequest() throws OcrRequestException {
 
         // given
         when(imageRestClient.getImageContentsFromEndpoint(ocrRequest.getContextId(), ocrRequest.getImageEndpoint())).thenReturn(MOCK_TIFF_CONTENT);
+        when(imageOcrService.extractTextFromImageBytes(contextId, imageBytes, responseId, timeOnQueueStopWatch))
 
         // when
         ocrRequestService.handleRequest(ocrRequest);
 
         // verify when more methods are added to the service class
-    }
+    }*/
 
     @Test
     void failGetImage() throws OcrRequestException {

@@ -88,6 +88,8 @@ public class ImageOcrApiController {
         extractTextResult.setTotalProcessingTimeMs(controllerStopWatch.getTime());
 
         var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult);
+
+        //LOG.info("[" + textConversionResult.getExtractedText() + "]");
     
         LOG.infoContext(contextId, "Finished file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
            controllerStopWatch.toString() + "]", monitoringFields.toMap());
