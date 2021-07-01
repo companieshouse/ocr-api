@@ -17,7 +17,7 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 
 @Tag(TestType.UNIT)
 @ExtendWith(MockitoExtension.class)
-public class OcrRequestServiceTest {
+class OcrRequestServiceTest {
 
     @Mock
     private ImageRestClient imageRestClient;

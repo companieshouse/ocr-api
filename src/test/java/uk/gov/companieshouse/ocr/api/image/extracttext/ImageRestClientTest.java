@@ -59,6 +59,5 @@ class ImageRestClientTest {
 
         assertEquals(1, ocrRequestAssertion.getResultCode().getCode());
 
-
     }
 }
