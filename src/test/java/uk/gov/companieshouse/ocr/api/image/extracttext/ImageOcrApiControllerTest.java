@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -56,6 +58,16 @@ class ImageOcrApiControllerTest {
          
         file = new MockMultipartFile(ImageOcrApiController.FILE_REQUEST_PARAMETER_NAME, "hello.txt",
         "application/octet-stream", FILE_TEXT.getBytes());
+    }
+
+    @Test
+    void shouldAcceptextractTextRequest() throws Exception {
+
+        mockMvc.perform(post(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"app_id\":\"myapp\",\"response_id\": \"9613245852\", \"image_endpoint\": \"http://testurl.com/image?id=9613245852\",\"converted_text_endpoint\":\"http://testurl.com/ocr-results/\"}")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isAccepted());
     }
 
     @Test

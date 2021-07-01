@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletionException;
 
 import org.apache.commons.lang.StringUtils;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,6 +28,7 @@ import uk.gov.companieshouse.ocr.api.common.ErrorResponseDto;
 public class ImageOcrApiController {
 
     public static final String TIFF_EXTRACT_TEXT_PARTIAL_URL = "/api/ocr/image/tiff/extractText";
+    public static final String TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL = "/api/ocr/image/tiff/extractTextRequest";
 
     static final String RESPONSE_ID_REQUEST_PARAMETER_NAME = "responseId";
     static final String CONTEXT_ID_REQUEST_PARAMETER_NAME = "contextId";
@@ -41,6 +44,16 @@ public class ImageOcrApiController {
     private ImageOcrService imageOcrService;
 
     private ImageOcrTransformer transformer = new ImageOcrTransformer();
+
+
+    @PostMapping(TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
+    public ResponseEntity<HttpStatus> receiveOcrRequest(@RequestBody OcrClientRequest clientRequest) {
+
+        OcrRequest ocrRequest = new OcrRequest(clientRequest, LocalDateTime.now());
+        LOG.infoContext(ocrRequest.getContextId(),"Received OCR request", null);
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 
     @PostMapping(TIFF_EXTRACT_TEXT_PARTIAL_URL)
     public @ResponseBody ResponseEntity<ExtractTextResultDto> extractTextFromTiff(
@@ -74,6 +87,8 @@ public class ImageOcrApiController {
 
         return new ResponseEntity<>(extractTextResult, HttpStatus.OK);
     }
+
+
 
     /*
      Occurs when the  `.join()` method is called after calling an `async` method AND an untrapped exception is thown within that method
