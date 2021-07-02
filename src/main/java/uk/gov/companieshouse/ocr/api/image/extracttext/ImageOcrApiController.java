@@ -23,6 +23,10 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.ocr.api.OcrApiApplication;
 import uk.gov.companieshouse.ocr.api.common.ErrorResponseDto;
 
+/*
+ IOException is not really thrown on the POST methods in this class since it can only come from
+ an asynchronous method when it is caught via a CompletionException
+ */
 @RequestMapping("${api.endpoint}")
 @RestController
 public class ImageOcrApiController {
@@ -50,17 +54,21 @@ public class ImageOcrApiController {
 
 
     @PostMapping(TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
-    public ResponseEntity<HttpStatus> receiveOcrRequest(@RequestBody OcrClientRequest clientRequest) {
+    public ResponseEntity<HttpStatus> receiveOcrRequest(@RequestBody OcrClientRequest clientRequest) throws IOException {
+
+        var ocrRequestStopWatch = new StopWatch();
+        ocrRequestStopWatch.start();
 
         OcrRequest ocrRequest = new OcrRequest(clientRequest, LocalDateTime.now());
         LOG.infoContext(ocrRequest.getContextId(),"Received OCR request", null);
 
-        ocrRequestService.handleRequest(ocrRequest);
+        ocrRequestService.handleRequest(ocrRequest, ocrRequestStopWatch);
 
         LOG.infoContext(ocrRequest.getContextId(),"OCR request now being handled asynchronously", null);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+
 
     @PostMapping(TIFF_EXTRACT_TEXT_PARTIAL_URL)
     public @ResponseBody ResponseEntity<ExtractTextResultDto> extractTextFromTiff(
@@ -88,16 +96,12 @@ public class ImageOcrApiController {
         extractTextResult.setTotalProcessingTimeMs(controllerStopWatch.getTime());
 
         var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult);
-
-        //LOG.info("[" + textConversionResult.getExtractedText() + "]");
     
         LOG.infoContext(contextId, "Finished file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
            controllerStopWatch.toString() + "]", monitoringFields.toMap());
 
         return new ResponseEntity<>(extractTextResult, HttpStatus.OK);
     }
-
-
 
     /*
      Occurs when the  `.join()` method is called after calling an `async` method AND an untrapped exception is thown within that method

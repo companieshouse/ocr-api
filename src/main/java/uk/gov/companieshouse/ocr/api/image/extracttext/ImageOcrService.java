@@ -13,7 +13,6 @@ import javax.imageio.stream.ImageInputStream;
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import net.sourceforge.tess4j.ITessAPI;
 import net.sourceforge.tess4j.ITessAPI.TessBaseAPI;
