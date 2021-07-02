@@ -27,6 +27,10 @@ test: clean
 test-unit: clean
 	mvn test -Dincluded.tests="unit-test"
 
+.PHONY: test-integration
+test-integration: clean
+	mvn test -Dincluded.tests="integration-test"
+
 .PHONY: dev
 dev: clean
 	mvn package
