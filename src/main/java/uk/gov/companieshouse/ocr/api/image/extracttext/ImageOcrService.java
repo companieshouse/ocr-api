@@ -13,7 +13,6 @@ import javax.imageio.stream.ImageInputStream;
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import net.sourceforge.tess4j.ITessAPI;
 import net.sourceforge.tess4j.ITessAPI.TessBaseAPI;
@@ -33,11 +32,11 @@ public class ImageOcrService {
 
     @Async(ThreadConfig.IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN)
     public CompletableFuture<TextConversionResult> 
-    extractTextFromImage(String contextId, MultipartFile file, String responseId, StopWatch timeOnQueueStopWatch) throws IOException {
+    extractTextFromImageBytes(String contextId, byte[] imageBytes, String responseId, StopWatch timeOnQueueStopWatch) throws IOException {
 
         timeOnQueueStopWatch.stop();
 
-        if (file.getBytes().length == 0) {
+        if (imageBytes.length == 0) {
             return CompletableFuture.completedFuture(TextConversionResult.createForZeroLengthFile(contextId, responseId, timeOnQueueStopWatch.getTime()));
         }
 
@@ -46,12 +45,12 @@ public class ImageOcrService {
         logDataMap.put("threadName",  Thread.currentThread().getName());
         LOG.infoContext(contextId, "Converting File to Text - Time waiting on queue " + timeOnQueueStopWatch.toString(), logDataMap); 
 
-        final var textConversionResult = new TextConversionResult(contextId, responseId, timeOnQueueStopWatch.getTime(), file.getBytes().length); 
+        final var textConversionResult = new TextConversionResult(contextId, responseId, timeOnQueueStopWatch.getTime(), imageBytes.length); 
 
-        try(ImageInputStream is = ImageIO.createImageInputStream(new ByteArrayInputStream(file.getBytes()))) {
+        try(ImageInputStream is = ImageIO.createImageInputStream(new ByteArrayInputStream(imageBytes))) {
             ImageReader reader = createImageReader(is);
             extractTextFromImageViaApi(reader, textConversionResult);
-        }
+        } 
 
         return CompletableFuture.completedFuture(textConversionResult);
     }

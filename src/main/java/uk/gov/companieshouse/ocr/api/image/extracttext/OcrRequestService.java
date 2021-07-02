@@ -1,7 +1,9 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
-import java.util.LinkedHashMap;
+import java.io.IOException;
+import java.util.concurrent.CompletionException;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -22,9 +24,14 @@ public class OcrRequestService {
     @Autowired
     private ImageRestClient imageRestClient;
 
-    @Async(ThreadConfig.OCR_REQUEST_EXECUTOR_BEAN)
-    public void handleRequest(OcrRequest ocrRequest) {
+    @Autowired
+    private ImageOcrService imageOcrService;
 
+    private ImageOcrTransformer transformer = new ImageOcrTransformer();
+
+    @Async(ThreadConfig.OCR_REQUEST_EXECUTOR_BEAN)
+    public void handleRequest(OcrRequest ocrRequest, StopWatch ocrRequestStopWatch) throws IOException {
+        
         try {
 
             var logDataMap = ocrRequest.toMap();
@@ -32,16 +39,30 @@ public class OcrRequestService {
 
             LOG.infoContext(ocrRequest.getContextId(), "Orchestrating OCR Request", logDataMap);
 
-            byte[] image = imageRestClient.getImageContentsFromEndpoint(ocrRequest.getContextId(), ocrRequest.getImageEndpoint());
+            byte[] imageBytes = imageRestClient.getImageContentsFromEndpoint(ocrRequest.getContextId(), ocrRequest.getImageEndpoint());
 
-            logDataMap = new LinkedHashMap<>();
-            logDataMap.put("fileSize", image.length);
-            LOG.infoContext(ocrRequest.getContextId(), "Completed OCR Request", logDataMap);
+            var timeOnQueueStopWatch = new StopWatch();
+            timeOnQueueStopWatch.start();
 
+            var textConversionResult =  imageOcrService.extractTextFromImageBytes(ocrRequest.getContextId(), imageBytes, ocrRequest.getResponseId(), timeOnQueueStopWatch).join();
+            LOG.infoContext(ocrRequest.getContextId(), "File converted[" + textConversionResult.getExtractedText() +"]", textConversionResult.metaDataMap());
+  
+            var extractTextResult =  transformer.mapModelToApi(textConversionResult);
+
+            ocrRequestStopWatch.stop();
+            extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime());
+    
+            var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult);
+    
+            LOG.infoContext(ocrRequest.getContextId(), "Completed OCR Request - time to run " + (ocrRequestStopWatch.getTime()) + " (ms) " + "[ " +
+            ocrRequestStopWatch.toString() + "]", monitoringFields.toMap());
+
+        }
+        catch(CompletionException ce) {
+            LOG.errorContext(ocrRequest.getContextId(), "Error Converting image to text", ce, null); 
         }
         catch (OcrRequestException e) {
             LOG.errorContext(ocrRequest.getContextId(), "Error in OCR Request", e, null);
-
         }
 
 
