@@ -48,6 +48,9 @@ class ImageOcrApiControllerTest {
     @MockBean
     private ImageOcrService imageOcrService;
 
+    @MockBean
+    private OcrRequestService ocrRequestService;
+
     @Mock
     private TextConversionResult mockResults;
 
