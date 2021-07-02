@@ -33,31 +33,6 @@ public class ImageOcrService {
 
     @Async(ThreadConfig.IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN)
     public CompletableFuture<TextConversionResult> 
-    extractTextFromImage(String contextId, MultipartFile file, String responseId, StopWatch timeOnQueueStopWatch) throws IOException {
-
-        timeOnQueueStopWatch.stop();
-
-        if (file.getBytes().length == 0) {
-            return CompletableFuture.completedFuture(TextConversionResult.createForZeroLengthFile(contextId, responseId, timeOnQueueStopWatch.getTime()));
-        }
-
-        var logDataMap = new LinkedHashMap<String, Object>();
-        logDataMap.put("timeOnExecuterQueue", Long.valueOf(timeOnQueueStopWatch.getTime()));
-        logDataMap.put("threadName",  Thread.currentThread().getName());
-        LOG.infoContext(contextId, "Converting File to Text - Time waiting on queue " + timeOnQueueStopWatch.toString(), logDataMap); 
-
-        final var textConversionResult = new TextConversionResult(contextId, responseId, timeOnQueueStopWatch.getTime(), file.getBytes().length); 
-
-        try(ImageInputStream is = ImageIO.createImageInputStream(new ByteArrayInputStream(file.getBytes()))) {
-            ImageReader reader = createImageReader(is);
-            extractTextFromImageViaApi(reader, textConversionResult);
-        }
-
-        return CompletableFuture.completedFuture(textConversionResult);
-    }
-
-    @Async(ThreadConfig.IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN)
-    public CompletableFuture<TextConversionResult> 
     extractTextFromImageBytes(String contextId, byte[] imageBytes, String responseId, StopWatch timeOnQueueStopWatch) throws IOException {
 
         timeOnQueueStopWatch.stop();

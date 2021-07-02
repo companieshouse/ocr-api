@@ -82,7 +82,7 @@ class ImageOcrApiControllerTest {
         when(mockResults.getResponseId()).thenReturn(RESPONSE_ID);
         when(mockResults.getExtractTextProcessingTime()).thenReturn(3200l);
 
-        when(imageOcrService.extractTextFromImage(eq(RESPONSE_ID), eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
+        when(imageOcrService.extractTextFromImageBytes(eq(RESPONSE_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
                 .thenReturn(CompletableFuture.completedFuture(mockResults));
 
         mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
@@ -105,7 +105,7 @@ class ImageOcrApiControllerTest {
         when(mockResults.getResponseId()).thenReturn(RESPONSE_ID);
         when(mockResults.getExtractTextProcessingTime()).thenReturn(3200l);
 
-        when(imageOcrService.extractTextFromImage(eq(CONTEXT_ID), eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
+        when(imageOcrService.extractTextFromImageBytes(eq(CONTEXT_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
                 .thenReturn(CompletableFuture.completedFuture(mockResults));
 
         mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
@@ -132,7 +132,7 @@ class ImageOcrApiControllerTest {
     @Test
     void shouldCatchFutureExceptionInController() throws Exception {
 
-        when(imageOcrService.extractTextFromImage(eq(CONTEXT_ID), eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
+        when(imageOcrService.extractTextFromImageBytes(eq(CONTEXT_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
         .thenThrow(new CompletionException("General", new IOException("IOException test")));
 
         mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
@@ -145,7 +145,7 @@ class ImageOcrApiControllerTest {
     @Test
     void shouldCatchFutureExceptionWithApplicationErrorInController() throws Exception {
 
-        when(imageOcrService.extractTextFromImage(eq(CONTEXT_ID), eq(file), eq(RESPONSE_ID), any(StopWatch.class)))
+        when(imageOcrService.extractTextFromImageBytes(eq(CONTEXT_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
         .thenThrow(new CompletionException("General", new TextConversionException(CONTEXT_ID, RESPONSE_ID, new IOException("Wrapped IOException test"))));
 
         mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
