@@ -62,11 +62,9 @@ public class ImageOcrService {
 
         timeOnQueueStopWatch.stop();
 
-
         if (imageBytes.length == 0) {
             return CompletableFuture.completedFuture(TextConversionResult.createForZeroLengthFile(contextId, responseId, timeOnQueueStopWatch.getTime()));
         }
-        imageBytes = null;
 
         var logDataMap = new LinkedHashMap<String, Object>();
         logDataMap.put("timeOnExecuterQueue", Long.valueOf(timeOnQueueStopWatch.getTime()));
