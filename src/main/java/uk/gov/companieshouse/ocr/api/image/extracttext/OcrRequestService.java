@@ -27,6 +27,9 @@ public class OcrRequestService {
     @Autowired
     private ImageOcrService imageOcrService;
 
+    @Autowired
+    private CallbackExtractedTextRestClient callbackExtractedTextRestClient;
+
     private ImageOcrTransformer transformer = new ImageOcrTransformer();
 
     @Async(ThreadConfig.OCR_REQUEST_EXECUTOR_BEAN)
@@ -48,6 +51,8 @@ public class OcrRequestService {
             LOG.infoContext(ocrRequest.getContextId(), "File converted[" + textConversionResult.getExtractedText() +"]", textConversionResult.metaDataMap());
   
             var extractTextResult =  transformer.mapModelToApi(textConversionResult);
+
+            callbackExtractedTextRestClient.sendTextResult(ocrRequest.getConvertedTextEndpoint(), extractTextResult);
 
             ocrRequestStopWatch.stop();
             extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime());

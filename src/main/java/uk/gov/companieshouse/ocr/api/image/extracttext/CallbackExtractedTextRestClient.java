@@ -5,14 +5,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.logging.LoggerFactory;
-import uk.gov.companieshouse.ocr.api.OcrApiApplication;
-
 @Component
 public class CallbackExtractedTextRestClient {
-
-    private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
     
     @Autowired
     private RestTemplate restTemplate;
@@ -33,7 +27,7 @@ public class CallbackExtractedTextRestClient {
         } catch (Exception e) {
             throw new OcrRequestException(
                 "Fail to send results back to calling application at url [" + extractedTextEndpoint + "], error message [" + e.getMessage() + "]",
-                OcrRequestException.ResultCode.FAIL_TO_GET_IMAGE,
+                OcrRequestException.ResultCode.FAIL_TO_SEND_RESULTS,
                 e);
         }
     }
