@@ -58,6 +58,5 @@ class ImageRestClientTest {
             imageRestClient.getImageContentsFromEndpoint(CONTEXT_ID, IMAGE_ENDPOINT));
 
         assertEquals(1, ocrRequestAssertion.getResultCode().getCode());
-
     }
 }

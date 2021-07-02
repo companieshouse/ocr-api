@@ -31,6 +31,9 @@ class OcrRequestServiceTest {
     @Mock
     private ImageOcrService imageOcrService;
 
+    @Mock
+    private CallbackExtractedTextRestClient callbackExtractedTextRestClient;
+
     @InjectMocks
     private OcrRequestService ocrRequestService;
 
@@ -53,6 +56,7 @@ class OcrRequestServiceTest {
 
         verify(imageRestClient).getImageContentsFromEndpoint(ocrRequest.getContextId(), ocrRequest.getImageEndpoint());
         verify(imageOcrService).extractTextFromImageBytes(eq(ocrRequest.getContextId()), eq(MOCK_TIFF_CONTENT), eq(ocrRequest.getResponseId()), any (StopWatch.class));
+        verify(callbackExtractedTextRestClient).sendTextResult(eq(ocrRequest.getConvertedTextEndpoint()), any(ExtractTextResultDto.class));
     }
 
     @Test
