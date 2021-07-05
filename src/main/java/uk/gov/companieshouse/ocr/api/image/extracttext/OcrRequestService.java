@@ -64,12 +64,24 @@ public class OcrRequestService {
         }
         catch(CompletionException ce) {
             LOG.errorContext(ocrRequest.getContextId(), "Error Converting image to text", ce, null); 
+            callbackExtractedTextRestClient.sendTextResultError(ocrRequest.getContextId(), ocrRequest.getResponseId(), ocrRequest.getConvertedTextEndpoint(), OcrRequestException.ResultCode.FAIL_TO_COVERT_IMAGE_TO_TEXT, stopStopWatchAndReturnTime(ocrRequestStopWatch));
+
         }
         catch (OcrRequestException e) {
             LOG.errorContext(ocrRequest.getContextId(), "Error in OCR Request", e, null);
+            if (e.getResultCode().equals(OcrRequestException.ResultCode.FAIL_TO_GET_IMAGE)) {
+                callbackExtractedTextRestClient.sendTextResultError(ocrRequest.getContextId(), ocrRequest.getResponseId(), ocrRequest.getConvertedTextEndpoint(), e.getResultCode(), stopStopWatchAndReturnTime(ocrRequestStopWatch));
+            }
         }
+        catch (Exception e) {
+            LOG.errorContext(ocrRequest.getContextId(), "Unexpected Error in OCR Request", e, null);
+            callbackExtractedTextRestClient.sendTextResultError(ocrRequest.getContextId(), ocrRequest.getResponseId(), ocrRequest.getConvertedTextEndpoint(), OcrRequestException.ResultCode.UNEXPECTED_FAILURE, stopStopWatchAndReturnTime(ocrRequestStopWatch));
 
+        }
+    }
 
-        
+    private long stopStopWatchAndReturnTime(StopWatch stopWatch) {
+        stopWatch.stop();
+        return stopWatch.getTime();
     }
 }
