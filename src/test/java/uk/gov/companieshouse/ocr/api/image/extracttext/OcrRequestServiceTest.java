@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -49,14 +50,18 @@ class OcrRequestServiceTest {
         when(imageOcrService.extractTextFromImageBytes(eq(ocrRequest.getContextId()), eq(MOCK_TIFF_CONTENT), eq(ocrRequest.getResponseId()), any (StopWatch.class)))
            .thenReturn(CompletableFuture.completedFuture(textConversionResult));
 
-        // when
+        // when       
+        ocrRequestService.handleRequest(ocrRequest, startedOcrRequestStopWatch());
+
+        // then send successful results
+        verify(callbackExtractedTextRestClient).sendTextResult(eq(ocrRequest.getConvertedTextEndpoint()), any(ExtractTextResultDto.class));
+        verify(callbackExtractedTextRestClient, never()).sendTextResultError(eq(ocrRequest.getContextId()), eq(ocrRequest.getResponseId()), eq(ocrRequest.getConvertedTextEndpoint()), any(OcrRequestException.ResultCode.class), anyLong());
+    }
+
+    private StopWatch startedOcrRequestStopWatch() {
         var ocrRequestStopWatch = new StopWatch();
         ocrRequestStopWatch.start();
-        ocrRequestService.handleRequest(ocrRequest, ocrRequestStopWatch);
-
-        verify(imageRestClient).getImageContentsFromEndpoint(ocrRequest.getContextId(), ocrRequest.getImageEndpoint());
-        verify(imageOcrService).extractTextFromImageBytes(eq(ocrRequest.getContextId()), eq(MOCK_TIFF_CONTENT), eq(ocrRequest.getResponseId()), any (StopWatch.class));
-        verify(callbackExtractedTextRestClient).sendTextResult(eq(ocrRequest.getConvertedTextEndpoint()), any(ExtractTextResultDto.class));
+        return ocrRequestStopWatch;
     }
 
     @Test
@@ -66,10 +71,66 @@ class OcrRequestServiceTest {
             .thenThrow(new OcrRequestException("Mock failure", OcrRequestException.ResultCode.FAIL_TO_GET_IMAGE, new IOException("IOException test")));
 
         // when
-        ocrRequestService.handleRequest(ocrRequest, new StopWatch()); 
+        ocrRequestService.handleRequest(ocrRequest, startedOcrRequestStopWatch()); 
 
-        // verify when more methods are added to the service class
+        // then do no further processing and send error results
         verify(imageOcrService, never()).extractTextFromImageBytes(eq(ocrRequest.getContextId()), eq(MOCK_TIFF_CONTENT), eq(ocrRequest.getResponseId()), any (StopWatch.class));
+        verify(callbackExtractedTextRestClient, never()).sendTextResult(eq(ocrRequest.getConvertedTextEndpoint()), any(ExtractTextResultDto.class));
+        verify(callbackExtractedTextRestClient).sendTextResultError(eq(ocrRequest.getContextId()), eq(ocrRequest.getResponseId()), eq(ocrRequest.getConvertedTextEndpoint()), eq(OcrRequestException.ResultCode.FAIL_TO_GET_IMAGE), anyLong());
     }
+
+    @Test
+    void failImageToText() throws OcrRequestException, IOException {
+
+        CompletableFuture<TextConversionResult> futureExpection = new CompletableFuture<>();
+        futureExpection.completeExceptionally(new IOException("Image to text failure test"));
+
+        when(imageRestClient.getImageContentsFromEndpoint(ocrRequest.getContextId(), ocrRequest.getImageEndpoint())).thenReturn(MOCK_TIFF_CONTENT);
+        when(imageOcrService.extractTextFromImageBytes(eq(ocrRequest.getContextId()), eq(MOCK_TIFF_CONTENT), eq(ocrRequest.getResponseId()), any (StopWatch.class)))
+           .thenReturn(futureExpection);
+
+        // when
+        ocrRequestService.handleRequest(ocrRequest, startedOcrRequestStopWatch()); 
+
+        // then do no further processing and send error results
+        verify(callbackExtractedTextRestClient, never()).sendTextResult(eq(ocrRequest.getConvertedTextEndpoint()), any(ExtractTextResultDto.class));
+        verify(callbackExtractedTextRestClient).sendTextResultError(eq(ocrRequest.getContextId()), eq(ocrRequest.getResponseId()), eq(ocrRequest.getConvertedTextEndpoint()), eq(OcrRequestException.ResultCode.FAIL_TO_COVERT_IMAGE_TO_TEXT), anyLong());
+    }
+
+
+    @Test
+    void failSendingResults() throws OcrRequestException, IOException {
+
+        CompletableFuture<TextConversionResult> futureExpection = new CompletableFuture<>();
+        futureExpection.completeExceptionally(new IOException("Image to text failure test"));
+
+        when(imageRestClient.getImageContentsFromEndpoint(ocrRequest.getContextId(), ocrRequest.getImageEndpoint())).thenReturn(MOCK_TIFF_CONTENT);
+        when(imageOcrService.extractTextFromImageBytes(eq(ocrRequest.getContextId()), eq(MOCK_TIFF_CONTENT), eq(ocrRequest.getResponseId()), any (StopWatch.class)))
+           .thenReturn(futureExpection);
+
+        // when
+        ocrRequestService.handleRequest(ocrRequest, startedOcrRequestStopWatch()); 
+
+        // then do no further processing and send error results
+        verify(callbackExtractedTextRestClient, never()).sendTextResult(eq(ocrRequest.getConvertedTextEndpoint()), any(ExtractTextResultDto.class));
+        verify(callbackExtractedTextRestClient).sendTextResultError(eq(ocrRequest.getContextId()), eq(ocrRequest.getResponseId()), eq(ocrRequest.getConvertedTextEndpoint()), eq(OcrRequestException.ResultCode.FAIL_TO_COVERT_IMAGE_TO_TEXT), anyLong());
+    }
+
+
+    @Test
+    void unexpectedException() throws OcrRequestException, IOException {
+
+        when(imageRestClient.getImageContentsFromEndpoint(ocrRequest.getContextId(), ocrRequest.getImageEndpoint()))
+            .thenThrow(new RuntimeException("Unexpected runtime exception"));
+
+        // when
+        ocrRequestService.handleRequest(ocrRequest, startedOcrRequestStopWatch()); 
+
+        // then do no further processing and send error results
+        verify(imageOcrService, never()).extractTextFromImageBytes(eq(ocrRequest.getContextId()), eq(MOCK_TIFF_CONTENT), eq(ocrRequest.getResponseId()), any (StopWatch.class));
+        verify(callbackExtractedTextRestClient, never()).sendTextResult(eq(ocrRequest.getConvertedTextEndpoint()), any(ExtractTextResultDto.class));
+        verify(callbackExtractedTextRestClient).sendTextResultError(eq(ocrRequest.getContextId()), eq(ocrRequest.getResponseId()), eq(ocrRequest.getConvertedTextEndpoint()), eq(OcrRequestException.ResultCode.UNEXPECTED_FAILURE), anyLong());
+    }
+
     
 }

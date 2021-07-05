@@ -1,11 +1,17 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
 
 /**
  * Results returned to a client on a successful API call
  */
 public class ExtractTextResultDto {
+
+    protected static final String OCR_CONVERSION_ERROR_TEXT = "UNABLE_TO_PROCESS_OCR_CONVERSION";
 
     /**
      *  The input contextId of the OCR request
@@ -53,6 +59,22 @@ public class ExtractTextResultDto {
 	 */
 	@JsonProperty("result_code")
 	private int resultCode;
+
+    public static ExtractTextResultDto createErrorExtractTextResultDtoFromContextId(String contextId,
+            String responseId, ResultCode errorResultCode, long totalProcessingTimeMs) {
+
+        ExtractTextResultDto extractedTextError = new ExtractTextResultDto();
+        extractedTextError.setContextId(contextId);
+        extractedTextError.setAverageConfidenceScore(0);
+        extractedTextError.setLowestConfidenceScore(0);
+        extractedTextError.setOcrProcessingTimeMs(0L);
+        extractedTextError.setTotalProcessingTimeMs(totalProcessingTimeMs);
+        extractedTextError.setResponseId(responseId);
+        extractedTextError.setExtractedText(OCR_CONVERSION_ERROR_TEXT);
+        extractedTextError.setResultCode(errorResultCode.getCode());
+
+        return extractedTextError;
+    }    
 
     /*  ------ Accessors ------- */
     
@@ -119,5 +141,9 @@ public class ExtractTextResultDto {
 	public void setResultCode(int resultCode) {
 		this.resultCode = resultCode;
 	}
+
+    public Map<String, Object> metadataMap() {
+        return null;
+    }
     
 }

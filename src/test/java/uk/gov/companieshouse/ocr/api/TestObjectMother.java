@@ -19,6 +19,7 @@ public final class TestObjectMother {
     public static final String EXTRACTED_TEXT = "Mock converted text";
     public static final int LOWEST_CONFIDENCE_SCORE = 20;
     public static final int AVERAGE_CONFIDENCE_SCORE = 75;
+    public static final long TIME_PROCESSING = 5123l;
 
     public static final byte[] MOCK_TIFF_CONTENT = {0, 1, 2};
 

@@ -5,6 +5,7 @@ public class OcrRequestException extends Exception {
     public enum ResultCode {
         FAIL_TO_GET_IMAGE(1),
         FAIL_TO_COVERT_IMAGE_TO_TEXT(2),
+        UNEXPECTED_FAILURE(3),
 
         FAIL_TO_SEND_RESULTS(99); // Value just used for logging since we failed to send client call failed
 
