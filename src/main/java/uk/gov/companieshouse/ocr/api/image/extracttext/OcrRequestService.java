@@ -48,15 +48,14 @@ public class OcrRequestService {
             timeOnQueueStopWatch.start();
 
             var textConversionResult =  imageOcrService.extractTextFromImageBytes(ocrRequest.getContextId(), imageBytes, ocrRequest.getResponseId(), timeOnQueueStopWatch).join();
-            LOG.infoContext(ocrRequest.getContextId(), "File converted[" + textConversionResult.getExtractedText() +"]", textConversionResult.metaDataMap());
   
             var extractTextResult =  transformer.mapModelToApi(textConversionResult);
+            extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime()); // for callback
 
             callbackExtractedTextRestClient.sendTextResult(ocrRequest.getConvertedTextEndpoint(), extractTextResult);
 
             ocrRequestStopWatch.stop();
-            extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime());
-    
+            extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime()); // Override to get the full time in monitoring field
             var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult);
     
             LOG.infoContext(ocrRequest.getContextId(), "Completed OCR Request - time to run " + (ocrRequestStopWatch.getTime()) + " (ms) " + "[ " +

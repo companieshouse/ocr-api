@@ -1,5 +1,10 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.validation.constraints.NotBlank;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -7,15 +12,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class OcrClientRequest {
 
+    @NotBlank(message = "Missing required value app_id")
     @JsonProperty("app_id")
     private String applicationId;
 
+    @NotBlank(message = "Missing required value response_id")
     @JsonProperty("response_id")
     private String responseId;
 
+    @NotBlank(message = "Missing required value image_endpoint")
     @JsonProperty("image_endpoint")
     private String imageEndpoint;
 
+    @NotBlank(message = "Missing required value converted_text_endpoint")
     @JsonProperty("converted_text_endpoint")
     private String convertedTextEndpoint;
 
@@ -49,6 +58,18 @@ public class OcrClientRequest {
 
     public void setConvertedTextEndpoint(String convertedTextEndpoint) {
         this.convertedTextEndpoint = convertedTextEndpoint;
+    }
+
+    public Map<String, Object> toMap() {
+
+        Map<String, Object> map = new LinkedHashMap<>();
+
+        map.put("applicationId", applicationId);
+        map.put("responseId", responseId);
+        map.put("imageEndpoint", imageEndpoint);
+        map.put("convertedTextEndpoint", convertedTextEndpoint);
+
+        return  map;        
     }
     
 }

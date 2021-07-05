@@ -2,13 +2,23 @@ package uk.gov.companieshouse.ocr.api.image.extracttext;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletionException;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +51,10 @@ public class ImageOcrApiController {
     static final String GENERAL_SERVICE_ERROR_MESSAGE = "Unexpected Error In OCR Conversion";
     static final String TEXT_CONVERSION_ERROR_MESSAGE = "Text Conversion Error In OCR Conversion";
     static final String CONTROLLER_ERROR_MESSAGE = "Unexpected Error Before OCR Conversion";
+    static final String NO_REQUEST_BODY_ERROR_MESSAGE = "Request body is required";
+
+    private static final String INVALID_INPUT_ERROR_MESSAGE = "invalid input";
+    private static final String UNKNOWN = "UNKNOWN";
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
@@ -54,13 +68,13 @@ public class ImageOcrApiController {
 
 
     @PostMapping(TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
-    public ResponseEntity<HttpStatus> receiveOcrRequest(@RequestBody OcrClientRequest clientRequest) throws IOException {
+    public ResponseEntity<HttpStatus> receiveOcrRequest(@Valid @RequestBody OcrClientRequest clientRequest) throws IOException {
 
         var ocrRequestStopWatch = new StopWatch();
         ocrRequestStopWatch.start();
 
         OcrRequest ocrRequest = new OcrRequest(clientRequest, LocalDateTime.now());
-        LOG.infoContext(ocrRequest.getContextId(),"Received OCR request", null);
+        LOG.infoContext(ocrRequest.getContextId(),"Received OCR request", clientRequest.toMap());
 
         ocrRequestService.handleRequest(ocrRequest, ocrRequestStopWatch);
 
@@ -124,6 +138,42 @@ public class ImageOcrApiController {
             errorResponse.setErrorMessage(GENERAL_SERVICE_ERROR_MESSAGE);
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDto> handleCompletionException(MethodArgumentNotValidException ex, HttpServletRequest request)  {
+        
+        List<String> errors = ex.getBindingResult()
+            .getFieldErrors()
+            .stream()
+            .map(FieldError::getDefaultMessage)
+            .collect(Collectors.toList());
+            
+        var errorResponse = new ErrorResponseDto();
+
+        errorResponse.setErrorMessage(INVALID_INPUT_ERROR_MESSAGE + errors.toString());
+        errorResponse.setContextId(UNKNOWN);
+        errorResponse.setResponseId(UNKNOWN);
+
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("client-input-errors", errors);
+        LOG.infoRequest(request, INVALID_INPUT_ERROR_MESSAGE, map);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    } 
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDto> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+
+        var errorResponse = new ErrorResponseDto();
+
+        errorResponse.setErrorMessage(NO_REQUEST_BODY_ERROR_MESSAGE);
+        errorResponse.setContextId(UNKNOWN);
+        errorResponse.setResponseId(UNKNOWN);
+
+        LOG.info(NO_REQUEST_BODY_ERROR_MESSAGE, null);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
