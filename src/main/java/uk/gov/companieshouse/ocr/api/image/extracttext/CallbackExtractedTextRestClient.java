@@ -46,6 +46,7 @@ public class CallbackExtractedTextRestClient {
      * @param   responseId              The Response ID of the request
      * @param   extractedTextEndpoint   The endpoint to send the extracted text to.
      * @param   errorResultCode         Enum for error code that is sent in the result_code back to the calling system
+     * @param   totalProcessingTimeMs   Total Time in the request (milliseconds)
      */
     public void sendTextResultError(String contextId, String responseId, String extractedTextEndpoint, OcrRequestException.ResultCode errorResultCode, long totalProcessingTimeMs) {
         ExtractTextResultDto extractedTextError = ExtractTextResultDto
