@@ -31,6 +31,9 @@ public class OcrRequestService {
     @Autowired
     private CallbackExtractedTextRestClient callbackExtractedTextRestClient;
 
+    @Autowired
+    private MonitoringService monitoringService;
+
     private ImageOcrTransformer transformer = new ImageOcrTransformer();
 
     @Async(ThreadConfig.OCR_REQUEST_EXECUTOR_BEAN)
@@ -58,10 +61,9 @@ public class OcrRequestService {
             ocrRequestStopWatch.stop();
             extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime()); // Set this first time to get the full time in monitoring field
             var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult, CallTypeEnum.ASYNCHRONOUS);
-    
-            LOG.infoContext(ocrRequest.getContextId(), "Completed OCR Request - time to run " + (ocrRequestStopWatch.getTime()) + " (ms) " + "[ " +
-            ocrRequestStopWatch.toString() + "]", monitoringFields.toMap());
 
+            monitoringService.logSuccess(ocrRequest, monitoringFields);
+    
         }
         catch(CompletionException ce) {
             LOG.errorContext(ocrRequest.getContextId(), "Error Converting image to text", ce, null); 
