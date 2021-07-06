@@ -65,6 +65,9 @@ public class ImageOcrApiController {
     @Autowired
     private OcrRequestService ocrRequestService;
 
+    @Autowired
+    private MonitoringService monitoringService;
+
     private ImageOcrTransformer transformer = new ImageOcrTransformer();
 
 
@@ -111,9 +114,7 @@ public class ImageOcrApiController {
         extractTextResult.setTotalProcessingTimeMs(controllerStopWatch.getTime());
 
         var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult, CallTypeEnum.SYNCHRONOUS);
-    
-        LOG.infoContext(contextId, "Finished file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
-           controllerStopWatch.toString() + "]", monitoringFields.toMap());
+        monitoringService.logSuccess(contextId, monitoringFields);
 
         return new ResponseEntity<>(extractTextResult, HttpStatus.OK);
     }

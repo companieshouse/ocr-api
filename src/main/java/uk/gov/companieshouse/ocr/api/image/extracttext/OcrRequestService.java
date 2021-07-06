@@ -62,7 +62,7 @@ public class OcrRequestService {
             extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime()); // Set this first time to get the full time in monitoring field
             var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult, CallTypeEnum.ASYNCHRONOUS);
 
-            monitoringService.logSuccess(ocrRequest, monitoringFields);
+            monitoringService.logSuccess(ocrRequest.getContextId(), monitoringFields);
     
         }
         catch(CompletionException ce) {

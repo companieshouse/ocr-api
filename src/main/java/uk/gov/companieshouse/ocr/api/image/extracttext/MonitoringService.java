@@ -12,8 +12,8 @@ public class MonitoringService {
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
 
-    public void logSuccess(OcrRequest ocrRequest, MonitoringFields monitoringFields) {
-        LOG.infoContext(ocrRequest.getContextId(), "Completed OCR Request Successfully" , monitoringFields.toMap());
+    public void logSuccess(String contextId, MonitoringFields monitoringFields) {
+        LOG.infoContext(contextId, "Completed OCR Request Successfully" , monitoringFields.toMap());
     }
     
 }

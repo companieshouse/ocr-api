@@ -58,7 +58,7 @@ class OcrRequestServiceTest {
 
         // then send successful results
         verify(callbackExtractedTextRestClient).sendTextResult(eq(ocrRequest.getConvertedTextEndpoint()), any(ExtractTextResultDto.class));
-        verify(monitoringService).logSuccess(eq(ocrRequest), any(MonitoringFields.class));
+        verify(monitoringService).logSuccess(eq(ocrRequest.getContextId()), any(MonitoringFields.class));
         verify(callbackExtractedTextRestClient, never()).sendTextResultError(eq(ocrRequest.getContextId()), eq(ocrRequest.getResponseId()), eq(ocrRequest.getConvertedTextEndpoint()), any(OcrRequestException.ResultCode.class), anyLong());
     }
 
