@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.ocr.api.OcrApiApplication;
+import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
 import uk.gov.companieshouse.ocr.api.common.ErrorResponseDto;
 
 /*
@@ -109,7 +110,7 @@ public class ImageOcrApiController {
         controllerStopWatch.stop();
         extractTextResult.setTotalProcessingTimeMs(controllerStopWatch.getTime());
 
-        var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult);
+        var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult, CallTypeEnum.SYNCHRONOUS);
     
         LOG.infoContext(contextId, "Finished file " + file.getOriginalFilename() + " - time to run " + (controllerStopWatch.getTime()) + " (ms) " + "[ " +
            controllerStopWatch.toString() + "]", monitoringFields.toMap());

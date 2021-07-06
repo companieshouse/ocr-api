@@ -12,6 +12,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.ocr.api.OcrApiApplication;
 import uk.gov.companieshouse.ocr.api.ThreadConfig;
+import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
 
 /**
  * This controls the workflow of an ocr request
@@ -55,8 +56,8 @@ public class OcrRequestService {
             callbackExtractedTextRestClient.sendTextResult(ocrRequest.getConvertedTextEndpoint(), extractTextResult);
 
             ocrRequestStopWatch.stop();
-            extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime()); // Override to get the full time in monitoring field
-            var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult);
+            extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime()); // Set this first time to get the full time in monitoring field
+            var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult, CallTypeEnum.ASYNCHRONOUS);
     
             LOG.infoContext(ocrRequest.getContextId(), "Completed OCR Request - time to run " + (ocrRequestStopWatch.getTime()) + " (ms) " + "[ " +
             ocrRequestStopWatch.toString() + "]", monitoringFields.toMap());
