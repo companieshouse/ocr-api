@@ -39,6 +39,9 @@ public class OcrRequestService {
     @Async(ThreadConfig.OCR_REQUEST_EXECUTOR_BEAN)
     public void handleRequest(OcrRequest ocrRequest, StopWatch ocrRequestStopWatch) throws IOException {
         
+        byte[] imageBytes = {};
+        ExtractTextResultDto extractTextResult = null;
+        TextConversionResult textConversionResult = null;
         try {
 
             var logDataMap = ocrRequest.toMap();
@@ -46,14 +49,14 @@ public class OcrRequestService {
 
             LOG.infoContext(ocrRequest.getContextId(), "Orchestrating OCR Request", logDataMap);
 
-            byte[] imageBytes = imageRestClient.getImageContentsFromEndpoint(ocrRequest.getContextId(), ocrRequest.getImageEndpoint());
+            imageBytes = imageRestClient.getImageContentsFromEndpoint(ocrRequest.getContextId(), ocrRequest.getImageEndpoint());
 
             var timeOnQueueStopWatch = new StopWatch();
             timeOnQueueStopWatch.start();
 
-            var textConversionResult =  imageOcrService.extractTextFromImageBytes(ocrRequest.getContextId(), imageBytes, ocrRequest.getResponseId(), timeOnQueueStopWatch).join();
+            textConversionResult =  imageOcrService.extractTextFromImageBytes(ocrRequest.getContextId(), imageBytes, ocrRequest.getResponseId(), timeOnQueueStopWatch).join();
   
-            var extractTextResult =  transformer.mapModelToApi(textConversionResult);
+            extractTextResult =  transformer.mapModelToApi(textConversionResult);
             extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime()); // for callback
 
             callbackExtractedTextRestClient.sendTextResult(ocrRequest.getConvertedTextEndpoint(), extractTextResult);
@@ -66,20 +69,42 @@ public class OcrRequestService {
     
         }
         catch(CompletionException ce) {
+            var totalProcessingTimeMs = stopStopWatchAndReturnTime(ocrRequestStopWatch);
             LOG.errorContext(ocrRequest.getContextId(), "Error Converting image to text", ce, null); 
-            callbackExtractedTextRestClient.sendTextResultError(ocrRequest.getContextId(), ocrRequest.getResponseId(), ocrRequest.getConvertedTextEndpoint(), OcrRequestException.ResultCode.FAIL_TO_COVERT_IMAGE_TO_TEXT, stopStopWatchAndReturnTime(ocrRequestStopWatch));
+            callbackExtractedTextRestClient.sendTextResultError(ocrRequest.getContextId(), ocrRequest.getResponseId(), ocrRequest.getConvertedTextEndpoint(), OcrRequestException.ResultCode.FAIL_TO_COVERT_IMAGE_TO_TEXT, totalProcessingTimeMs);
+            monitoringService.logFailure(ocrRequest.getContextId(), totalProcessingTimeMs, OcrRequestException.ResultCode.FAIL_TO_COVERT_IMAGE_TO_TEXT,  CallTypeEnum.ASYNCHRONOUS, imageBytes.length);
 
         }
         catch (OcrRequestException e) {
             LOG.errorContext(ocrRequest.getContextId(), "Error in OCR Request", e, null);
-            if (e.getResultCode().equals(OcrRequestException.ResultCode.FAIL_TO_GET_IMAGE)) {
-                callbackExtractedTextRestClient.sendTextResultError(ocrRequest.getContextId(), ocrRequest.getResponseId(), ocrRequest.getConvertedTextEndpoint(), e.getResultCode(), stopStopWatchAndReturnTime(ocrRequestStopWatch));
+            var totalProcessingTimeMs = stopStopWatchAndReturnTime(ocrRequestStopWatch);
+            switch(e.getResultCode()) {
+                case FAIL_TO_GET_IMAGE:
+                    callbackExtractedTextRestClient.sendTextResultError(ocrRequest.getContextId(), ocrRequest.getResponseId(), ocrRequest.getConvertedTextEndpoint(), e.getResultCode(), totalProcessingTimeMs);
+                    monitoringService.logFailure(ocrRequest.getContextId(), totalProcessingTimeMs, e.getResultCode(),  CallTypeEnum.ASYNCHRONOUS, imageBytes.length);
+                    break;
+                case FAIL_TO_SEND_RESULTS:
+                    if (extractTextResult != null && textConversionResult != null) {
+                        extractTextResult.setTotalProcessingTimeMs(totalProcessingTimeMs); 
+                        extractTextResult.setResultCode(e.getResultCode().getCode());
+                        var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult, CallTypeEnum.ASYNCHRONOUS);
+                        monitoringService.logFailToSendResults(ocrRequest.getContextId(), monitoringFields);
+                    }
+                    else {
+                        monitoringService.logFailure(ocrRequest.getContextId(), totalProcessingTimeMs, e.getResultCode(),  CallTypeEnum.ASYNCHRONOUS, imageBytes.length);             
+                    }
+                    break;
+                default:
+                    callbackExtractedTextRestClient.sendTextResultError(ocrRequest.getContextId(), ocrRequest.getResponseId(), ocrRequest.getConvertedTextEndpoint(), e.getResultCode(), totalProcessingTimeMs);
+                    monitoringService.logFailure(ocrRequest.getContextId(), totalProcessingTimeMs, e.getResultCode(),  CallTypeEnum.ASYNCHRONOUS, imageBytes.length);                               
             }
         }
         catch (Exception e) {
             LOG.errorContext(ocrRequest.getContextId(), "Unexpected Error in OCR Request", e, null);
-            callbackExtractedTextRestClient.sendTextResultError(ocrRequest.getContextId(), ocrRequest.getResponseId(), ocrRequest.getConvertedTextEndpoint(), OcrRequestException.ResultCode.UNEXPECTED_FAILURE, stopStopWatchAndReturnTime(ocrRequestStopWatch));
-
+            var totalProcessingTimeMs = stopStopWatchAndReturnTime(ocrRequestStopWatch);
+            OcrRequestException.ResultCode unexpectedFailureResultCode = OcrRequestException.ResultCode.UNEXPECTED_FAILURE;
+            callbackExtractedTextRestClient.sendTextResultError(ocrRequest.getContextId(), ocrRequest.getResponseId(), ocrRequest.getConvertedTextEndpoint(),  unexpectedFailureResultCode, totalProcessingTimeMs);
+            monitoringService.logFailure(ocrRequest.getContextId(), totalProcessingTimeMs, unexpectedFailureResultCode,  CallTypeEnum.ASYNCHRONOUS, imageBytes.length);             
         }
     }
 

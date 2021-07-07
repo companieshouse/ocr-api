@@ -6,6 +6,7 @@ import java.util.Map;
 import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
 import uk.gov.companieshouse.ocr.api.common.JsonLogFieldNameEnum;
 import uk.gov.companieshouse.ocr.api.common.LogRecordEnum;
+import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
 
 /**
  *  This is a DTO for data to be logged ONCE per OCR transaction and then used in Log processing to produce Dashboards etc
@@ -30,7 +31,6 @@ public class MonitoringFields {
 
     private final int resultCode;
 
-    // to add messageType, resultCode, mode (Async or Sync from enum)
 
     public MonitoringFields(TextConversionResult textConversionResult, ExtractTextResultDto extractTextResultDto, CallTypeEnum callType) {
 
@@ -44,6 +44,19 @@ public class MonitoringFields {
         this.fileSize = textConversionResult.getFileSize();
         this.callType = callType;
     }
+
+    public MonitoringFields(long totalProcessingTimeMs, ResultCode resultCode, CallTypeEnum callType, int fileSize) {
+        this.averageConfidenceScore = 0;
+        this.lowestConfidenceScore = 0;
+        this.ocrProcessingTimeMs = 0;
+        this.totalProcessingTimeMs = totalProcessingTimeMs;
+        this.timeOnExecuterQueue = 0;
+        this.resultCode = resultCode.getCode();
+        this.totalPages = 0;
+        this.fileSize = fileSize;
+        this.callType = callType;
+	}
+
 
     public Map<String, Object> toMap() {
 
@@ -63,7 +76,5 @@ public class MonitoringFields {
 
         return  map;        
     }
-
-    
     
 }

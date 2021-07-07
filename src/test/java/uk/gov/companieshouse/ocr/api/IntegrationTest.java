@@ -23,7 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import net.sourceforge.tess4j.TesseractException;
 import uk.gov.companieshouse.ocr.api.groups.TestType;
 import uk.gov.companieshouse.ocr.api.image.extracttext.ExtractTextResultDto;
-import uk.gov.companieshouse.ocr.api.image.extracttext.ImageOcrApiController;
+import uk.gov.companieshouse.ocr.api.image.extracttext.SyncImageOcrApiController;
 
 @Tag(TestType.INTEGRATION)
 public class IntegrationTest {
@@ -70,7 +70,7 @@ public class IntegrationTest {
             url = "http://localhost:8080";
         }
 
-        url += apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL;
+        url += apiEndpoint + SyncImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL;
         System.out.println("Using API URL [" + url + "]");
 
         var restTemplate = new RestTemplate();
