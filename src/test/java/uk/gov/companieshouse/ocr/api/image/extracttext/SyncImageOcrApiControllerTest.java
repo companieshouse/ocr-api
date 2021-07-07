@@ -1,13 +1,10 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,8 +30,8 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 
 @Tag(TestType.UNIT)
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = ImageOcrApiController.class)
-class ImageOcrApiControllerTest {
+@WebMvcTest(controllers = SyncImageOcrApiController.class)
+class SyncImageOcrApiControllerTest {
 
     private static final String CONTEXT_ID = "test-context-id";
     private static final String FILE_TEXT = "I am a tiff image of articles of association";
@@ -53,6 +49,9 @@ class ImageOcrApiControllerTest {
     @MockBean
     private OcrRequestService ocrRequestService;
 
+    @MockBean
+    private MonitoringService monitoringService;
+
     @Mock
     private TextConversionResult mockResults;
 
@@ -61,37 +60,8 @@ class ImageOcrApiControllerTest {
     @BeforeEach
     private void setUpTests() throws Exception {
          
-        file = new MockMultipartFile(ImageOcrApiController.FILE_REQUEST_PARAMETER_NAME, "hello.txt",
+        file = new MockMultipartFile(SyncImageOcrApiController.FILE_REQUEST_PARAMETER_NAME, "hello.txt",
         "application/octet-stream", FILE_TEXT.getBytes());
-    }
-
-    @Test
-    void shouldAcceptextractTextRequest() throws Exception {
-
-        mockMvc.perform(post(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"app_id\":\"myapp\",\"response_id\": \"9613245852\", \"image_endpoint\": \"http://testurl.com/image?id=9613245852\",\"converted_text_endpoint\":\"http://testurl.com/ocr-results/\"}")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isAccepted());
-    }
-
-    @Test
-    void shouldRejectExtractTextRequestWithNoBody() throws Exception {
-
-        mockMvc.perform(post(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString(ImageOcrApiController.NO_REQUEST_BODY_ERROR_MESSAGE)));
-    }
-
-    @Test
-    void shouldRejectExtractTextRequestWithMissingParameter() throws Exception {
-
-        mockMvc.perform(post(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"app_id\":\"myapp\",\"response_id\": \"9613245852\",\"converted_text_endpoint\":\"http://testurl.com/ocr-results/\"}")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("invalid input[Missing required value image_endpoint]")));
     }
 
     @Test
@@ -106,8 +76,8 @@ class ImageOcrApiControllerTest {
         when(imageOcrService.extractTextFromImageBytes(eq(RESPONSE_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
                 .thenReturn(CompletableFuture.completedFuture(mockResults));
 
-        mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
-                .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isOk())
+        mockMvc.perform(multipart(apiEndpoint + SyncImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+                .param(SyncImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.extracted_text", is(FILE_TEXT)))
                 .andExpect(jsonPath("$.response_id", is(RESPONSE_ID)))
                 .andExpect(jsonPath("$.ocr_processing_time_ms", is(3200)))
@@ -129,9 +99,9 @@ class ImageOcrApiControllerTest {
         when(imageOcrService.extractTextFromImageBytes(eq(CONTEXT_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
                 .thenReturn(CompletableFuture.completedFuture(mockResults));
 
-        mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
-                .param(ImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
-                .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isOk())
+        mockMvc.perform(multipart(apiEndpoint + SyncImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+                .param(SyncImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
+                .param(SyncImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.extracted_text", is(FILE_TEXT)))
                 .andExpect(jsonPath("$.response_id", is(RESPONSE_ID)))
                 .andExpect(jsonPath("$.ocr_processing_time_ms", is(3200)))
@@ -144,9 +114,9 @@ class ImageOcrApiControllerTest {
     @Test
     void shouldCatchUncaughtExceptionInController() throws Exception {
 
-        mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
-                .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.error_message", is(ImageOcrApiController.CONTROLLER_ERROR_MESSAGE)))
+        mockMvc.perform(multipart(apiEndpoint + SyncImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+                .param(SyncImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error_message", is(SyncImageOcrApiController.CONTROLLER_ERROR_MESSAGE)))
                 .andExpect(jsonPath("$.response_id").doesNotExist());
     }
 
@@ -156,10 +126,10 @@ class ImageOcrApiControllerTest {
         when(imageOcrService.extractTextFromImageBytes(eq(CONTEXT_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
         .thenThrow(new CompletionException("General", new IOException("IOException test")));
 
-        mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
-                .param(ImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
-                .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.error_message", is(ImageOcrApiController.GENERAL_SERVICE_ERROR_MESSAGE)))
+        mockMvc.perform(multipart(apiEndpoint + SyncImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+                .param(SyncImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
+                .param(SyncImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error_message", is(SyncImageOcrApiController.GENERAL_SERVICE_ERROR_MESSAGE)))
                 .andExpect(jsonPath("$.response_id").doesNotExist());
     }
 
@@ -169,10 +139,10 @@ class ImageOcrApiControllerTest {
         when(imageOcrService.extractTextFromImageBytes(eq(CONTEXT_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
         .thenThrow(new CompletionException("General", new TextConversionException(CONTEXT_ID, RESPONSE_ID, new IOException("Wrapped IOException test"))));
 
-        mockMvc.perform(multipart(apiEndpoint + ImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
-                .param(ImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
-                .param(ImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.error_message", is(ImageOcrApiController.TEXT_CONVERSION_ERROR_MESSAGE)))
+        mockMvc.perform(multipart(apiEndpoint + SyncImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+                .param(SyncImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
+                .param(SyncImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error_message", is(SyncImageOcrApiController.TEXT_CONVERSION_ERROR_MESSAGE)))
                 .andExpect(jsonPath("$.response_id", is(RESPONSE_ID)));
     }
 }

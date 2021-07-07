@@ -66,7 +66,7 @@ public class CallbackExtractedTextRestClientTest {
         var ocrRequestAssertion = assertThrows(OcrRequestException.class, () ->
             callbackExtractedTextRestClient.sendTextResult(EXTRACTED_TEXT_ENDPOINT, extractTextResultDto));
 
-        assertEquals(99, ocrRequestAssertion.getResultCode().getCode());
+        assertEquals(999, ocrRequestAssertion.getResultCode().getCode());
     }
 
 

@@ -3,8 +3,15 @@ package uk.gov.companieshouse.ocr.api.image.extracttext;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class MonitoringFields {
+import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
+import uk.gov.companieshouse.ocr.api.common.JsonLogFieldNameEnum;
+import uk.gov.companieshouse.ocr.api.common.LogRecordEnum;
+import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
 
+/**
+ *  This is a DTO for data to be logged ONCE per OCR transaction and then used in Log processing to produce Dashboards etc
+ */
+public class MonitoringFields {
 
     private final int averageConfidenceScore;
 
@@ -20,56 +27,52 @@ public class MonitoringFields {
 
     private final int fileSize;
 
-    public MonitoringFields(TextConversionResult textConversionResult, ExtractTextResultDto extractTextResultDto) {
+    private final CallTypeEnum callType;
+
+    private final int resultCode;
+
+
+    public MonitoringFields(TextConversionResult textConversionResult, ExtractTextResultDto extractTextResultDto, CallTypeEnum callType) {
 
         this.averageConfidenceScore = extractTextResultDto.getAverageConfidenceScore();
         this.lowestConfidenceScore = extractTextResultDto.getLowestConfidenceScore();
         this.ocrProcessingTimeMs = extractTextResultDto.getOcrProcessingTimeMs();
         this.totalProcessingTimeMs = extractTextResultDto.getTotalProcessingTimeMs();
         this.timeOnExecuterQueue = textConversionResult.getTimeOnExecuterQueue();
+        this.resultCode = extractTextResultDto.getResultCode();
         this.totalPages = textConversionResult.getTotalPages();
         this.fileSize = textConversionResult.getFileSize();
+        this.callType = callType;
     }
 
-    public int getAverageConfidenceScore() {
-        return averageConfidenceScore;
-    }
+    public MonitoringFields(long totalProcessingTimeMs, ResultCode resultCode, CallTypeEnum callType, int fileSize) {
+        this.averageConfidenceScore = 0;
+        this.lowestConfidenceScore = 0;
+        this.ocrProcessingTimeMs = 0;
+        this.totalProcessingTimeMs = totalProcessingTimeMs;
+        this.timeOnExecuterQueue = 0;
+        this.resultCode = resultCode.getCode();
+        this.totalPages = 0;
+        this.fileSize = fileSize;
+        this.callType = callType;
+	}
 
-    public int getLowestConfidenceScore() {
-        return lowestConfidenceScore;
-    }
-
-    public long getOcrProcessingTimeMs() {
-        return ocrProcessingTimeMs;
-    }
-
-    public long getTotalProcessingTimeMs() {
-        return totalProcessingTimeMs;
-    }
-
-    public long getTimeOnExecuterQueue() {
-        return timeOnExecuterQueue;
-    }
-
-    public Integer getTotalPages() {
-        return totalPages;
-    }
-
-    public int getFileSize() {
-        return fileSize;
-    }
 
     public Map<String, Object> toMap() {
 
         Map<String, Object> map = new LinkedHashMap<>();
 
-        map.put("averageConfidenceScore", averageConfidenceScore);
-        map.put("lowestConfidenceScore", lowestConfidenceScore);
-        map.put("ocrProcessingTimeMs", ocrProcessingTimeMs);
-        map.put("totalProcessingTimeMs", totalProcessingTimeMs);
-        map.put("timeOnExecuterQueue", timeOnExecuterQueue);
-        map.put("totalPages", totalPages);
-        map.put("fileSize", fileSize);
+        map.put(LogRecordEnum.MONITORING_FIELDS.getFieldName(), LogRecordEnum.MONITORING_FIELDS.getFieldValue());
+
+        map.put(JsonLogFieldNameEnum.AVERAGE_CONFIDENCE_SCORE.getFieldName(), averageConfidenceScore);
+        map.put(callType.getFieldName(), callType.getFieldValue());
+        map.put(JsonLogFieldNameEnum.FILE_SIZE.getFieldName(), fileSize);
+        map.put(JsonLogFieldNameEnum.LOWEST_CONFIDENCE_SCORE.getFieldName(), lowestConfidenceScore);
+        map.put(JsonLogFieldNameEnum.OCR_PROCESSING_TIME_MS.getFieldName(), ocrProcessingTimeMs);
+        map.put(JsonLogFieldNameEnum.RESULT_CODE.getFieldName(), resultCode);
+        map.put(JsonLogFieldNameEnum.TOTAL_PROCESSING_TIME_MS.getFieldName(), totalProcessingTimeMs);
+        map.put(JsonLogFieldNameEnum.TIME_ON_EXECUTER_QUEUE_MS.getFieldName(), timeOnExecuterQueue);
+        map.put(JsonLogFieldNameEnum.TOTAL_PAGES.getFieldName(), totalPages);
 
         return  map;        
     }
