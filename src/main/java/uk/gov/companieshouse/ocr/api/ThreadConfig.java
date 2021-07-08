@@ -61,6 +61,7 @@ public class ThreadConfig {
         LOG.info("Creating a thread pool for the " + OCR_REQUEST_EXECUTOR_BEAN);
 
         executor.setThreadNamePrefix(OCR_REQUEST_THREAD_NAME_PREFIX);
+        executor.setQueueCapacity(0); // we just want one queue - the one on the Tesseract image to text queue
         executor.initialize();
         return executor;
     }
