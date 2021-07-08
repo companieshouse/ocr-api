@@ -20,7 +20,7 @@ public class ThreadConfig {
     private static final String IMAGE_TO_TEXT_THREAD_NAME_PREFIX= "image-to-text-thread-";
     private static final String OCR_REQUEST_THREAD_NAME_PREFIX= "ocr-request-thread-";
 
-    private static final int DEFAULT_THREAD_POOL_SIZE = 4; 
+    private static final int DEFAULT_TESSERACT_THREAD_POOL_SIZE = 4; 
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
@@ -35,7 +35,7 @@ public class ThreadConfig {
     private int findThreadPoolSize() {
 
         var configuredThreadPoolSize = reader.getOptionalInteger("OCR_TESSERACT_THREAD_POOL_SIZE");
-        return (configuredThreadPoolSize != null) ? configuredThreadPoolSize :  DEFAULT_THREAD_POOL_SIZE;
+        return (configuredThreadPoolSize != null) ? configuredThreadPoolSize :  DEFAULT_TESSERACT_THREAD_POOL_SIZE;
     }
 
     @Bean (name=IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN)
@@ -54,7 +54,7 @@ public class ThreadConfig {
     }
 
     @Bean (name=OCR_REQUEST_EXECUTOR_BEAN)
-    public ThreadPoolTaskExecutor taskExecutor() {
+    public ThreadPoolTaskExecutor ocrRequestTaskExecutor() {
 
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 

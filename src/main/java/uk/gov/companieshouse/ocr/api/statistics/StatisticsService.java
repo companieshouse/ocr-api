@@ -15,18 +15,27 @@ public class StatisticsService {
     private static final String INSTANCE_UUID = UUID.randomUUID().toString();
 
     @Autowired
-    private ThreadConfig threadConfig;
-
-    @Autowired
     @Qualifier(ThreadConfig.IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN)
     private ThreadPoolTaskExecutor imageToTextTaskExecutor;
+
+    @Autowired
+    @Qualifier(ThreadConfig.OCR_REQUEST_EXECUTOR_BEAN)
+    private ThreadPoolTaskExecutor ocrRequestTaskExecutor;
 
     public StatisticsDto generateStatistics() {
 
         StatisticsDto statistics = new StatisticsDto();
-        statistics.setQueueSize(imageToTextTaskExecutor.getThreadPoolExecutor().getQueue().size());
-        statistics.setTesseractThreadPoolSize(imageToTextTaskExecutor.getThreadPoolExecutor().getPoolSize());
-        // Add active count
+
+        statistics.setTesseractQueueSize(imageToTextTaskExecutor.getThreadPoolExecutor().getQueue().size());
+        statistics.setTesseractPoolSize(imageToTextTaskExecutor.getThreadPoolExecutor().getPoolSize());
+        statistics.setTesseractActivePoolSize(imageToTextTaskExecutor.getThreadPoolExecutor().getActiveCount());
+        statistics.setTesseractLargestPoolSize(imageToTextTaskExecutor.getThreadPoolExecutor().getLargestPoolSize());
+
+        statistics.setOcrRequestQueueSize(ocrRequestTaskExecutor.getThreadPoolExecutor().getQueue().size());
+        statistics.setOcrRequestPoolSize(ocrRequestTaskExecutor.getThreadPoolExecutor().getPoolSize());
+        statistics.setOcrRequestActivePoolSize(ocrRequestTaskExecutor.getThreadPoolExecutor().getActiveCount());
+        statistics.setOcrRequestLargestPoolSize(ocrRequestTaskExecutor.getThreadPoolExecutor().getLargestPoolSize());
+
         statistics.setInstanceUuid(INSTANCE_UUID);
 
         return statistics;           

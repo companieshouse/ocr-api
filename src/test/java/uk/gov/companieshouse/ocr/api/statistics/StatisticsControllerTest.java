@@ -24,8 +24,14 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 class StatisticsControllerTest {
 
     private final static String TEST_UUID = "UUID_123";
-    private final static int TEST_QUEUE_SIZE = 1;
+    private final static int TEST_TESSERACT_QUEUE_SIZE = 1;
     private final static int TEST_TESSERACT_POOL_SIZE = 3;
+    private final static int TEST_TESSERACT_ACTIVE_POOL_SIZE = 2;
+    private final static int TEST_TESSERACT_LARGEST_POOL_SIZE = 4;
+    private final static int TEST_OCR_REQUEST_QUEUE_SIZE = 11;
+    private final static int TEST_OCR_REQUEST_POOL_SIZE = 13;
+    private final static int TEST_OCR_REQUEST_ACTIVE_POOL_SIZE = 12;
+    private final static int TEST_OCR_REQUEST_LARGEST_POOL_SIZE = 14;
 
     @Autowired
     private MockMvc mockMvc;
@@ -41,14 +47,29 @@ class StatisticsControllerTest {
 
         StatisticsDto testStatistics = new StatisticsDto();
         testStatistics.setInstanceUuid(TEST_UUID);
-        testStatistics.setQueueSize(TEST_QUEUE_SIZE);
-        testStatistics.setTesseractThreadPoolSize(TEST_TESSERACT_POOL_SIZE);
+
+        testStatistics.setTesseractQueueSize(TEST_TESSERACT_QUEUE_SIZE);
+        testStatistics.setTesseractPoolSize(TEST_TESSERACT_POOL_SIZE);
+        testStatistics.setTesseractActivePoolSize(TEST_TESSERACT_ACTIVE_POOL_SIZE);
+        testStatistics.setTesseractLargestPoolSize(TEST_TESSERACT_LARGEST_POOL_SIZE);
+
+        testStatistics.setOcrRequestQueueSize(TEST_OCR_REQUEST_QUEUE_SIZE);
+        testStatistics.setOcrRequestPoolSize(TEST_OCR_REQUEST_POOL_SIZE);
+        testStatistics.setOcrRequestActivePoolSize(TEST_OCR_REQUEST_ACTIVE_POOL_SIZE);
+        testStatistics.setOcrRequestLargestPoolSize(TEST_OCR_REQUEST_LARGEST_POOL_SIZE);
 
         when(mockStatisticsService.generateStatistics()).thenReturn(testStatistics);
 
         mockMvc.perform(MockMvcRequestBuilders.get(apiEndpoint + StatisticsController.STATS_PARTIAL_URL))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.instance_uuid", is(TEST_UUID)))
-                .andExpect(jsonPath("$.queue_size", is(TEST_QUEUE_SIZE)))
-                .andExpect(jsonPath("$.tesseract_thread_pool_size", is(TEST_TESSERACT_POOL_SIZE)));
+                .andExpect(jsonPath("$.tesseract_queue_size", is(TEST_TESSERACT_QUEUE_SIZE)))
+                .andExpect(jsonPath("$.tesseract_pool_size", is(TEST_TESSERACT_POOL_SIZE)))
+                .andExpect(jsonPath("$.tesseract_active_pool_size", is(TEST_TESSERACT_ACTIVE_POOL_SIZE)))
+                .andExpect(jsonPath("$.tesseract_largest_pool_size", is(TEST_TESSERACT_LARGEST_POOL_SIZE)))
+                .andExpect(jsonPath("$.ocr_request_queue_size", is(TEST_OCR_REQUEST_QUEUE_SIZE)))
+                .andExpect(jsonPath("$.ocr_request_pool_size", is(TEST_OCR_REQUEST_POOL_SIZE)))
+                .andExpect(jsonPath("$.ocr_request_active_pool_size", is(TEST_OCR_REQUEST_ACTIVE_POOL_SIZE)))
+                .andExpect(jsonPath("$.ocr_request_largest_pool_size", is(TEST_OCR_REQUEST_LARGEST_POOL_SIZE)));
+
     }
 }
