@@ -4,8 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
-import uk.gov.companieshouse.ocr.api.common.JsonLogFieldNameEnum;
-import uk.gov.companieshouse.ocr.api.common.LogRecordEnum;
+import uk.gov.companieshouse.ocr.api.common.JsonConstants;
 import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
 
 /**
@@ -62,17 +61,17 @@ public class MonitoringFields {
 
         Map<String, Object> map = new LinkedHashMap<>();
 
-        map.put(LogRecordEnum.MONITORING_FIELDS.getFieldName(), LogRecordEnum.MONITORING_FIELDS.getFieldValue());
+        map.put(JsonConstants.LOG_RECORD_NAME, JsonConstants.MONITORING_LOG_RECORD);
 
-        map.put(JsonLogFieldNameEnum.AVERAGE_CONFIDENCE_SCORE.getFieldName(), averageConfidenceScore);
+        map.put(JsonConstants.AVERAGE_CONFIDENCE_SCORE_NAME, averageConfidenceScore);
         map.put(callType.getFieldName(), callType.getFieldValue());
-        map.put(JsonLogFieldNameEnum.FILE_SIZE.getFieldName(), fileSize);
-        map.put(JsonLogFieldNameEnum.LOWEST_CONFIDENCE_SCORE.getFieldName(), lowestConfidenceScore);
-        map.put(JsonLogFieldNameEnum.OCR_PROCESSING_TIME_MS.getFieldName(), ocrProcessingTimeMs);
-        map.put(JsonLogFieldNameEnum.RESULT_CODE.getFieldName(), resultCode);
-        map.put(JsonLogFieldNameEnum.TOTAL_PROCESSING_TIME_MS.getFieldName(), totalProcessingTimeMs);
-        map.put(JsonLogFieldNameEnum.TIME_ON_EXECUTER_QUEUE_MS.getFieldName(), timeOnExecuterQueue);
-        map.put(JsonLogFieldNameEnum.TOTAL_PAGES.getFieldName(), totalPages);
+        map.put(JsonConstants.FILE_SIZE_NAME, fileSize);
+        map.put(JsonConstants.LOWEST_CONFIDENCE_SCORE_NAME, lowestConfidenceScore);
+        map.put(JsonConstants.OCR_PROCESSING_TIME_MS_NAME, ocrProcessingTimeMs);
+        map.put(JsonConstants.RESULT_CODE_NAME, resultCode);
+        map.put(JsonConstants.TOTAL_PROCESSING_TIME_MS_NAME, totalProcessingTimeMs);
+        map.put(JsonConstants.TIME_ON_EXECUTER_QUEUE_MS_NAME, timeOnExecuterQueue);
+        map.put(JsonConstants.TOTAL_PAGES_NAME, totalPages);
 
         return  map;        
     }

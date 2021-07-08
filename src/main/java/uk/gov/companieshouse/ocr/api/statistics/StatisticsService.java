@@ -25,7 +25,8 @@ public class StatisticsService {
 
         StatisticsDto statistics = new StatisticsDto();
         statistics.setQueueSize(imageToTextTaskExecutor.getThreadPoolExecutor().getQueue().size());
-        statistics.setTesseractThreadPoolSize(threadConfig.getThreadPoolSize());
+        statistics.setTesseractThreadPoolSize(imageToTextTaskExecutor.getThreadPoolExecutor().getPoolSize());
+        // Add active count
         statistics.setInstanceUuid(INSTANCE_UUID);
 
         return statistics;           

@@ -22,8 +22,6 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 @ExtendWith(MockitoExtension.class)
 class StatisticsServiceTest {
 
-    private final static int TEST_TESSERACT_POOL_SIZE = 3;
-
     @Mock
     private ThreadConfig mockThreadConfig;
 
@@ -38,13 +36,12 @@ class StatisticsServiceTest {
 
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
         when(mockImageToTextTaskExecutor.getThreadPoolExecutor()).thenReturn(threadPoolExecutor);
-        when(mockThreadConfig.getThreadPoolSize()).thenReturn(TEST_TESSERACT_POOL_SIZE);
 
         StatisticsDto statistics = statisticsService.generateStatistics();
 
         assertNotNull(statistics.getInstanceUuid());
         assertEquals(0, statistics.getQueueSize());
-        assertEquals(TEST_TESSERACT_POOL_SIZE, statistics.getTesseractThreadPoolSize());
+        assertEquals(0, statistics.getTesseractThreadPoolSize());
     }
 
 }

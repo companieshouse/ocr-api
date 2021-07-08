@@ -5,13 +5,15 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import uk.gov.companieshouse.ocr.api.common.JsonConstants;
+
 public class StatisticsDto {
 
-    @JsonProperty("instance_uuid")
+    @JsonProperty(JsonConstants.INSTANCE_UUID_NAME)
     String instanceUuid;
 
-    @JsonProperty("queue_size")
-    int queueSize;
+    @JsonProperty(JsonConstants.TESSERACT_QUEUE_SIZE_NAME)
+    int tesseractQueueSize;
 
     @JsonProperty("tesseract_thread_pool_size")
     int tesseractThreadPoolSize;
@@ -27,11 +29,11 @@ public class StatisticsDto {
     } 
 
     public int getQueueSize() {
-        return queueSize;
+        return tesseractQueueSize;
     }
 
     public void setQueueSize(int queueSize) {
-        this.queueSize = queueSize;
+        this.tesseractQueueSize = queueSize;
     }
 
     public int getTesseractThreadPoolSize() {
@@ -44,10 +46,12 @@ public class StatisticsDto {
 
     public Map<String, Object> toMap() {
 
+        // tesseractQueueSize, tesseractPoolSize, tesseractActivePoolSize (same for ocrRequest but queue should always be zero)
+
         Map<String, Object> map = new LinkedHashMap<>();
 
         map.put("instanceUuid", instanceUuid);
-        map.put("queueSize", queueSize);
+        map.put("queueSize", tesseractQueueSize);
         map.put("tesseractThreadPoolSize", tesseractThreadPoolSize);
 
         return  map;        
