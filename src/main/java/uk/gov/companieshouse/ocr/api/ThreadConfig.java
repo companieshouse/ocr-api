@@ -22,6 +22,8 @@ public class ThreadConfig {
 
     private static final int DEFAULT_TESSERACT_THREAD_POOL_SIZE = 4; 
 
+    private static final int NO_QUEUE = 0;
+
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
     private EnvironmentReader reader = new EnvironmentReaderImpl();
@@ -53,6 +55,12 @@ public class ThreadConfig {
         return executor;
     }
 
+    /**
+     * No Queue is created for this ThreadPoolTaskExecutor since we already have a queue for the 'downstream'
+     * Image to Text ThreadPoolTaskExecutor. One Queue in the system is enough
+     * 
+     * @return Spring Bean for the Ocr Request ThreadPoolTaskExecutor
+     */
     @Bean (name=OCR_REQUEST_EXECUTOR_BEAN)
     public ThreadPoolTaskExecutor ocrRequestTaskExecutor() {
 
@@ -61,7 +69,7 @@ public class ThreadConfig {
         LOG.info("Creating a thread pool for the " + OCR_REQUEST_EXECUTOR_BEAN);
 
         executor.setThreadNamePrefix(OCR_REQUEST_THREAD_NAME_PREFIX);
-        executor.setQueueCapacity(0); // we just want one queue - the one on the Tesseract image to text queue
+        executor.setQueueCapacity(NO_QUEUE); 
         executor.initialize();
         return executor;
     }
