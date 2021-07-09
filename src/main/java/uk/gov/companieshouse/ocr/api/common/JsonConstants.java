@@ -4,6 +4,7 @@ public final class JsonConstants {
 
     // Field Names (used in POJO Json definitions and in Log field names)
     public static final String AVERAGE_CONFIDENCE_SCORE_NAME ="average_confidence_score";
+    public static final String CALL_TYPE_NAME = "call_type";
     public static final String FILE_SIZE_NAME = "file_size";
     public static final String INSTANCE_UUID_NAME = "instance_uuid";
     public static final String LOWEST_CONFIDENCE_SCORE_NAME = "lowest_confidence_score";

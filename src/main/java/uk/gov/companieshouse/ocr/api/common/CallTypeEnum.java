@@ -13,7 +13,7 @@ public enum CallTypeEnum implements LogFieldName,  LogFieldValue {
 
     @Override
     public String getFieldName() {
-        return "call_type";
+        return JsonConstants.CALL_TYPE_NAME;
     }
 
     @Override
