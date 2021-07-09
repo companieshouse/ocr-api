@@ -70,7 +70,7 @@ public class SyncImageOcrApiController {
 
         var timeOnQueueStopWatch = new StopWatch();
         timeOnQueueStopWatch.start();
-        var textConversionResult =  imageOcrService.extractTextFromImageBytes(contextId, file.getBytes(), responseId, timeOnQueueStopWatch).join();
+        var textConversionResult =  imageOcrService.extractTextFromImageBytesOld(contextId, file.getBytes(), responseId, timeOnQueueStopWatch).join();
 
         var extractTextResult =  transformer.mapModelToApi(textConversionResult);
 

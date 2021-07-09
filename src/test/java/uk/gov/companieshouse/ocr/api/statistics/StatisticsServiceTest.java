@@ -22,19 +22,10 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 class StatisticsServiceTest {
 
     @Mock
-    ThreadPoolExecutor mockTesseractThreadPoolExecutor;
-
-    @Mock
     ThreadPoolExecutor mockOcrRequestThreadPoolExecutor;
 
     @Mock
-    BlockingQueue<Runnable>  mockTesseractBlockingQueue;
-
-    @Mock
     BlockingQueue<Runnable>  mockOcrRequestBlockingQueue;
-
-    @Mock
-    private ThreadPoolTaskExecutor mockImageToTextTaskExecutor;
 
     @Mock
     private ThreadPoolTaskExecutor ocrRequestTaskExecutor;
@@ -46,16 +37,8 @@ class StatisticsServiceTest {
     void generateStatistics() {
 
         // given
-        when(mockImageToTextTaskExecutor.getThreadPoolExecutor()).thenReturn(mockTesseractThreadPoolExecutor);
-        when(mockImageToTextTaskExecutor.getThreadPoolExecutor().getQueue()).thenReturn(mockTesseractBlockingQueue);
-
         when(ocrRequestTaskExecutor.getThreadPoolExecutor()).thenReturn(mockOcrRequestThreadPoolExecutor);
         when(ocrRequestTaskExecutor.getThreadPoolExecutor().getQueue()).thenReturn(mockOcrRequestBlockingQueue);
-
-        when(mockTesseractBlockingQueue.size()).thenReturn(10);
-        when(mockTesseractThreadPoolExecutor.getPoolSize()).thenReturn(2);
-        when(mockTesseractThreadPoolExecutor.getActiveCount()).thenReturn(1);
-        when(mockTesseractThreadPoolExecutor.getLargestPoolSize()).thenReturn(4);
 
         when(mockOcrRequestBlockingQueue.size()).thenReturn(20);
         when(mockOcrRequestThreadPoolExecutor.getPoolSize()).thenReturn(12);
@@ -68,15 +51,10 @@ class StatisticsServiceTest {
         // then
         assertNotNull(statistics.getInstanceUuid());
 
-        assertEquals(10, statistics.getTesseractQueueSize());
-        assertEquals(2, statistics.getTesseractPoolSize());
-        assertEquals(1, statistics.getTesseractActivePoolSize());
-        assertEquals(4, statistics.getTesseractLargestPoolSize());
-
-        assertEquals(20, statistics.getOcrRequestQueueSize());
-        assertEquals(12, statistics.getOcrRequestPoolSize());
-        assertEquals(11, statistics.getOcrRequestActivePoolSize());
-        assertEquals(14, statistics.getOcrRequestLargestPoolSize());
+        assertEquals(20, statistics.getQueueSize());
+        assertEquals(12, statistics.getPoolSize());
+        assertEquals(11, statistics.getActivePoolSize());
+        assertEquals(14, statistics.getLargestPoolSize());
     }
 
 }

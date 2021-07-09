@@ -54,7 +54,7 @@ public class OcrRequestService {
             var timeOnQueueStopWatch = new StopWatch();
             timeOnQueueStopWatch.start();
 
-            textConversionResult =  imageOcrService.extractTextFromImageBytes(ocrRequest.getContextId(), imageBytes, ocrRequest.getResponseId(), timeOnQueueStopWatch).join();
+            textConversionResult =  imageOcrService.extractTextFromImageBytesOld(ocrRequest.getContextId(), imageBytes, ocrRequest.getResponseId(), timeOnQueueStopWatch).join();
   
             extractTextResult =  transformer.mapModelToApi(textConversionResult);
             extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime()); // for callback
