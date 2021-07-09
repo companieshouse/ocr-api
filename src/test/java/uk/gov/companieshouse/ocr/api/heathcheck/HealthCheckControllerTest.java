@@ -39,8 +39,8 @@ class HealthCheckControllerTest {
 
         StatisticsDto testStatistics = new StatisticsDto();
         testStatistics.setInstanceUuid("test-uuid");
-        testStatistics.setQueueSize(2);
-        testStatistics.setTesseractThreadPoolSize(4);
+        testStatistics.setTesseractQueueSize(2);
+        testStatistics.setTesseractPoolSize(4);
 
         when(mockStatisticsService.generateStatistics()).thenReturn(testStatistics);
 

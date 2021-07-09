@@ -21,7 +21,7 @@ class MonitoringFieldsTest {
     private static final long OCR_PROCESSING_TIME_MS = 8321;
     private static final long TOTAL_PROCESSING_TIME_MS = 8842;
     private static final int FILE_SIZE = 12345;
-    private static final int RESULT_CODE = 99;
+    private static final int RESULT_CODE = 999;
 
     @Test
     void objectConstructed() {
@@ -43,16 +43,16 @@ class MonitoringFieldsTest {
 
         Map<String, Object> expectedMap = new LinkedHashMap<>(); 
   
-        expectedMap.put("logRecordName", "ocrMonitoring");
-        expectedMap.put("averageConfidenceScore", AVERAGE_CONFIDENCE_SCORE);
-        expectedMap.put("callType", "asynchronous");
-        expectedMap.put("fileSize", FILE_SIZE);
-        expectedMap.put("lowestConfidenceScore", LOWEST_CONFIDENCE_SCORE);
-        expectedMap.put("ocrProcessingTimeMs", OCR_PROCESSING_TIME_MS);
-        expectedMap.put("resultCode", RESULT_CODE);
-        expectedMap.put("timeOnExecuterQueueMs", TIME_ON_EXECUTOR_QUEUE);
-        expectedMap.put("totalPages", 2);
-        expectedMap.put("totalProcessingTimeMs", TOTAL_PROCESSING_TIME_MS);
+        expectedMap.put("log_record_name", "ocr_monitoring");
+        expectedMap.put("average_confidence_score", AVERAGE_CONFIDENCE_SCORE);
+        expectedMap.put("call_type", "asynchronous");
+        expectedMap.put("file_size", FILE_SIZE);
+        expectedMap.put("lowest_confidence_score", LOWEST_CONFIDENCE_SCORE);
+        expectedMap.put("ocr_processing_time_ms", OCR_PROCESSING_TIME_MS);
+        expectedMap.put("result_code", RESULT_CODE);
+        expectedMap.put("time_on_executer_queue_ms", TIME_ON_EXECUTOR_QUEUE);
+        expectedMap.put("total_pages", 2);
+        expectedMap.put("total_processing_time_ms", TOTAL_PROCESSING_TIME_MS);
 
         assertThat(actualMap.size(), is(10));
 

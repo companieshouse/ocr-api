@@ -20,7 +20,9 @@ public class ThreadConfig {
     private static final String IMAGE_TO_TEXT_THREAD_NAME_PREFIX= "image-to-text-thread-";
     private static final String OCR_REQUEST_THREAD_NAME_PREFIX= "ocr-request-thread-";
 
-    private static final int DEFAULT_THREAD_POOL_SIZE = 4; 
+    private static final int DEFAULT_TESSERACT_THREAD_POOL_SIZE = 4; 
+
+    private static final int NO_QUEUE = 0;
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
@@ -35,7 +37,7 @@ public class ThreadConfig {
     private int findThreadPoolSize() {
 
         var configuredThreadPoolSize = reader.getOptionalInteger("OCR_TESSERACT_THREAD_POOL_SIZE");
-        return (configuredThreadPoolSize != null) ? configuredThreadPoolSize :  DEFAULT_THREAD_POOL_SIZE;
+        return (configuredThreadPoolSize != null) ? configuredThreadPoolSize :  DEFAULT_TESSERACT_THREAD_POOL_SIZE;
     }
 
     @Bean (name=IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN)
@@ -53,14 +55,21 @@ public class ThreadConfig {
         return executor;
     }
 
+    /**
+     * No Queue is created for this ThreadPoolTaskExecutor since we already have a queue for the 'downstream'
+     * Image to Text ThreadPoolTaskExecutor. One Queue in the system is enough
+     * 
+     * @return Spring Bean for the Ocr Request ThreadPoolTaskExecutor
+     */
     @Bean (name=OCR_REQUEST_EXECUTOR_BEAN)
-    public ThreadPoolTaskExecutor taskExecutor() {
+    public ThreadPoolTaskExecutor ocrRequestTaskExecutor() {
 
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
         LOG.info("Creating a thread pool for the " + OCR_REQUEST_EXECUTOR_BEAN);
 
         executor.setThreadNamePrefix(OCR_REQUEST_THREAD_NAME_PREFIX);
+        executor.setQueueCapacity(NO_QUEUE); 
         executor.initialize();
         return executor;
     }
