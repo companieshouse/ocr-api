@@ -3,15 +3,11 @@ package uk.gov.companieshouse.ocr.api.image.extracttext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.concurrent.CompletableFuture;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
-import org.apache.commons.lang.time.StopWatch;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import net.sourceforge.tess4j.ITessAPI;
@@ -22,7 +18,6 @@ import net.sourceforge.tess4j.util.ImageIOHelper;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.ocr.api.OcrApiApplication;
-import uk.gov.companieshouse.ocr.api.ThreadConfig;
 import uk.gov.companieshouse.ocr.api.tesseract.TesseractConstants;
 
 @Service
@@ -30,39 +25,24 @@ public class ImageOcrService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
-    @Async(ThreadConfig.IMAGE_TO_TEXT_TASK_EXECUTOR_BEAN)
-    public CompletableFuture<TextConversionResult> 
-    extractTextFromImageBytesOld(String contextId, byte[] imageBytes, String responseId, StopWatch timeOnQueueStopWatch) throws IOException {
-
-        timeOnQueueStopWatch.stop();
-
-        if (imageBytes.length == 0) {
-            return CompletableFuture.completedFuture(TextConversionResult.createForZeroLengthFile(contextId, responseId, timeOnQueueStopWatch.getTime()));
-        }
-
-        var logDataMap = new LinkedHashMap<String, Object>();
-        logDataMap.put("timeOnExecuterQueue", Long.valueOf(timeOnQueueStopWatch.getTime()));
-        logDataMap.put("threadName",  Thread.currentThread().getName());
-        LOG.infoContext(contextId, "Converting File to Text - Time waiting on queue " + timeOnQueueStopWatch.toString(), logDataMap); 
-
-        final var textConversionResult = new TextConversionResult(contextId, responseId, timeOnQueueStopWatch.getTime(), imageBytes.length); 
-
-        try(ImageInputStream is = ImageIO.createImageInputStream(new ByteArrayInputStream(imageBytes))) {
-            ImageReader reader = createImageReader(is);
-            extractTextFromImageViaApi(reader, textConversionResult);
-        } 
-
-        return CompletableFuture.completedFuture(textConversionResult);
-    }
-
+    /**
+     * 
+     * @param contextId - context that the request is running in
+     * @param imageBytes - bytes of the Tiff to convert
+     * @param responseId - used in the result
+     * @param timeOnQueue - time on executor queue (ms()
+     * @return
+     * @throws IOException - when it fails to convert the Image to Text (hard to simulate)
+     * @throws TextConversionException - When you try to convert a bad file (e.g. zero length)
+     */
     public TextConversionResult
-    extractTextFromImageBytes(String contextId, byte[] imageBytes, String responseId) throws IOException {
+    extractTextFromImageBytes(String contextId, byte[] imageBytes, String responseId, long timeOnQueue) throws IOException, TextConversionException {
 
         if (imageBytes.length == 0) {
-            return TextConversionResult.createForZeroLengthFile(contextId, responseId, 0);
+            return TextConversionResult.createForZeroLengthFile(contextId, responseId, timeOnQueue);
         }
 
-        final var textConversionResult = new TextConversionResult(contextId, responseId, 0, imageBytes.length); 
+        final var textConversionResult = new TextConversionResult(contextId, responseId, timeOnQueue, imageBytes.length); 
 
         try(ImageInputStream is = ImageIO.createImageInputStream(new ByteArrayInputStream(imageBytes))) {
             ImageReader reader = createImageReader(is);
@@ -73,7 +53,7 @@ public class ImageOcrService {
     }
 
 
-    private void extractTextFromImageViaApi(ImageReader reader, TextConversionResult textConversionResult) {
+    private void extractTextFromImageViaApi(ImageReader reader, TextConversionResult textConversionResult) throws TextConversionException {
         TessAPI api = null;
         TessBaseAPI handle = null;
 

@@ -50,7 +50,7 @@ class MonitoringFieldsTest {
         expectedMap.put("lowest_confidence_score", LOWEST_CONFIDENCE_SCORE);
         expectedMap.put("ocr_processing_time_ms", OCR_PROCESSING_TIME_MS);
         expectedMap.put("result_code", RESULT_CODE);
-        expectedMap.put("time_on_executer_queue_ms", TIME_ON_EXECUTOR_QUEUE);
+        expectedMap.put("time_on_queue_ms", TIME_ON_EXECUTOR_QUEUE);
         expectedMap.put("total_pages", 2);
         expectedMap.put("total_processing_time_ms", TOTAL_PROCESSING_TIME_MS);
 

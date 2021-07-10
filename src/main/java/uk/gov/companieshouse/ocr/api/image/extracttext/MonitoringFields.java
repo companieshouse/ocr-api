@@ -64,13 +64,13 @@ public class MonitoringFields {
         map.put(JsonConstants.LOG_RECORD_NAME, JsonConstants.MONITORING_LOG_RECORD);
 
         map.put(JsonConstants.AVERAGE_CONFIDENCE_SCORE_NAME, averageConfidenceScore);
-        map.put(callType.getFieldName(), callType.getFieldValue());
+        map.put(JsonConstants.CALL_TYPE_NAME, callType.getFieldValue());
         map.put(JsonConstants.FILE_SIZE_NAME, fileSize);
         map.put(JsonConstants.LOWEST_CONFIDENCE_SCORE_NAME, lowestConfidenceScore);
         map.put(JsonConstants.OCR_PROCESSING_TIME_MS_NAME, ocrProcessingTimeMs);
         map.put(JsonConstants.RESULT_CODE_NAME, resultCode);
         map.put(JsonConstants.TOTAL_PROCESSING_TIME_MS_NAME, totalProcessingTimeMs);
-        map.put(JsonConstants.TIME_ON_EXECUTER_QUEUE_MS_NAME, timeOnExecuterQueue);
+        map.put(JsonConstants.TIME_ON_QUEUE_MS_NAME, timeOnExecuterQueue);
         map.put(JsonConstants.TOTAL_PAGES_NAME, totalPages);
 
         return  map;        

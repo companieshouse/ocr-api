@@ -24,7 +24,7 @@ import uk.gov.companieshouse.ocr.api.common.OcrGeneralConstants;
 import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
 
 /*
- IOException is not really thrown on the POST methods in this class since it can only come from
+ IOException and TextConversionException are not really thrown on the POST methods in this class since it can only come from
  an asynchronous method when it is caught via a CompletionException
  */
 @RestController
@@ -44,7 +44,7 @@ public class SyncImageOcrApiController {
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
     @Autowired
-    private ImageOcrService imageOcrService;
+    private OcrRequestService ocrRequestService;
 
     @Autowired
     private MonitoringService monitoringService;
@@ -57,7 +57,7 @@ public class SyncImageOcrApiController {
             @RequestParam(FILE_REQUEST_PARAMETER_NAME) MultipartFile file, 
             @RequestParam(RESPONSE_ID_REQUEST_PARAMETER_NAME) String responseId,
             @RequestParam(name = CONTEXT_ID_REQUEST_PARAMETER_NAME, required = false) String contextId
-            ) throws IOException {
+            ) throws IOException, TextConversionException {
 
         var controllerStopWatch = new StopWatch();
         controllerStopWatch.start();
@@ -70,7 +70,7 @@ public class SyncImageOcrApiController {
 
         var timeOnQueueStopWatch = new StopWatch();
         timeOnQueueStopWatch.start();
-        var textConversionResult =  imageOcrService.extractTextFromImageBytesOld(contextId, file.getBytes(), responseId, timeOnQueueStopWatch).join();
+        var textConversionResult =  ocrRequestService.handleSynchronousRequest(contextId, file.getBytes(), responseId, timeOnQueueStopWatch).join();
 
         var extractTextResult =  transformer.mapModelToApi(textConversionResult);
 
@@ -84,7 +84,7 @@ public class SyncImageOcrApiController {
     }
 
     /*
-     Occurs when the  `.join()` method is called after calling an `async` method AND an untrapped exception is thown within that method
+     Occurs when the  `.join()` method is called after calling an `async` method AND an untrapped exception is thrown within that method
      */
     @ExceptionHandler(CompletionException.class)
     public ResponseEntity<ErrorResponseDto> handleCompletionException(CompletionException e) {

@@ -14,7 +14,8 @@ public final class JsonConstants {
     public static final String POOL_SIZE_NAME = "pool_size";
     public static final String QUEUE_SIZE_NAME = "queue_size";
     public static final String RESULT_CODE_NAME = "result_code";
-    public static final String TIME_ON_EXECUTER_QUEUE_MS_NAME = "time_on_executer_queue_ms";
+    public static final String THREAD_NAME_NAME = "thread_name";
+    public static final String TIME_ON_QUEUE_MS_NAME = "time_on_queue_ms";
     public static final String TOTAL_PAGES_NAME = "total_pages";
     public static final String TOTAL_PROCESSING_TIME_MS_NAME = "total_processing_time_ms";
 
@@ -23,6 +24,7 @@ public final class JsonConstants {
 
     public static final String MONITORING_LOG_RECORD = "ocr_monitoring";
     public static final String STATISTICS_LOG_RECORD = "ocr_statistics";
+    public static final String POST_QUEUE_LOG_RECORD = "post_queue";
 
     private JsonConstants(){}
     
