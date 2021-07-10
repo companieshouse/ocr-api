@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.ocr.api.common;
 
-public enum CallTypeEnum implements LogFieldName,  LogFieldValue {
+public enum CallTypeEnum implements LogFieldValue {
 
     ASYNCHRONOUS("asynchronous"),
     SYNCHRONOUS("synchronous");
@@ -9,11 +9,6 @@ public enum CallTypeEnum implements LogFieldName,  LogFieldValue {
 
     private CallTypeEnum(String callTypeValue) {
         this.callTypeValue = callTypeValue;
-    }
-
-    @Override
-    public String getFieldName() {
-        return JsonConstants.CALL_TYPE_NAME;
     }
 
     @Override

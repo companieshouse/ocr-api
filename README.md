@@ -1,8 +1,28 @@
-# ocr-api
+# `ocr-api`
 
-A microservice to extract text from images. This uses Tess4J which itself is a small (Java Native Access) wrapper around Tesseract. As well as returning the extracted text some metadata relating to this service is also returned [data returned](src/main/java/uk/gov/companieshouse/ocr/api/image/extracttext/ExtractTextResultDto.java). Optionally a "context id" can be sent for use in context logging. If it is not sent then the "request id" is used for context logging.
+A microservice to extract text from images. This uses Tess4J which itself is a small (Java Native Access) wrapper around Tesseract. As well as returning the extracted text some metadata relating to this service is also returned [data returned](src/main/java/uk/gov/companieshouse/ocr/api/image/extracttext/ExtractTextResultDto.java).
+
+The `ocr-api` has one thread pool (with a blocking queue) that protects the system from being overloaded. In the normal running of this microservice this queue should have very few entries on it.
 
 The initial drop of this microservice converts TIFF files to text.
+
+## Call Types
+
+### Asynchronous
+
+Endpoint = `[server address]/ocr-api/api/ocr/image/tiff/extractTextRequest`
+
+The request to the controller is first vetted and then handed off to an asynchronous thread and a 202 Http status is returned to the client. On the asynchronous thread the following steps are made:
+
+- Get the image provided in the OCR request,
+- Convert the image to text,
+- Send the results back via a callback URL provided in the OCR Request
+
+### Synchronous
+
+Endpoint = `[server address]/ocr-api/api/ocr/image/tiff/extractText`
+
+The file to be converted is uploaded to the controller and the results (extracted text plus meta data) are returned.
 
 ## Requirements
 
@@ -12,7 +32,7 @@ The initial drop of this microservice converts TIFF files to text.
 
 ## Usage
 
-Set the environmental variables OCR_TESSERACT_THREAD_POOL_SIZE, HUMAN_LOG and LOGLEVEL
+Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `HUMAN_LOG` and `LOGLEVEL`
 
 - Run `make dev` to build JAR (versioned in target and unversioned in top level d) and run the unit tests **(using Java 11)**
 - Run `docker build -t ocr-api .` to build the docker image
@@ -34,7 +54,7 @@ Store the data file in `docker-resources/tessdata/` with a timestamp and adjust 
 A set of metadata related to the OCR process is created and logged in the application with a subset of it returned as part of the API. There are two types of meta data:
 
 - Confidence data obtained from the Tesseract API,
-- Timings (time of the internal queue between the controller and asynchronous service class it calls, the ocr processing time and the total time within the application)
+- Timings (time of the internal queue between the controller and asynchronous service class it calls, the OCR processing time and the total time within the application)
 
 Internally this data is logged while externally a subset of it is returned in the API.
 
@@ -56,9 +76,11 @@ OCR_TESSERACT_THREAD_POOL_SIZE              | Number of threads to run the Tesse
 
 Name                       | Description
 ---------------------------| ------------------------------------------------------------
+instance_uuid              | UUID for when multiple instance of `ocr-api` are running in the same AWS ECS Cluster (or instance restarts)
 queue_size                 | The number of items on the internal queue waiting to be processed by the Tesseract threads
-instance_uuid              | UUID for when multiple instance of ocr-api are running in the same AWS ECS Cluster (or instance restarts)
-tesseract_thread_pool_size | The number of Java threads used in the Tesseract image to text conversion (static)  
+active_pool_size           | the largest size of the pool since it was created.
+pool_size                  | count of threads in the thread pool,
+largest_pool_size          | count of threads in the thread pool currently running tasks.
 
 ## Testing Deployment
 
@@ -73,6 +95,7 @@ Example:
 curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id" -F contextId="SAMPLE_ARTICLES" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
 curl -F file=@"src/test/resources/blank-articles.tif" -F responseId="curl test response id" -F contextId="BLANK-TIFF" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
 curl -F file=@"src/test/resources/empty-articles.tif" -F responseId="curl test response id" -F contextId="EMPTY-TIFF" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
+curl -F file=@"src/test/resources/small-articles.tif" -F responseId="curl test response id" -F contextId="SMALL-TIFF" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
 
 # Without Context ID
 curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id"  http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText

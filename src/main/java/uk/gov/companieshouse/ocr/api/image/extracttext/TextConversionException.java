@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
-public class TextConversionException extends RuntimeException {
+public class TextConversionException extends Exception {
 
     private static final long serialVersionUID = 1L;
 

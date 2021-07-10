@@ -12,48 +12,19 @@ public class StatisticsDto {
     @JsonProperty(JsonConstants.INSTANCE_UUID_NAME)
     String instanceUuid;
 
-    @JsonProperty(JsonConstants.OCR_REQUEST_ACTIVE_POOL_SIZE_NAME)
-    int ocrRequestActivePoolSize;
+    @JsonProperty(JsonConstants.ACTIVE_POOL_SIZE_NAME)
+    int activePoolSize;
 
-    @JsonProperty(JsonConstants.OCR_REQUEST_LARGEST_POOL_SIZE_NAME)
-    int ocrRequestLargestPoolSize;
+    @JsonProperty(JsonConstants.LARGEST_POOL_SIZE_NAME)
+    int largestPoolSize;
 
-    @JsonProperty(JsonConstants.OCR_REQUEST_POOL_SIZE_NAME)
-    int ocrRequestPoolSize;
+    @JsonProperty(JsonConstants.POOL_SIZE_NAME)
+    int poolSize;
 
-    @JsonProperty(JsonConstants.OCR_REQUEST_QUEUE_SIZE_NAME)
-    int ocrRequestQueueSize;
+    @JsonProperty(JsonConstants.QUEUE_SIZE_NAME)
+    int queueSize;
 
-    @JsonProperty(JsonConstants.TESSERACT_ACTIVE_POOL_SIZE_NAME)
-    int tesseractActivePoolSize;
-
-    @JsonProperty(JsonConstants.TESSERACT_LARGEST_POOL_SIZE_NAME)
-    int tesseractLargestPoolSize;
-
-    @JsonProperty(JsonConstants.TESSERACT_POOL_SIZE_NAME)
-    int tesseractPoolSize;
-
-    @JsonProperty(JsonConstants.TESSERACT_QUEUE_SIZE_NAME)
-    int tesseractQueueSize;
-
-
-    /*  ------ Accessors ------- */
-
-    public int getTesseractQueueSize() {
-        return tesseractQueueSize;
-    }
-
-    public void setTesseractQueueSize(int tesseractQueueSize) {
-        this.tesseractQueueSize = tesseractQueueSize;
-    }
-
-    public int getTesseractActivePoolSize() {
-        return tesseractActivePoolSize;
-    }
-
-    public void setTesseractActivePoolSize(int tesseractActivePoolSize) {
-        this.tesseractActivePoolSize = tesseractActivePoolSize;
-    }
+    /*  ------ Accessors ------- */ 
 
     public String getInstanceUuid() {
         return instanceUuid;
@@ -61,54 +32,38 @@ public class StatisticsDto {
 
     public void setInstanceUuid(String instanceUuid) {
         this.instanceUuid = instanceUuid;
-    } 
-
-    public int getOcrRequestActivePoolSize() {
-        return ocrRequestActivePoolSize;
     }
 
-    public void setOcrRequestActivePoolSize(int ocrRequestActivePoolSize) {
-        this.ocrRequestActivePoolSize = ocrRequestActivePoolSize;
+    public int getActivePoolSize() {
+        return activePoolSize;
     }
 
-    public int getOcrRequestLargestPoolSize() {
-        return ocrRequestLargestPoolSize;
+    public void setActivePoolSize(int activePoolSize) {
+        this.activePoolSize = activePoolSize;
     }
 
-    public void setOcrRequestLargestPoolSize(int ocrRequestLargestPoolSize) {
-        this.ocrRequestLargestPoolSize = ocrRequestLargestPoolSize;
+    public int getLargestPoolSize() {
+        return largestPoolSize;
     }
 
-    public int getOcrRequestPoolSize() {
-        return ocrRequestPoolSize;
+    public void setLargestPoolSize(int largestPoolSize) {
+        this.largestPoolSize = largestPoolSize;
     }
 
-    public void setOcrRequestPoolSize(int ocrRequestPoolSize) {
-        this.ocrRequestPoolSize = ocrRequestPoolSize;
+    public int getPoolSize() {
+        return poolSize;
     }
 
-    public int getOcrRequestQueueSize() {
-        return ocrRequestQueueSize;
+    public void setPoolSize(int poolSize) {
+        this.poolSize = poolSize;
     }
 
-    public void setOcrRequestQueueSize(int ocrRequestQueueSize) {
-        this.ocrRequestQueueSize = ocrRequestQueueSize;
+    public int getQueueSize() {
+        return queueSize;
     }
 
-    public int getTesseractPoolSize() {
-        return tesseractPoolSize;
-    }
-
-    public void setTesseractPoolSize(int tesseractThreadPoolSize) {
-        this.tesseractPoolSize = tesseractThreadPoolSize;
-    }
-
-    public int getTesseractLargestPoolSize() {
-        return tesseractLargestPoolSize;
-    }
-
-    public void setTesseractLargestPoolSize(int tesseractLargestPoolSize) {
-        this.tesseractLargestPoolSize = tesseractLargestPoolSize;
+    public void setQueueSize(int queueSize) {
+        this.queueSize = queueSize;
     }
 
     public Map<String, Object> toMap() {
@@ -119,14 +74,10 @@ public class StatisticsDto {
 
         map.put(JsonConstants.LOG_RECORD_NAME, JsonConstants.STATISTICS_LOG_RECORD);
         map.put(JsonConstants.INSTANCE_UUID_NAME, instanceUuid);
-        map.put(JsonConstants.TESSERACT_QUEUE_SIZE_NAME, tesseractQueueSize);
-        map.put(JsonConstants.TESSERACT_ACTIVE_POOL_SIZE_NAME, tesseractActivePoolSize);
-        map.put(JsonConstants.TESSERACT_POOL_SIZE_NAME, tesseractPoolSize);
-        map.put(JsonConstants.TESSERACT_LARGEST_POOL_SIZE_NAME, tesseractLargestPoolSize);
-        map.put(JsonConstants.OCR_REQUEST_QUEUE_SIZE_NAME, ocrRequestQueueSize);
-        map.put(JsonConstants.OCR_REQUEST_ACTIVE_POOL_SIZE_NAME, ocrRequestActivePoolSize);
-        map.put(JsonConstants.OCR_REQUEST_POOL_SIZE_NAME, ocrRequestPoolSize);
-        map.put(JsonConstants.OCR_REQUEST_LARGEST_POOL_SIZE_NAME, ocrRequestLargestPoolSize);
+        map.put(JsonConstants.QUEUE_SIZE_NAME, queueSize);
+        map.put(JsonConstants.ACTIVE_POOL_SIZE_NAME, activePoolSize);
+        map.put(JsonConstants.POOL_SIZE_NAME, poolSize);
+        map.put(JsonConstants.LARGEST_POOL_SIZE_NAME, largestPoolSize);
 
         return  map;        
     }

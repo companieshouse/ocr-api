@@ -38,9 +38,6 @@ class HealthCheckControllerTest {
     void validateIsHealthy() throws Exception {
 
         StatisticsDto testStatistics = new StatisticsDto();
-        testStatistics.setInstanceUuid("test-uuid");
-        testStatistics.setTesseractQueueSize(2);
-        testStatistics.setTesseractPoolSize(4);
 
         when(mockStatisticsService.generateStatistics()).thenReturn(testStatistics);
 

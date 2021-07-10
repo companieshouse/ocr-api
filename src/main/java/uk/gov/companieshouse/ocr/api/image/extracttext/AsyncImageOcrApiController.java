@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,10 +28,7 @@ import uk.gov.companieshouse.ocr.api.common.ErrorResponseDto;
 import uk.gov.companieshouse.ocr.api.common.OcrGeneralConstants;
 import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
 
-/*
- IOException is not really thrown on the POST methods in this class since it can only come from
- an asynchronous method when it is caught via a CompletionException
- */
+
 @RestController
 public class AsyncImageOcrApiController {
 
@@ -59,7 +55,7 @@ public class AsyncImageOcrApiController {
     private MonitoringService monitoringService;
 
     @PostMapping("${api.endpoint}" + TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
-    public ResponseEntity<HttpStatus> receiveOcrRequest(@Valid @RequestBody OcrClientRequest clientRequest) throws IOException {
+    public ResponseEntity<HttpStatus> receiveOcrRequest(@Valid @RequestBody OcrClientRequest clientRequest) {
 
         var ocrRequestStopWatch = new StopWatch();
         ocrRequestStopWatch.start();
@@ -67,7 +63,7 @@ public class AsyncImageOcrApiController {
         OcrRequest ocrRequest = new OcrRequest(clientRequest, LocalDateTime.now());
         LOG.infoContext(ocrRequest.getContextId(),"Received OCR request", clientRequest.toMap());
 
-        ocrRequestService.handleRequest(ocrRequest, ocrRequestStopWatch);
+        ocrRequestService.handleAsynchronousRequest(ocrRequest, ocrRequestStopWatch);
 
         LOG.infoContext(ocrRequest.getContextId(),"OCR request now being handled asynchronously", null);
 
