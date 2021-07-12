@@ -6,6 +6,7 @@ import java.util.concurrent.CompletionException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskRejectedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -68,45 +69,34 @@ public class SyncImageOcrApiController {
         
         LOG.infoContext(contextId,"Received from client file [" + file.getOriginalFilename() + "] Content type [" + file.getContentType() + "]", null);
 
-        var timeOnQueueStopWatch = new StopWatch();
-        timeOnQueueStopWatch.start();
-        var textConversionResult =  ocrRequestService.handleSynchronousRequest(contextId, file.getBytes(), responseId, timeOnQueueStopWatch).join();
+        try {
+            var timeOnQueueStopWatch = new StopWatch();
+            timeOnQueueStopWatch.start();
+            var textConversionResult = ocrRequestService.handleSynchronousRequest(contextId, file.getBytes(), responseId, timeOnQueueStopWatch).join();
 
-        var extractTextResult =  transformer.mapModelToApi(textConversionResult);
+            var extractTextResult = transformer.mapModelToApi(textConversionResult);
 
-        controllerStopWatch.stop();
-        extractTextResult.setTotalProcessingTimeMs(controllerStopWatch.getTime());
+            controllerStopWatch.stop();
+            extractTextResult.setTotalProcessingTimeMs(controllerStopWatch.getTime());
 
-        var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult, CallTypeEnum.SYNCHRONOUS);
-        monitoringService.logSuccess(contextId, monitoringFields);
+            var monitoringFields = new MonitoringFields(textConversionResult, extractTextResult, CallTypeEnum.SYNCHRONOUS);
+            monitoringService.logSuccess(contextId, monitoringFields);
 
-        return new ResponseEntity<>(extractTextResult, HttpStatus.OK);
-    }
-
-    /*
-     Occurs when the  `.join()` method is called after calling an `async` method AND an untrapped exception is thrown within that method
-     */
-    @ExceptionHandler(CompletionException.class)
-    public ResponseEntity<ErrorResponseDto> handleCompletionException(CompletionException e) {
-
-        var errorResponse = new ErrorResponseDto();
-        if (e.getCause() instanceof TextConversionException) {
-
-            var cause = (TextConversionException) e.getCause();
-            logError(cause.getContextId(), cause);
-            errorResponse.setErrorMessage(TEXT_CONVERSION_ERROR_MESSAGE);
-            errorResponse.setContextId(cause.getContextId());
-            errorResponse.setResponseId(cause.getResponseId());
-            monitoringService.logFailure(cause.getContextId(), 0, ResultCode.INTERNAL_SERVER_ERROR, CallTypeEnum.SYNCHRONOUS, 0);
-            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(extractTextResult, HttpStatus.OK);
+        } catch (TaskRejectedException te) {
+            LOG.errorContext(contextId, "Queue full and all threads being used - request is rejects", te, null);
+            monitoringService.logFailure(contextId, 0, ResultCode.APPLICATION_OVERLOADED, CallTypeEnum.SYNCHRONOUS, 0);
+            var extractTextResult = ExtractTextResultDto.createErrorExtractTextResultDtoFromContextId(contextId, responseId, ResultCode.APPLICATION_OVERLOADED, controllerStopWatch.getTime());
+            return new ResponseEntity<>(extractTextResult, HttpStatus.SERVICE_UNAVAILABLE);
         }
-        else {
-            logError(null, e);
-            errorResponse.setErrorMessage(GENERAL_SERVICE_ERROR_MESSAGE);
-            monitoringService.logFailure(OcrGeneralConstants.UNKNOWN_CONTEXT, 0, ResultCode.INTERNAL_SERVER_ERROR, CallTypeEnum.SYNCHRONOUS, 0);
-            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        catch (CompletionException ce) {
+            LOG.errorContext(contextId, "Error when converting Image to Text", ce, null);
+            monitoringService.logFailure(contextId, 0, ResultCode.INTERNAL_SERVER_ERROR, CallTypeEnum.SYNCHRONOUS, 0);
+            var extractTextResult = ExtractTextResultDto.createErrorExtractTextResultDtoFromContextId(contextId, responseId, ResultCode.INTERNAL_SERVER_ERROR, controllerStopWatch.getTime());
+            return new ResponseEntity<>(extractTextResult, HttpStatus.INTERNAL_SERVER_ERROR);         
         }
     }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> uncaughtException(Exception e) {
@@ -118,11 +108,6 @@ public class SyncImageOcrApiController {
         monitoringService.logFailure(OcrGeneralConstants.UNKNOWN_CONTEXT, 0, ResultCode.INTERNAL_SERVER_ERROR, CallTypeEnum.SYNCHRONOUS, 0);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    private void logError(String responseId, Exception e) {
-
-        LOG.errorContext(responseId,  e, null);
     }
 
 }

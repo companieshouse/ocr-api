@@ -12,6 +12,7 @@ public class OcrRequestException extends Exception {
 
         BAD_REQUEST(HttpStatus.BAD_REQUEST.value()),
         INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value()),
+        APPLICATION_OVERLOADED(HttpStatus.SERVICE_UNAVAILABLE.value()),
 
         // Values 990 - 999 just used for logging (e.g. we failed to send client call failed)
         FAIL_LOGIC_ERROR(998),

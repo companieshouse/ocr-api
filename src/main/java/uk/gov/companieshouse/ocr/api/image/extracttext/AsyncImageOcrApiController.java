@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskRejectedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -63,7 +64,14 @@ public class AsyncImageOcrApiController {
         OcrRequest ocrRequest = new OcrRequest(clientRequest, LocalDateTime.now());
         LOG.infoContext(ocrRequest.getContextId(),"Received OCR request", clientRequest.toMap());
 
-        ocrRequestService.handleAsynchronousRequest(ocrRequest, ocrRequestStopWatch);
+        try {
+           ocrRequestService.handleAsynchronousRequest(ocrRequest, ocrRequestStopWatch);
+        }
+        catch (TaskRejectedException e) {
+            LOG.errorContext(ocrRequest.getContextId(), "Queue full and all threads being used - request is rejects", e, null);
+            monitoringService.logFailure(ocrRequest.getContextId(), 0, ResultCode.APPLICATION_OVERLOADED, CallTypeEnum.ASYNCHRONOUS, 0);
+            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+        }
 
         LOG.infoContext(ocrRequest.getContextId(),"OCR request now being handled asynchronously", null);
 

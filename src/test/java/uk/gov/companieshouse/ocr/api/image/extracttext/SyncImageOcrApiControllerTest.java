@@ -126,20 +126,8 @@ class SyncImageOcrApiControllerTest {
         mockMvc.perform(multipart(apiEndpoint + SyncImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
                 .param(SyncImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
                 .param(SyncImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.error_message", is(SyncImageOcrApiController.GENERAL_SERVICE_ERROR_MESSAGE)))
-                .andExpect(jsonPath("$.response_id").doesNotExist());
+                .andExpect(jsonPath("$.result_code", is(500)));
+
     }
 
-    @Test
-    void shouldCatchFutureExceptionWithApplicationErrorInController() throws Exception {
-
-        when(ocrRequestService.handleSynchronousRequest(eq(CONTEXT_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
-        .thenThrow(new CompletionException("General", new TextConversionException(CONTEXT_ID, RESPONSE_ID, new IOException("Wrapped IOException test"))));
-
-        mockMvc.perform(multipart(apiEndpoint + SyncImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
-                .param(SyncImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
-                .param(SyncImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.error_message", is(SyncImageOcrApiController.TEXT_CONVERSION_ERROR_MESSAGE)))
-                .andExpect(jsonPath("$.response_id", is(RESPONSE_ID)));
-    }
 }

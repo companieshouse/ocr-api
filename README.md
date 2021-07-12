@@ -32,11 +32,11 @@ The file to be converted is uploaded to the controller and the results (extracte
 
 ## Usage
 
-Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `OCR_QUEUE_SIZE`, `HUMAN_LOG` and `LOGLEVEL`
+Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `OCR_QUEUE_CAPACITY`, `HUMAN_LOG` and `LOGLEVEL`
 
 - Run `make dev` to build JAR (versioned in target and unversioned in top level d) and run the unit tests **(using Java 11)**
 - Run `docker build -t ocr-api .` to build the docker image
-- Run `docker run -e OCR_TESSERACT_THREAD_POOL_SIZE -e OCR_QUEUE_SIZE -e HUMAN_LOG -e LOGLEVEL -t -i -p 8080:8080 ocr-api` to run the docker image
+- Run `docker run -e OCR_TESSERACT_THREAD_POOL_SIZE -e OCR_QUEUE_CAPACITY -e HUMAN_LOG -e LOGLEVEL -t -i -p 8080:8080 ocr-api` to run the docker image
 
 ## Tesseract Training data
 
@@ -71,7 +71,7 @@ The following is a list of application specific environment variables for the se
 Name                                        | Description                                                               | Example Value
 ------------------------------------------- | ------------------------------------------------------------------------- | ------------------------
 OCR_TESSERACT_THREAD_POOL_SIZE              | Number of threads to run the Tesseract Conversion process                 | 4  (default value)
-OCR_QUEUE_SIZE                              | Maximum number of OCR Requests in the OCR Queue before a 503 is returned  | 5
+OCR_QUEUE_CAPACITY                          | Maximum number of OCR Requests in the OCR Queue before a 503 is returned  | 5
 
 ## The stats end point
 
@@ -96,7 +96,7 @@ Example:
 curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id" -F contextId="SAMPLE_ARTICLES" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
 curl -F file=@"src/test/resources/blank-articles.tif" -F responseId="curl test response id" -F contextId="BLANK-TIFF" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
 curl -F file=@"src/test/resources/empty-articles.tif" -F responseId="curl test response id" -F contextId="EMPTY-TIFF" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
-curl -F file=@"src/test/resources/small-articles.tif" -F responseId="curl test response id" -F contextId="SMALL-TIFF" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
+curl -w '%{http_code}' -F file=@"src/test/resources/small-articles.tif" -F responseId="curl test response id" -F contextId="SMALL-TIFF" http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
 
 # Without Context ID
 curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id"  http://localhost:8080/ocr-api/api/ocr/image/tiff/extractText
@@ -105,7 +105,7 @@ curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F respons
 For Asynchronous Endpoint
 
 ``` bash
-curl --header "Content-Type: application/json" \
+curl -w '%{http_code}' --header "Content-Type: application/json" \
   --request POST \
   --data '{"app_id": "curl-test","image_endpoint": "http://testurl.com/cff/servlet/viewArticles?transaction_id=9613245852", "converted_text_endpoint": "http://testurl.com/ocr-results/", "response_id": "9613245852"}' \
   http://localhost:8080/ocr-api/api/ocr/image/tiff/extractTextRequest
