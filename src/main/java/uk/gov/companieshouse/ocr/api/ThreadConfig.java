@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.ocr.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -26,6 +27,9 @@ public class ThreadConfig {
 
     private final int threadPoolSize;
 
+    @Autowired
+    private SpringConfiguration springConfiguration;
+
     public ThreadConfig() {
         this.threadPoolSize = findThreadPoolSize();
     }
@@ -46,6 +50,7 @@ public class ThreadConfig {
 
         executor.setCorePoolSize(threadPoolSize);
         executor.setMaxPoolSize(threadPoolSize);
+        executor.setQueueCapacity(springConfiguration.getOcrQueueSize());
         executor.setThreadNamePrefix(OCR_REQUEST_THREAD_NAME_PREFIX);
         executor.initialize();
         return executor;

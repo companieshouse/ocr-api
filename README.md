@@ -2,7 +2,7 @@
 
 A microservice to extract text from images. This uses Tess4J which itself is a small (Java Native Access) wrapper around Tesseract. As well as returning the extracted text some metadata relating to this service is also returned [data returned](src/main/java/uk/gov/companieshouse/ocr/api/image/extracttext/ExtractTextResultDto.java).
 
-The `ocr-api` has one thread pool (with a blocking queue) that protects the system from being overloaded. In the normal running of this microservice this queue should have very few entries on it.
+The `ocr-api` has one thread pool (with a blocking queue) that protects the system from being overloaded (implemented by a ThreadPoolTaskExecutor). In the normal running of this microservice this queue should have very few entries on it.
 
 The initial drop of this microservice converts TIFF files to text.
 
@@ -32,11 +32,11 @@ The file to be converted is uploaded to the controller and the results (extracte
 
 ## Usage
 
-Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `HUMAN_LOG` and `LOGLEVEL`
+Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `OCR_QUEUE_SIZE`, `HUMAN_LOG` and `LOGLEVEL`
 
 - Run `make dev` to build JAR (versioned in target and unversioned in top level d) and run the unit tests **(using Java 11)**
 - Run `docker build -t ocr-api .` to build the docker image
-- Run `docker run -e OCR_TESSERACT_THREAD_POOL_SIZE -e HUMAN_LOG -e LOGLEVEL -t -i -p 8080:8080 ocr-api` to run the docker image
+- Run `docker run -e OCR_TESSERACT_THREAD_POOL_SIZE -e OCR_QUEUE_SIZE -e HUMAN_LOG -e LOGLEVEL -t -i -p 8080:8080 ocr-api` to run the docker image
 
 ## Tesseract Training data
 
@@ -71,6 +71,7 @@ The following is a list of application specific environment variables for the se
 Name                                        | Description                                                               | Example Value
 ------------------------------------------- | ------------------------------------------------------------------------- | ------------------------
 OCR_TESSERACT_THREAD_POOL_SIZE              | Number of threads to run the Tesseract Conversion process                 | 4  (default value)
+OCR_QUEUE_SIZE                              | Maximum number of OCR Requests in the OCR Queue before a 503 is returned  | 5
 
 ## The stats end point
 

@@ -24,6 +24,7 @@ public final class JsonConstants {
 
     public static final String MONITORING_LOG_RECORD = "ocr_monitoring";
     public static final String STATISTICS_LOG_RECORD = "ocr_statistics";
+    public static final String THREAD_POOL_EXECUTOR_CONFIG_LOG_RECORD = "thread_pool_executor_config";
     public static final String POST_QUEUE_LOG_RECORD = "post_queue";
 
     private JsonConstants(){}
