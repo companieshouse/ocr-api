@@ -36,7 +36,7 @@ public class SpringConfiguration {
 	private void displaySpringProperties() {
 		LOG.info("-------------------- Displaying spring application.properties  ----------------------------------");
 
-		LOG.info("The value of ${ocr.queue.capacity} is          :     " + ocrQueueCapacity);
+        LOG.info("The value of ${ocr.queue.capacity} is          :     " + ocrQueueCapacity);
         LOG.info("The value of ${rest.client.timeout.seconds} is :     " + restClientTimeoutSeconds);
 
 		LOG.info("-------------------- End displaying spring application.properties  ----------------------------------");
