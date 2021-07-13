@@ -1,7 +1,11 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.CompletionException;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
@@ -16,11 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.logging.LoggerFactory;
-import uk.gov.companieshouse.ocr.api.OcrApiApplication;
 import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
 import uk.gov.companieshouse.ocr.api.common.ErrorResponseDto;
+import uk.gov.companieshouse.ocr.api.common.JsonConstants;
 import uk.gov.companieshouse.ocr.api.common.OcrGeneralConstants;
 import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
 
@@ -29,7 +31,7 @@ import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.Resul
  an asynchronous method when it is caught via a CompletionException
  */
 @RestController
-public class SyncImageOcrApiController {
+public class SyncImageOcrApiController extends AbstractOcrApiController{
 
     public static final String TIFF_EXTRACT_TEXT_PARTIAL_URL = "/api/ocr/image/tiff/extractText";
 
@@ -42,13 +44,8 @@ public class SyncImageOcrApiController {
     static final String CONTROLLER_ERROR_MESSAGE = "Unexpected Error Before OCR Conversion";
     static final String NO_REQUEST_BODY_ERROR_MESSAGE = "Request body is required";
 
-    private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
-
     @Autowired
     private OcrRequestService ocrRequestService;
-
-    @Autowired
-    private MonitoringService monitoringService;
 
     private ImageOcrTransformer transformer = new ImageOcrTransformer();
 
@@ -57,8 +54,9 @@ public class SyncImageOcrApiController {
     public @ResponseBody ResponseEntity<ExtractTextResultDto> extractTextFromTiff(
             @RequestParam(FILE_REQUEST_PARAMETER_NAME) MultipartFile file, 
             @RequestParam(RESPONSE_ID_REQUEST_PARAMETER_NAME) String responseId,
-            @RequestParam(name = CONTEXT_ID_REQUEST_PARAMETER_NAME, required = false) String contextId
-            ) throws IOException, TextConversionException {
+            @RequestParam(name = CONTEXT_ID_REQUEST_PARAMETER_NAME, required = false) String contextId,
+            HttpServletRequest request
+            ) throws IOException, TextConversionException, OcrRequestException {
 
         var controllerStopWatch = new StopWatch();
         controllerStopWatch.start();
@@ -67,7 +65,7 @@ public class SyncImageOcrApiController {
             contextId = responseId;
         }
         
-        LOG.infoContext(contextId,"Received from client file [" + file.getOriginalFilename() + "] Content type [" + file.getContentType() + "]", null);
+        logClientRequest(contextId, createRequestMap(file, responseId, contextId), request, CallTypeEnum.SYNCHRONOUS);
 
         try {
             var timeOnQueueStopWatch = new StopWatch();
@@ -84,17 +82,20 @@ public class SyncImageOcrApiController {
 
             return new ResponseEntity<>(extractTextResult, HttpStatus.OK);
         } catch (TaskRejectedException te) {
-            LOG.errorContext(contextId, "Queue full and all threads being used - request is rejects", te, null);
-            monitoringService.logFailure(contextId, 0, ResultCode.APPLICATION_OVERLOADED, CallTypeEnum.SYNCHRONOUS, 0);
-            var extractTextResult = ExtractTextResultDto.createErrorExtractTextResultDtoFromContextId(contextId, responseId, ResultCode.APPLICATION_OVERLOADED, controllerStopWatch.getTime());
-            return new ResponseEntity<>(extractTextResult, HttpStatus.SERVICE_UNAVAILABLE);
+            throw new OcrRequestException("Capacity is full and can not add a new request", ResultCode.APPLICATION_OVERLOADED, CallTypeEnum.SYNCHRONOUS, contextId, te);
         }
         catch (CompletionException ce) {
-            LOG.errorContext(contextId, "Error when converting Image to Text", ce, null);
-            monitoringService.logFailure(contextId, 0, ResultCode.INTERNAL_SERVER_ERROR, CallTypeEnum.SYNCHRONOUS, 0);
-            var extractTextResult = ExtractTextResultDto.createErrorExtractTextResultDtoFromContextId(contextId, responseId, ResultCode.INTERNAL_SERVER_ERROR, controllerStopWatch.getTime());
-            return new ResponseEntity<>(extractTextResult, HttpStatus.INTERNAL_SERVER_ERROR);         
+            throw new OcrRequestException("Error when converting Image to Text", ResultCode.FAIL_TO_COVERT_IMAGE_TO_TEXT, CallTypeEnum.SYNCHRONOUS, contextId, ce);
         }
+    }
+
+    private Map<String, Object> createRequestMap(MultipartFile file, String responseId, String contextId) {
+        Map<String, Object> requestMap = new LinkedHashMap<>();
+        requestMap.put(JsonConstants.RESPONSE_ID, responseId);
+        requestMap.put(JsonConstants.CONTEXT_ID, contextId);
+        requestMap.put(JsonConstants.ORIGINAL_FILENAME_NAME, file.getOriginalFilename());
+        requestMap.put(JsonConstants.FILE_CONTENT_TYPE_NAME, file.getContentType());
+        return requestMap;
     }
 
 

@@ -58,7 +58,7 @@ public class OcrRequestService {
             extractTextResult =  transformer.mapModelToApi(textConversionResult);
             extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime()); // set the time for the client
 
-            callbackExtractedTextRestClient.sendTextResult(ocrRequest.getConvertedTextEndpoint(), extractTextResult);
+            callbackExtractedTextRestClient.sendTextResult(ocrRequest.getContextId(), ocrRequest.getConvertedTextEndpoint(), extractTextResult);
 
             ocrRequestStopWatch.stop();
             extractTextResult.setTotalProcessingTimeMs(ocrRequestStopWatch.getTime()); // Set the time for the monitoring field

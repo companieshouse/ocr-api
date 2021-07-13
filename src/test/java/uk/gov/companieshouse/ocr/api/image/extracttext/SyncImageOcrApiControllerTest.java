@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.task.TaskRejectedException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -118,6 +119,19 @@ class SyncImageOcrApiControllerTest {
     }
 
     @Test
+    void shouldCatchOverload() throws Exception {
+
+      when(ocrRequestService.handleSynchronousRequest(eq(CONTEXT_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
+      .thenThrow(new TaskRejectedException("Test exception"));
+
+      mockMvc.perform(multipart(apiEndpoint + SyncImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
+              .param(SyncImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
+              .param(SyncImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isServiceUnavailable())
+              .andExpect(jsonPath("$.context_id", is(CONTEXT_ID)))
+              .andExpect(jsonPath("$.error_message", is("Service Overloaded")));
+    }
+
+    @Test
     void shouldCatchFutureExceptionInController() throws Exception {
 
         when(ocrRequestService.handleSynchronousRequest(eq(CONTEXT_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
@@ -126,8 +140,8 @@ class SyncImageOcrApiControllerTest {
         mockMvc.perform(multipart(apiEndpoint + SyncImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL).file(file)
                 .param(SyncImageOcrApiController.CONTEXT_ID_REQUEST_PARAMETER_NAME, CONTEXT_ID)
                 .param(SyncImageOcrApiController.RESPONSE_ID_REQUEST_PARAMETER_NAME, RESPONSE_ID)).andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.result_code", is(500)));
-
+                .andExpect(jsonPath("$.context_id", is(CONTEXT_ID)))
+                .andExpect(jsonPath("$.error_message", is("Fail to convert Image to Text")));
     }
 
 }

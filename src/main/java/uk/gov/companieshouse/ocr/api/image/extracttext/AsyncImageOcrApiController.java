@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang.time.StopWatch;
@@ -21,9 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.logging.LoggerFactory;
-import uk.gov.companieshouse.ocr.api.OcrApiApplication;
 import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
 import uk.gov.companieshouse.ocr.api.common.ErrorResponseDto;
 import uk.gov.companieshouse.ocr.api.common.OcrGeneralConstants;
@@ -31,7 +29,7 @@ import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.Resul
 
 
 @RestController
-public class AsyncImageOcrApiController {
+public class AsyncImageOcrApiController extends AbstractOcrApiController {
 
     public static final String TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL = "/api/ocr/image/tiff/extractTextRequest";
 
@@ -47,30 +45,25 @@ public class AsyncImageOcrApiController {
     private static final String INVALID_INPUT_ERROR_MESSAGE = "invalid input";
     private static final String UNKNOWN = "UNKNOWN";
 
-    private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
     @Autowired
     private OcrRequestService ocrRequestService;
 
-    @Autowired
-    private MonitoringService monitoringService;
 
     @PostMapping("${api.endpoint}" + TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
-    public ResponseEntity<HttpStatus> receiveOcrRequest(@Valid @RequestBody OcrClientRequest clientRequest) {
+    public ResponseEntity<HttpStatus> receiveOcrRequest(@Valid @RequestBody OcrClientRequest clientRequest, HttpServletRequest request) throws OcrRequestException {
 
         var ocrRequestStopWatch = new StopWatch();
         ocrRequestStopWatch.start();
 
         OcrRequest ocrRequest = new OcrRequest(clientRequest, LocalDateTime.now());
-        LOG.infoContext(ocrRequest.getContextId(),"Received OCR request", clientRequest.toMap());
+        logClientRequest(ocrRequest.getContextId(), clientRequest.toMap(), request, CallTypeEnum.ASYNCHRONOUS);
 
         try {
            ocrRequestService.handleAsynchronousRequest(ocrRequest, ocrRequestStopWatch);
         }
-        catch (TaskRejectedException e) {
-            LOG.errorContext(ocrRequest.getContextId(), "Queue full and all threads being used - request is rejects", e, null);
-            monitoringService.logFailure(ocrRequest.getContextId(), 0, ResultCode.APPLICATION_OVERLOADED, CallTypeEnum.ASYNCHRONOUS, 0);
-            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+        catch (TaskRejectedException te) {
+            throw new OcrRequestException("Capacity is full and can not add a new request", ResultCode.APPLICATION_OVERLOADED, CallTypeEnum.ASYNCHRONOUS, ocrRequest.getContextId(), te);
         }
 
         LOG.infoContext(ocrRequest.getContextId(),"OCR request now being handled asynchronously", null);
