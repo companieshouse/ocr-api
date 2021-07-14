@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.ocr.api.OcrApiApplication;
+import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
 
 @Component
 public class CallbackExtractedTextRestClient {
@@ -22,11 +23,12 @@ public class CallbackExtractedTextRestClient {
 
     /**
      * Sends the extracted text to the extracted text endpoint.
+     * @param   contextId               The context of the request.
      * @param   extractedTextEndpoint   The endpoint to send the extracted text to.
      * @param   extractedText           The extracted text DTO object.
      * @throws OcrRequestException
      */
-    public void sendTextResult(String extractedTextEndpoint, ExtractTextResultDto extractedText) throws OcrRequestException {
+    public void sendTextResult(String contextId, String extractedTextEndpoint, ExtractTextResultDto extractedText) throws OcrRequestException {
         
         try {
             HttpEntity<ExtractTextResultDto> entity = new HttpEntity<>(extractedText);
@@ -36,6 +38,8 @@ public class CallbackExtractedTextRestClient {
             throw new OcrRequestException(
                 "Fail to send results back to calling application at url [" + extractedTextEndpoint + "], error message [" + e.getMessage() + "]",
                 OcrRequestException.ResultCode.FAIL_TO_SEND_RESULTS,
+                CallTypeEnum.ASYNCHRONOUS,
+                contextId,
                 e);
         }
     }

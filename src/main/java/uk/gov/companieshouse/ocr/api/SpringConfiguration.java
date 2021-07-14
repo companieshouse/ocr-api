@@ -16,6 +16,9 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 @Configuration
 public class SpringConfiguration {
 
+    @Value("${ocr.queue.capacity}")
+    private int ocrQueueCapacity;
+
     @Value("${rest.client.timeout.seconds}")
     private int restClientTimeoutSeconds;
 
@@ -33,9 +36,14 @@ public class SpringConfiguration {
 	private void displaySpringProperties() {
 		LOG.info("-------------------- Displaying spring application.properties  ----------------------------------");
 
-		LOG.info("The value of ${rest.client.timeout.seconds} is :     " + restClientTimeoutSeconds);
+        LOG.info("The value of ${ocr.queue.capacity} is          :     " + ocrQueueCapacity);
+        LOG.info("The value of ${rest.client.timeout.seconds} is :     " + restClientTimeoutSeconds);
 
 		LOG.info("-------------------- End displaying spring application.properties  ----------------------------------");
 	}
-    
+
+    public int getOcrQueueCapacity() {
+        return ocrQueueCapacity;
+    }
+
 }

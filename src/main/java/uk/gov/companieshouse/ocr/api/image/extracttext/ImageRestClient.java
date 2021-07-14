@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.ocr.api.OcrApiApplication;
+import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
 
 
 @Component
@@ -33,6 +34,8 @@ public class ImageRestClient {
              throw new OcrRequestException(
                  "Fail to get Image file from requesting system url [" + imageEndpoint + "], error message [" + e.getMessage() + "]",
                  OcrRequestException.ResultCode.FAIL_TO_GET_IMAGE,
+                 CallTypeEnum.ASYNCHRONOUS,
+                 contextId,
                  e);
         }
     }

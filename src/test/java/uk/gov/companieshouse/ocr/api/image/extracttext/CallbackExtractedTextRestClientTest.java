@@ -51,7 +51,7 @@ public class CallbackExtractedTextRestClientTest {
                 .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
         // when
-        callbackExtractedTextRestClient.sendTextResult(EXTRACTED_TEXT_ENDPOINT, extractTextResultDto);
+        callbackExtractedTextRestClient.sendTextResult(CONTEXT_ID, EXTRACTED_TEXT_ENDPOINT, extractTextResultDto);
 
         // then
         verify(restTemplate).postForEntity(eq(EXTRACTED_TEXT_ENDPOINT), any(), any());
@@ -64,7 +64,7 @@ public class CallbackExtractedTextRestClientTest {
                 .thenThrow(RestClientException.class);
 
         var ocrRequestAssertion = assertThrows(OcrRequestException.class, () ->
-            callbackExtractedTextRestClient.sendTextResult(EXTRACTED_TEXT_ENDPOINT, extractTextResultDto));
+            callbackExtractedTextRestClient.sendTextResult(CONTEXT_ID, EXTRACTED_TEXT_ENDPOINT, extractTextResultDto));
 
         assertEquals(999, ocrRequestAssertion.getResultCode().getCode());
     }
