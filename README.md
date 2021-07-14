@@ -16,7 +16,7 @@ The request to the controller is first vetted and then handed off to an asynchro
 
 - Get the image provided in the OCR request,
 - Convert the image to text,
-- Send the results back via a callback URL provided in the OCR Request
+- Send the results back via a callback URL provided in the OCR Request.
 
 ### Synchronous
 
