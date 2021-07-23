@@ -24,6 +24,12 @@ Endpoint = `[server address]/ocr-api/api/ocr/image/tiff/extractText`
 
 The file to be converted is uploaded to the controller and the results (extracted text plus meta data) are returned.
 
+## Logging
+
+This project uses the Companies House Structured logging framework for writing logging messages. A set of log messages are written to allow this microservice to be better monitored. 
+
+These key log messages contain a map of values that can be used by systems such as CloudWatch for log queries and Dashboards. They use constants in the `JsonContants.java` file to keep the map key values consistent for all log messages. Since the key values are used in the [ocr-api-stack](https://github.com/companieshouse/ocr-api-stack) project then they must be updated in both projects together.
+
 ## Requirements
 
 - Java 11
