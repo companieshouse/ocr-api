@@ -86,7 +86,7 @@ Name                       | Description
 instance_uuid              | UUID for when multiple instance of `ocr-api` are running in the same AWS ECS Cluster (or instance restarts)
 queue_size                 | The number of items on the internal queue waiting to be processed by the Tesseract threads
 active_pool_size           | the largest size of the pool since it was created.
-pool_size                  | count of threads in the thread pool,
+pool_size                  | count of threads in the thread pool.
 largest_pool_size          | count of threads in the thread pool currently running tasks.
 
 ## Testing Deployment
