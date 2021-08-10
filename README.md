@@ -4,7 +4,7 @@ A microservice to extract text from images. This uses Tess4J which itself is a s
 
 The `ocr-api` has one thread pool (with a blocking queue) that protects the system from being overloaded (implemented by a ThreadPoolTaskExecutor). In the normal running of this microservice this queue should have very few entries on it.
 
-The initial drop of this microservice converts TIFF files to text.
+Supported images types: TIFF
 
 ## Call Types
 
