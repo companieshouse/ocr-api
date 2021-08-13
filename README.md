@@ -139,7 +139,7 @@ curl --noproxy '*'  http://api.chs.local/ocr-api/statistics
 curl --noproxy '*' -w '%{http_code}' --header "Content-Type: application/json" \
   --request POST \
   --data '{"app_id": "curl-test","image_endpoint": "http://testurl.com/cff/servlet/viewArticles?transaction_id=9613245852", "converted_text_endpoint": "http://testurl.com/ocr-results/", "response_id": "9613245852"}' \
-  http://chs.local/api.chs.local/api/ocr/image/tiff/extractTextRequest
+  http://api.chs.local/ocr-api/api/ocr/image/tiff/extractTextRequest
 ```
 
 ### Using maven
