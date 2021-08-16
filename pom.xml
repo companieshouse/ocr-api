@@ -177,7 +177,7 @@
                 <version>3.1.1</version>
                 <configuration>
                     <from>
-                        tesseract-base-image
+                        <image>tesseract-base-image</image>
                     </from>
                     <to>
                         <image>169942020521.dkr.ecr.eu-west-1.amazonaws.com/ocr-api</image>
