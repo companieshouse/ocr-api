@@ -177,7 +177,7 @@
                 <version>3.1.1</version>
                 <configuration>
                     <from>
-                        <image>tesseract-base-image</image>
+                        <image>docker://tesseract-base-image</image>
                     </from>
                     <to>
                         <image>169942020521.dkr.ecr.eu-west-1.amazonaws.com/ocr-api</image>
@@ -193,8 +193,8 @@
                     <extraDirectories>
                         <paths>
                             <path>
-                                <from>./docker-resources/tessdata/2020-10-21/eng.traineddata</from>
-                                <into>/usr/share/tessdata/eng.traineddata</into>
+                                <from>./docker-resources/tessdata/2020-10-21</from>
+                                <into>/usr/share/tessdata</into>
                             </path>
                         </paths>
                     </extraDirectories>
