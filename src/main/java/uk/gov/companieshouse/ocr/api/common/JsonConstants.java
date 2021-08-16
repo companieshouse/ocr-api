@@ -6,17 +6,21 @@ public final class JsonConstants {
     public static final String ACTIVE_POOL_SIZE_NAME = "active_pool_size";
     public static final String AVERAGE_CONFIDENCE_SCORE_NAME ="average_confidence_score";
     public static final String CALL_TYPE_NAME = "call_type";
+    public static final String CONFIDENCE_VALUE_NAME = "confidence_value";
     public static final String CONTEXT_ID = "context_id";
+    public static final String CONVERTED_TEXT_NAME = "converted_text";
     public static final String CLIENT_IP_NAME = "client_ip";
     public static final String FILE_CONTENT_TYPE_NAME = "file_content_type";
     public static final String FILE_SIZE_NAME = "file_size";
     public static final String HTTP_REFERER_NAME = "http_referer";
     public static final String INSTANCE_UUID_NAME = "instance_uuid";
+    public static final String LINE_NUMBER_NAME = "line_number";
     public static final String LOWEST_CONFIDENCE_SCORE_NAME = "lowest_confidence_score";
     public static final String OCR_PROCESSING_TIME_MS_NAME = "ocr_processing_time_ms";
     public static final String LARGEST_POOL_SIZE_NAME = "largest_pool_size";
     public static final String MAX_POOL_SIZE_NAME = "max_pool_size";
     public static final String ORIGINAL_FILENAME_NAME = "original_filename";
+    public static final String PAGE_NUMBER_NAME = "page_number";
     public static final String POOL_SIZE_NAME = "pool_size";
     public static final String PROCESSORS_NAME = "processors_size";
     public static final String QUEUE_CAPACITY_NAME = "queue_capacity";
@@ -37,6 +41,7 @@ public final class JsonConstants {
     public static final String STATISTICS_LOG_RECORD = "ocr_statistics";
     public static final String THREAD_POOL_EXECUTOR_CONFIG_LOG_RECORD = "thread_pool_executor_config";
     public static final String POST_QUEUE_LOG_RECORD = "post_queue";
+    public static final String LOW_CONFIDENCE_LOG_RECORD = "low_confidence";
 
     private JsonConstants(){}
     

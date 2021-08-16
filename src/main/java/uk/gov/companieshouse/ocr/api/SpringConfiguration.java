@@ -1,17 +1,14 @@
 package uk.gov.companieshouse.ocr.api;
 
-import java.time.Duration;
-
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
+import javax.annotation.PostConstruct;
+import java.time.Duration;
 
 @Configuration
 public class SpringConfiguration {
@@ -21,6 +18,9 @@ public class SpringConfiguration {
 
     @Value("${rest.client.timeout.seconds}")
     private int restClientTimeoutSeconds;
+
+    @Value("${low.confidence.to.log}")
+    private int lowConfidenceToLog;
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
 
@@ -37,6 +37,7 @@ public class SpringConfiguration {
 		LOG.info("-------------------- Displaying spring application.properties  ----------------------------------");
 
         LOG.info("The value of ${ocr.queue.capacity} is          :     " + ocrQueueCapacity);
+        LOG.info("The value of ${low.confidence.to.log} is       :     " + lowConfidenceToLog);
         LOG.info("The value of ${rest.client.timeout.seconds} is :     " + restClientTimeoutSeconds);
 
 		LOG.info("-------------------- End displaying spring application.properties  ----------------------------------");
@@ -46,4 +47,7 @@ public class SpringConfiguration {
         return ocrQueueCapacity;
     }
 
+    public int getLowConfidenceToLog() {
+        return lowConfidenceToLog;
+    }
 }

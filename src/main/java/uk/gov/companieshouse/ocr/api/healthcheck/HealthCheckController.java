@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.ocr.api.heathcheck;
+package uk.gov.companieshouse.ocr.api.healthcheck;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
