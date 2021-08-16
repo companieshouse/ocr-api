@@ -174,13 +174,32 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>2.7.0</version>
+                <version>3.1.1</version>
                 <configuration>
+                    <from>
+                        tesseract-base-image
+                    </from>
+                    <to>
+                        <image>169942020521.dkr.ecr.eu-west-1.amazonaws.com/ocr-api</image>
+                    </to>
                     <container>
-                        <expandClasspathDependencies>true</expandClasspathDependencies>
-                    </container>
+                        <jvmFlags>
+                          <jvmFlag>-Djava.security.egd=file:/dev/./urandom</jvmFlag>
+                        </jvmFlags>
+                        <ports>
+                          <port>8080</port>
+                        </ports>
+                      </container>
+                    <extraDirectories>
+                        <paths>
+                            <path>
+                                <from>./docker-resources/tessdata/2020-10-21/eng.traineddata</from>
+                                <into>/usr/share/tessdata/eng.traineddata</into>
+                            </path>
+                        </paths>
+                    </extraDirectories>
                 </configuration>
-            </plugin>
+              </plugin>
         </plugins>
     </build>
 
