@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
+import com.sun.jna.Pointer;
 import net.sourceforge.tess4j.ITessAPI;
 import net.sourceforge.tess4j.ITessAPI.TessBaseAPI;
 import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
@@ -120,20 +121,32 @@ public class ImageOcrService {
                 var symbol = api.TessResultIteratorGetUTF8Text(ri, level);
                 var confidence = api.TessResultIteratorConfidence(ri, level);
                 if (symbol != null) {
-                    var lineText = symbol.getString(0);
+                    var lineText = getStringFromPointer(symbol);
                     textConversionResult.addConfidence(confidence);
                     if (confidence <= lowConfidenceToLog) {
                         // using currentPage + 1 as currentPage starts at '0' in code but outside of code, '1' is the accepted starting page number
                         var logDataMap = createLowConfidenceScoreLogMap(currentPage + 1, lineNum, confidence, lineText);
                         LOG.debugContext(textConversionResult.getContextId(), "Low confidence score", logDataMap);
                     }
-                    LOG.traceContext(textConversionResult.getContextId(), "Confidence is " + confidence + " for " + symbol.getString(0), null);
+                    LOG.traceContext(textConversionResult.getContextId(), "Confidence is " + confidence + " for " + lineText, null);
                 } else {
                     LOG.debugContext(textConversionResult.getContextId(), "Confidence is " + confidence + " for blank line", null);
                 }
             } while (api.TessResultIteratorNext(ri, level) == ITessAPI.TRUE);
         }
         return pageText;
+    }
+
+    private String getStringFromPointer(Pointer pointer) {
+        String string;
+
+        try {
+            string = pointer.getString(0);
+        } catch (Exception e) {
+            string = "";
+        }
+
+        return string;
     }
 
     private ImageReader createImageReader(ImageInputStream is) throws IOException {
