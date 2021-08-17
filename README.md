@@ -76,8 +76,9 @@ The following is a list of application specific environment variables for the se
 
 Name                                        | Description                                                               | Example Value
 ------------------------------------------- | ------------------------------------------------------------------------- | ------------------------
-OCR_TESSERACT_THREAD_POOL_SIZE              | Number of threads to run the Tesseract Conversion process                 | 4  (default value)
-OCR_QUEUE_CAPACITY                          | Maximum number of OCR Requests in the OCR Queue before a 503 is returned  | 5
+LOW_CONFIDENCE_TO_LOG                       | The minimum confidence value used for logging low confidence scores (logs lines with lower scores than the value set) | 40
+OCR_TESSERACT_THREAD_POOL_SIZE              | Number of threads to run the Tesseract Conversion process                                                             | 4  (default value)
+OCR_QUEUE_CAPACITY                          | Maximum number of OCR Requests in the OCR Queue before a 503 is returned                                              | 5
 
 ## The stats end point
 

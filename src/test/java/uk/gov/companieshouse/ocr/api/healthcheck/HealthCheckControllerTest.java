@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.ocr.api.heathcheck;
+package uk.gov.companieshouse.ocr.api.healthcheck;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;

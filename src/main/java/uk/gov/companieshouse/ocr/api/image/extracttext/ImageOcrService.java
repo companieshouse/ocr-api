@@ -1,29 +1,38 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Iterator;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-
-import org.springframework.stereotype.Service;
-
+import com.sun.jna.Pointer;
 import net.sourceforge.tess4j.ITessAPI;
 import net.sourceforge.tess4j.ITessAPI.TessBaseAPI;
 import net.sourceforge.tess4j.ITessAPI.TessPageIteratorLevel;
 import net.sourceforge.tess4j.TessAPI;
 import net.sourceforge.tess4j.util.ImageIOHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.ocr.api.OcrApiApplication;
+import uk.gov.companieshouse.ocr.api.SpringConfiguration;
+import uk.gov.companieshouse.ocr.api.common.JsonConstants;
 import uk.gov.companieshouse.ocr.api.tesseract.TesseractConstants;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Service
 public class ImageOcrService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
+    private final int lowConfidenceToLog;
+
+    @Autowired
+    public ImageOcrService(SpringConfiguration springConfiguration) {
+        lowConfidenceToLog = springConfiguration.getLowConfidenceToLog();
+    }
 
     /**
      * 
@@ -106,18 +115,38 @@ public class ImageOcrService {
         var level = TessPageIteratorLevel.RIL_TEXTLINE;
   
         if (ri != null) {
+            var lineNum = 0;
             do {
+                lineNum++;
                 var symbol = api.TessResultIteratorGetUTF8Text(ri, level);
                 var confidence = api.TessResultIteratorConfidence(ri, level);
                 if (symbol != null) {
+                    var lineText = getStringFromPointer(symbol);
                     textConversionResult.addConfidence(confidence);
-                    LOG.traceContext(textConversionResult.getContextId(), "Confidence is " + confidence + " for " + symbol.getString(0), null);
+                    if (confidence <= lowConfidenceToLog) {
+                        // using currentPage + 1 as currentPage starts at '0' in code but outside of code, '1' is the accepted starting page number
+                        var logDataMap = createLowConfidenceScoreLogMap(currentPage + 1, lineNum, confidence, lineText);
+                        LOG.debugContext(textConversionResult.getContextId(), "Low confidence score", logDataMap);
+                    }
+                    LOG.traceContext(textConversionResult.getContextId(), "Confidence is " + confidence + " for " + lineText, null);
                 } else {
                     LOG.debugContext(textConversionResult.getContextId(), "Confidence is " + confidence + " for blank line", null);
                 }
             } while (api.TessResultIteratorNext(ri, level) == ITessAPI.TRUE);
         }
         return pageText;
+    }
+
+    private String getStringFromPointer(Pointer pointer) {
+        String string;
+
+        try {
+            string = pointer.getString(0);
+        } catch (Exception e) {
+            string = "";
+        }
+
+        return string;
     }
 
     private ImageReader createImageReader(ImageInputStream is) throws IOException {
@@ -135,5 +164,15 @@ public class ImageOcrService {
         reader.setInput(is);
         return reader;
     }
-        
+
+    private Map<String, Object> createLowConfidenceScoreLogMap(int pageNumber, int lineNumber, float confidence, String convertedText) {
+        Map<String, Object> logDataMap = new LinkedHashMap<>();
+        logDataMap.put(JsonConstants.LOG_RECORD_NAME, JsonConstants.LOW_CONFIDENCE_LOG_RECORD);
+        logDataMap.put(JsonConstants.PAGE_NUMBER_NAME, pageNumber);
+        logDataMap.put(JsonConstants.LINE_NUMBER_NAME, lineNumber);
+        logDataMap.put(JsonConstants.CONFIDENCE_VALUE_NAME, confidence);
+        logDataMap.put(JsonConstants.CONVERTED_TEXT_NAME, convertedText);
+
+        return logDataMap;
+    }
 }
