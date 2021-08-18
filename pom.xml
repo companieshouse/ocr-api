@@ -25,6 +25,8 @@
         <structured-logging.version>1.9.4</structured-logging.version>
         <tess4j.version>4.5.3</tess4j.version>
 
+        <tesseract-base-image.version>0.2</tesseract-base-image.version>
+
         <!-- Spring General -->
         <spring.boot.version>2.4.2</spring.boot.version>
 
@@ -177,7 +179,7 @@
                 <version>3.1.1</version>
                 <configuration>
                     <from>
-                        <image>169942020521.dkr.ecr.eu-west-1.amazonaws.com/tesseract-base-image</image>
+                        <image>169942020521.dkr.ecr.eu-west-1.amazonaws.com/tesseract-base-image:${tesseract-base-image.version}</image>
                     </from>
                     <to>
                         <image>169942020521.dkr.ecr.eu-west-1.amazonaws.com/ocr-api</image>

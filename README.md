@@ -41,8 +41,10 @@ These key log messages contain a map of values that can be used by systems such 
 Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `OCR_QUEUE_CAPACITY`, `HUMAN_LOG` and `LOGLEVEL`
 
 - Run `make dev` to build JAR (versioned in target and unversioned in top level d) and run the unit tests **(using Java 11)**
-- Run `docker build -t ocr-api .` to build the docker image
-- Run `docker run -e OCR_TESSERACT_THREAD_POOL_SIZE -e OCR_QUEUE_CAPACITY -e HUMAN_LOG -e LOGLEVEL -t -i -p 8080:8080 ocr-api` to run the docker image
+- Run `mvn compile jib:dockerBuild` to build the docker image (you need to be logged in the the a valid CH AWS account to get the base image that this private base image which is used in the docker build)
+- Run `docker run -e OCR_TESSERACT_THREAD_POOL_SIZE -e OCR_QUEUE_CAPACITY -e HUMAN_LOG -e LOGLEVEL -t -i -p 8080:8080 169942020521.dkr.ecr.eu-west-1.amazonaws.com/ocr-api` to run the docker image
+
+Once this application is updated for CHS Docker development mode then this can be run from their
 
 ## Tesseract Training data
 
