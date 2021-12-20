@@ -38,7 +38,7 @@ These key log messages contain a map of values that can be used by systems such 
 
 ## Usage
 
-Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `OCR_QUEUE_CAPACITY`, `HUMAN_LOG` and `LOGLEVEL`
+Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `OCR_QUEUE_CAPACITY`, `LOW_CONFIDENCE_TO_LOG`, `HUMAN_LOG` and `LOGLEVEL`
 
 - Run `make dev` to build JAR (versioned in target and unversioned in top level d) and run the unit tests **(using Java 11)**
 - Run `docker build -t ocr-api .` to build the docker image
