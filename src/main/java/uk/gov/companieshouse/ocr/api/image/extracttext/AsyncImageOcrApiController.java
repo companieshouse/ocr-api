@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.validator.ValidatorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskRejectedException;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,9 @@ public class AsyncImageOcrApiController extends AbstractOcrApiController {
     @Autowired
     private OcrRequestService ocrRequestService;
 
+    @Autowired
+    private OcrUrlValidator ocrUrlValidator;
+
 
     @PostMapping("${api.endpoint}" + TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
     public ResponseEntity<HttpStatus> receiveOcrRequest(@Valid @RequestBody OcrClientRequest clientRequest, HttpServletRequest request) throws OcrRequestException {
@@ -58,6 +62,15 @@ public class AsyncImageOcrApiController extends AbstractOcrApiController {
 
         OcrRequest ocrRequest = new OcrRequest(clientRequest, LocalDateTime.now());
         logClientRequest(ocrRequest.getContextId(), clientRequest.toMap(), request, CallTypeEnum.ASYNCHRONOUS);
+
+        /// HERE
+        try {
+          ocrUrlValidator.isUrlValid(ocrRequest.getImageEndpoint());
+          ocrUrlValidator.isUrlValid(ocrRequest.getConvertedTextEndpoint());
+        } catch (ValidatorException e) {
+          // TODO: handle exception
+          throw new OcrRequestException(e.getMessage(), ResultCode.BAD_REQUEST,CallTypeEnum.SYNCHRONOUS,ocrRequest.getContextId(),e);
+        }
 
         try {
            ocrRequestService.handleAsynchronousRequest(ocrRequest, ocrRequestStopWatch);
