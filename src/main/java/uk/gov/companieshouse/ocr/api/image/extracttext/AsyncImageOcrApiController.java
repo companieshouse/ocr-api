@@ -23,10 +23,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import uk.gov.companieshouse.ocr.api.SpringConfiguration;
 import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
 import uk.gov.companieshouse.ocr.api.common.ErrorResponseDto;
 import uk.gov.companieshouse.ocr.api.common.OcrGeneralConstants;
 import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
+import uk.gov.companieshouse.ocr.api.urlValidator.UrlValidatorException;
+import uk.gov.companieshouse.ocr.api.urlValidator.WhiteListedUrlValidator;
 
 
 @RestController
@@ -47,12 +50,15 @@ public class AsyncImageOcrApiController extends AbstractOcrApiController {
     private static final String UNKNOWN = "UNKNOWN";
 
 
-    @Autowired
     private OcrRequestService ocrRequestService;
 
-    @Autowired
-    private OcrUrlValidator ocrUrlValidator;
+    private WhiteListedUrlValidator whiteListedUrlValidator;
 
+    @Autowired
+    public AsyncImageOcrApiController(SpringConfiguration springConfiguration, OcrRequestService ocrRequestService) {
+        this.whiteListedUrlValidator = new WhiteListedUrlValidator(springConfiguration.getHostWhiteList());
+        this.ocrRequestService = ocrRequestService;
+    }
 
     @PostMapping("${api.endpoint}" + TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
     public ResponseEntity<HttpStatus> receiveOcrRequest(@Valid @RequestBody OcrClientRequest clientRequest, HttpServletRequest request) throws OcrRequestException {
@@ -63,13 +69,12 @@ public class AsyncImageOcrApiController extends AbstractOcrApiController {
         OcrRequest ocrRequest = new OcrRequest(clientRequest, LocalDateTime.now());
         logClientRequest(ocrRequest.getContextId(), clientRequest.toMap(), request, CallTypeEnum.ASYNCHRONOUS);
 
-        /// HERE
         try {
-          ocrUrlValidator.isUrlValid(ocrRequest.getImageEndpoint());
-          ocrUrlValidator.isUrlValid(ocrRequest.getConvertedTextEndpoint());
-        } catch (ValidatorException e) {
-          // TODO: handle exception
-          throw new OcrRequestException(e.getMessage(), ResultCode.BAD_REQUEST,CallTypeEnum.SYNCHRONOUS,ocrRequest.getContextId(),e);
+          whiteListedUrlValidator.validateUrl(ocrRequest.getImageEndpoint());
+          whiteListedUrlValidator.validateUrl(ocrRequest.getConvertedTextEndpoint());
+        }
+        catch (UrlValidatorException ve) {
+          throw new OcrRequestException(ve.getMessage(), ResultCode.BAD_REQUEST,CallTypeEnum.ASYNCHRONOUS,ocrRequest.getContextId(),ve);
         }
 
         try {

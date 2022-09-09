@@ -19,14 +19,21 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.task.TaskRejectedException;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import uk.gov.companieshouse.ocr.api.SpringConfiguration;
 import uk.gov.companieshouse.ocr.api.groups.TestType;
 
 @Tag(TestType.UNIT)
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = AsyncImageOcrApiController.class)
+@WebMvcTest(controllers = {AsyncImageOcrApiController.class , SpringConfiguration.class})
+@TestPropertySource(properties = {
+    "ocr.queue.capacity=1",
+    "low.confidence.to.log=40",
+    "host.white.list=testurl.com"
+})
 class AsyncImageOcrApiControllerTest {
 
     @Value("${api.endpoint}")
