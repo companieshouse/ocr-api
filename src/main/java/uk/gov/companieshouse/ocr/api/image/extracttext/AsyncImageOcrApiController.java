@@ -27,8 +27,8 @@ import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
 import uk.gov.companieshouse.ocr.api.common.ErrorResponseDto;
 import uk.gov.companieshouse.ocr.api.common.OcrGeneralConstants;
 import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
-import uk.gov.companieshouse.ocr.api.urlValidator.UrlValidatorException;
-import uk.gov.companieshouse.ocr.api.urlValidator.WhiteListedUrlValidator;
+import uk.gov.companieshouse.ocr.api.urlvalidator.UrlValidatorException;
+import uk.gov.companieshouse.ocr.api.urlvalidator.WhiteListedUrlValidator;
 
 
 @RestController

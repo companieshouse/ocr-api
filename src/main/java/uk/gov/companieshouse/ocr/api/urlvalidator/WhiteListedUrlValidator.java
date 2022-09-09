@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.ocr.api.urlValidator;
+package uk.gov.companieshouse.ocr.api.urlvalidator;
 
 import java.util.Set;
 import org.apache.commons.validator.routines.UrlValidator;

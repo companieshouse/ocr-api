@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.ocr.api.groups.TestType;
-import uk.gov.companieshouse.ocr.api.urlValidator.UrlValidatorException;
-import uk.gov.companieshouse.ocr.api.urlValidator.WhiteListedUrlValidator;
+import uk.gov.companieshouse.ocr.api.urlvalidator.UrlValidatorException;
+import uk.gov.companieshouse.ocr.api.urlvalidator.WhiteListedUrlValidator;
 
 @Tag(TestType.UNIT)
 @ExtendWith(MockitoExtension.class)
-public class WhiteListedUrlValidatorTest {
+class WhiteListedUrlValidatorTest {
 
     private WhiteListedUrlValidator whiteListedUrlValidator;
 

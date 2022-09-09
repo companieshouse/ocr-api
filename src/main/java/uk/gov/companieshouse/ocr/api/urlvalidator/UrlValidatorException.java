@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.ocr.api.urlValidator;
+package uk.gov.companieshouse.ocr.api.urlvalidator;
 
 public class UrlValidatorException extends Exception {
 
