@@ -22,18 +22,10 @@ public class SpringConfiguration {
     @Value("${low.confidence.to.log}")
     private int lowConfidenceToLog;
 
-    @Value("${host.white.list.values}")
+    @Value("${host.white.list}")
     private String hostWhiteList;
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
-
-    @Bean
-    RestTemplate restTemplate(final RestTemplateBuilder restTemplateBuilder) {
-        return  restTemplateBuilder
-            .setConnectTimeout(Duration.ofSeconds(restClientTimeoutSeconds))
-            .setReadTimeout(Duration.ofSeconds(restClientTimeoutSeconds))
-            .build();
-    }
 
     @PostConstruct
 	private void displaySpringProperties() {
@@ -49,6 +41,10 @@ public class SpringConfiguration {
 
     public int getOcrQueueCapacity() {
         return ocrQueueCapacity;
+    }
+
+    public int getRestClientTimeoutSeconds() {
+        return restClientTimeoutSeconds;
     }
 
     public int getLowConfidenceToLog() {
