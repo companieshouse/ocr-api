@@ -1,48 +1,54 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.commons.validator.ValidatorException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import uk.gov.companieshouse.ocr.api.groups.TestType;
-import uk.gov.companieshouse.ocr.api.whiteListedUrlValidator.OcrUrlValidator;
+import uk.gov.companieshouse.ocr.api.urlValidator.UrlValidatorException;
+import uk.gov.companieshouse.ocr.api.urlValidator.WhiteListedUrlValidator;
 
 @Tag(TestType.UNIT)
 @ExtendWith(MockitoExtension.class)
-public class OcrUrlValidatorTest {
+public class WhiteListedUrlValidatorTest {
 
-    private OcrUrlValidator ocrUrlValidator;
+    private WhiteListedUrlValidator whiteListedUrlValidator;
 
     @BeforeEach
     void setupTests() {
 
-        // Struggling to create ocrUrlValidator in this class, was always null
-        // Added a second constructor in the class to use here
-        // Can't imagine that is the best this to do though
-        this.ocrUrlValidator = new OcrUrlValidator("localhost,chips.local,amazon,testurl.com,chpdev-sl7,chpdev-sl6,chpdev-pl7,chpdev-pl6");
+        this.whiteListedUrlValidator = new WhiteListedUrlValidator("localhost,chips.local,amazon,testurl.com,chpdev-sl7,chpdev-sl6,chpdev-pl7,chpdev-pl6,chpdev-sl7.internal.ch");
     }
 
     @Test
-    void testUrlIsValidAndOnWhiteList() throws ValidatorException {
+    void testUrlIsValidAndOnWhiteList1() throws UrlValidatorException {
 
-        ocrUrlValidator.validateUrl("http://chpdev-sl7:36011/chips/cff");
+        whiteListedUrlValidator.validateUrl("http://chpdev-sl7:36011/chips");
+    }
+
+    @Test
+    void testUrlIsValidAndOnWhiteList2() throws UrlValidatorException {
+
+        whiteListedUrlValidator.validateUrl("https://testurl.com/test");
+    }
+
+    @Test
+    void testUrlIsValidAndOnWhiteList3() throws UrlValidatorException {
+
+        whiteListedUrlValidator.validateUrl("http://chpdev-sl7.internal.ch:36011/chips");
     }
 
     @Test()
     void testUrlIsValidAndNotOnWhiteList() {
+
         String url = "http://google.com";
+        UrlValidatorException thrown = assertThrows(UrlValidatorException.class, () -> {
 
-        ValidatorException thrown = assertThrows(ValidatorException.class, () -> {
-
-            ocrUrlValidator.validateUrl(url);
+            whiteListedUrlValidator.validateUrl(url);
         });
 
         assertEquals("URL not on white list: " + url, thrown.getMessage());
@@ -52,10 +58,9 @@ public class OcrUrlValidatorTest {
     void testUrlIsNotValid() {
 
         String url = "google.com";
+        UrlValidatorException thrown = assertThrows(UrlValidatorException.class, () -> {
 
-        ValidatorException thrown = assertThrows(ValidatorException.class, () -> {
-
-            ocrUrlValidator.validateUrl(url);
+            whiteListedUrlValidator.validateUrl(url);
         });
 
         assertEquals("Invalid URL: " + url, thrown.getMessage());
