@@ -73,7 +73,7 @@ public class AsyncImageOcrApiController extends AbstractOcrApiController {
           whiteListedUrlValidator.validateUrl(ocrRequest.getConvertedTextEndpoint());
         }
         catch (UrlValidatorException ve) {
-          throw new OcrRequestException(ve.getMessage(), ResultCode.BAD_REQUEST,CallTypeEnum.ASYNCHRONOUS,ocrRequest.getContextId(),ve);
+          throw new OcrRequestException(ve.getMessage(), ResultCode.BAD_URL,CallTypeEnum.ASYNCHRONOUS,ocrRequest.getContextId(),ve);
         }
 
         try {

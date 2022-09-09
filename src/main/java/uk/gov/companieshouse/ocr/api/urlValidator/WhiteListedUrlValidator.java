@@ -35,7 +35,7 @@ public class WhiteListedUrlValidator {
 
     }
 
-    public boolean isUrlOnWhiteList(String urlString) throws UrlValidatorException {
+    private boolean isUrlOnWhiteList(String urlString) throws UrlValidatorException {
 
         try{
 

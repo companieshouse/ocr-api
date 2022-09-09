@@ -48,8 +48,9 @@ class AsyncImageOcrApiControllerTest {
     @MockBean
     private MonitoringService monitoringService;
 
+
     @Test
-    void shouldAcceptextractTextRequest() throws Exception {
+    void shouldAcceptExtractTextRequest() throws Exception {
 
         mockMvc.perform(post(apiEndpoint + AsyncImageOcrApiController.TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -106,6 +107,30 @@ class AsyncImageOcrApiControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error_message", is(AsyncImageOcrApiController.CONTROLLER_ERROR_MESSAGE)));
+    }
+
+    @Test
+    void shouldCatchUrlValidationExceptionForUnauthorisedUrl() throws Exception {
+
+        mockMvc.perform(post(apiEndpoint + AsyncImageOcrApiController.TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{ \"app_id\":\"myapp\",\"response_id\": \"9613245852\", \"image_endpoint\": \"http://unauthorisedurl.com/image?id=9613245852\",\"converted_text_endpoint\":\"http://testurl.com/ocr-results/\"}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error_message", is("Bad Url contained in OCR Request")));
+    }
+
+    @Test
+    void shouldCatchUrlValidationExceptionForInvalidUrl() throws Exception {
+
+        mockMvc.perform(post(apiEndpoint + AsyncImageOcrApiController.TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{ \"app_id\":\"myapp\",\"response_id\": \"9613245852\", \"image_endpoint\": \"http://testurl.com/image?id=9613245852\",\"converted_text_endpoint\":\"invalidUrl/ocr-results/\"}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error_message", is("Bad Url contained in OCR Request")));
     }
 
 }
