@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.ocr.api.image.extracttext;
+package uk.gov.companieshouse.ocr.api.urlvalidator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.ocr.api.groups.TestType;
-import uk.gov.companieshouse.ocr.api.urlvalidator.UrlValidatorException;
-import uk.gov.companieshouse.ocr.api.urlvalidator.WhiteListedUrlValidator;
 
 @Tag(TestType.UNIT)
 @ExtendWith(MockitoExtension.class)
@@ -21,7 +19,7 @@ class WhiteListedUrlValidatorTest {
     @BeforeEach
     void setupTests() {
 
-        this.whiteListedUrlValidator = new WhiteListedUrlValidator("localhost,chips.local,amazon,testurl.com,chpdev-sl7,chpdev-sl6,chpdev-pl7,chpdev-pl6,chpdev-sl7.internal.ch");
+        this.whiteListedUrlValidator = new WhiteListedUrlValidator("localhost,chips.local,testurl.com,chpdev-sl7,chpdev-sl6,chpdev-pl7,chpdev-pl6,chpdev-sl7.internal.ch");
     }
 
     @Test

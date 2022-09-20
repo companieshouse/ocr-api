@@ -8,39 +8,46 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * This class is used to check whether a URL host is present on a host list set by an application env var.
+ * The host list is a comma separated list that must contain NO white space.
+ * When the public method is called it will verify the the URL passed is valid.
+ * If it is then the URL host is extracted and compared against the host list.
+ * If the host is not present or the URL is invalid and exception will be thrown.
+ */
 
 public class WhiteListedUrlValidator {
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
-    private final Set<String> whiteListHosts;
+    private final Set<String> hostList;
 
-    public WhiteListedUrlValidator(String whiteListString) {
-        this.whiteListHosts = Set.of(whiteListString.split(","));
-        LOG.debug("White Listed Hosts: " + whiteListHosts.toString());
+    public WhiteListedUrlValidator(String hostListString) {
+        this.hostList = Set.of(hostListString.split(","));
+        LOG.debug("White Listed Hosts: " + hostList.toString());
     }
 
     public void validateUrl(String url) throws UrlValidatorException {
 
         LOG.debug("Validating URL: " + url);
 
-        UrlValidator validator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
+        var validator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
 
         if(!validator.isValid(url)) {
             throw new UrlValidatorException("Invalid URL: " + url);
         }
 
-        if(!isUrlOnWhiteList(url)) {
+        if(!isUrlOnHostList(url)) {
             throw new UrlValidatorException("URL not on white list: " + url);
         }
 
     }
 
-    private boolean isUrlOnWhiteList(String urlString) throws UrlValidatorException {
+    private boolean isUrlOnHostList(String urlString) throws UrlValidatorException {
 
         try{
 
-            URL url = new URL(urlString);
-            if(whiteListHosts.contains(url.getHost())){
+            var url = new URL(urlString);
+            if(hostList.contains(url.getHost())){
                 LOG.debug("Url host on list: " + url.getHost());
                 return true;
             }
