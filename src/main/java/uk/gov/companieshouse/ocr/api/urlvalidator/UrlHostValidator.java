@@ -16,12 +16,12 @@ import java.net.URL;
  * If the host is not present or the URL is invalid and exception will be thrown.
  */
 
-public class WhiteListedUrlValidator {
+public class UrlHostValidator {
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
     private final Set<String> hostList;
 
-    public WhiteListedUrlValidator(String hostListString) {
+    public UrlHostValidator(String hostListString) {
         this.hostList = Set.of(hostListString.split(","));
         LOG.debug("White Listed Hosts: " + hostList.toString());
     }

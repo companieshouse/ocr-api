@@ -28,7 +28,7 @@ import uk.gov.companieshouse.ocr.api.common.ErrorResponseDto;
 import uk.gov.companieshouse.ocr.api.common.OcrGeneralConstants;
 import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
 import uk.gov.companieshouse.ocr.api.urlvalidator.UrlValidatorException;
-import uk.gov.companieshouse.ocr.api.urlvalidator.WhiteListedUrlValidator;
+import uk.gov.companieshouse.ocr.api.urlvalidator.UrlHostValidator;
 
 
 @RestController
@@ -51,11 +51,11 @@ public class AsyncImageOcrApiController extends AbstractOcrApiController {
 
     private OcrRequestService ocrRequestService;
 
-    private WhiteListedUrlValidator whiteListedUrlValidator;
+    private UrlHostValidator urlHostValidator;
 
     @Autowired
     public AsyncImageOcrApiController(SpringConfiguration springConfiguration, OcrRequestService ocrRequestService) {
-        this.whiteListedUrlValidator = new WhiteListedUrlValidator(springConfiguration.getHostWhiteList());
+        this.urlHostValidator = new UrlHostValidator(springConfiguration.getHostWhiteList());
         this.ocrRequestService = ocrRequestService;
     }
 
@@ -69,8 +69,8 @@ public class AsyncImageOcrApiController extends AbstractOcrApiController {
         logClientRequest(ocrRequest.getContextId(), clientRequest.toMap(), request, CallTypeEnum.ASYNCHRONOUS);
 
         try {
-          whiteListedUrlValidator.validateUrl(ocrRequest.getImageEndpoint());
-          whiteListedUrlValidator.validateUrl(ocrRequest.getConvertedTextEndpoint());
+          urlHostValidator.validateUrl(ocrRequest.getImageEndpoint());
+          urlHostValidator.validateUrl(ocrRequest.getConvertedTextEndpoint());
         }
         catch (UrlValidatorException ve) {
           throw new OcrRequestException(ve.getMessage(), ResultCode.BAD_URL,CallTypeEnum.ASYNCHRONOUS,ocrRequest.getContextId(),ve);

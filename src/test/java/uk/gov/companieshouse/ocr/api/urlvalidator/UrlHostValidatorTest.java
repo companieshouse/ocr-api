@@ -12,32 +12,32 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 
 @Tag(TestType.UNIT)
 @ExtendWith(MockitoExtension.class)
-class WhiteListedUrlValidatorTest {
+class UrlHostValidatorTest {
 
-    private WhiteListedUrlValidator whiteListedUrlValidator;
+    private UrlHostValidator urlHostValidator;
 
     @BeforeEach
     void setupTests() {
 
-        this.whiteListedUrlValidator = new WhiteListedUrlValidator("localhost,chips.local,testurl.com,chpdev-sl7,chpdev-sl6,chpdev-pl7,chpdev-pl6,chpdev-sl7.internal.ch");
+        this.urlHostValidator = new UrlHostValidator("localhost,chips.local,testurl.com,chpdev-sl7,chpdev-sl6,chpdev-pl7,chpdev-pl6,chpdev-sl7.internal.ch");
     }
 
     @Test
     void testUrlIsValidAndOnWhiteList1() throws UrlValidatorException {
 
-        whiteListedUrlValidator.validateUrl("http://chpdev-sl7:36011/chips");
+        urlHostValidator.validateUrl("http://chpdev-sl7:36011/chips");
     }
 
     @Test
     void testUrlIsValidAndOnWhiteList2() throws UrlValidatorException {
 
-        whiteListedUrlValidator.validateUrl("https://testurl.com/test");
+        urlHostValidator.validateUrl("https://testurl.com/test");
     }
 
     @Test
     void testUrlIsValidAndOnWhiteList3() throws UrlValidatorException {
 
-        whiteListedUrlValidator.validateUrl("http://chpdev-sl7.internal.ch:36011/chips");
+        urlHostValidator.validateUrl("http://chpdev-sl7.internal.ch:36011/chips");
     }
 
     @Test()
@@ -46,7 +46,7 @@ class WhiteListedUrlValidatorTest {
         String url = "http://google.com";
         UrlValidatorException thrown = assertThrows(UrlValidatorException.class, () -> {
 
-            whiteListedUrlValidator.validateUrl(url);
+            urlHostValidator.validateUrl(url);
         });
 
         assertEquals("URL not on white list: " + url, thrown.getMessage());
@@ -58,7 +58,7 @@ class WhiteListedUrlValidatorTest {
         String url = "google.com";
         UrlValidatorException thrown = assertThrows(UrlValidatorException.class, () -> {
 
-            whiteListedUrlValidator.validateUrl(url);
+            urlHostValidator.validateUrl(url);
         });
 
         assertEquals("Invalid URL: " + url, thrown.getMessage());
