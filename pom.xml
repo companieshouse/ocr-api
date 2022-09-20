@@ -24,6 +24,7 @@
         <environment-reader.version>1.3.8</environment-reader.version>
         <structured-logging.version>1.9.12</structured-logging.version>
         <tess4j.version>4.5.3</tess4j.version>
+        <jib-maven-plugin.version>3.1.4</jib-maven-plugin.version>
 
         <!-- Spring General -->
         <spring.boot.version>2.4.2</spring.boot.version>
@@ -174,7 +175,7 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>2.7.0</version>
+                <version>${jib-maven-plugin.version}</version>
                 <configuration>
                     <container>
                         <expandClasspathDependencies>true</expandClasspathDependencies>

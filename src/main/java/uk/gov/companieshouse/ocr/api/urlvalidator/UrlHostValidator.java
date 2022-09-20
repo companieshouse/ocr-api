@@ -9,11 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * This class is used to check whether a URL host is present on a host list set by an application env var.
- * The host list is a comma separated list that must contain NO white space.
- * When the public method is called it will verify the the URL passed is valid.
- * If it is then the URL host is extracted and compared against the host list.
- * If the host is not present or the URL is invalid and exception will be thrown.
+ * Validates a String as a URL by asserting that it parses as a well-formed URL and that the host component of the URL is on a configured whitelist of allowed hosts.
+ * If the the URL is invalid or the host is not present on the host list an exception will be thrown.
  */
 
 public class UrlHostValidator {
