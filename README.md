@@ -22,7 +22,7 @@ The request to the controller is first vetted and then handed off to an asynchro
 
 Endpoint = `[server address]/ocr-api/api/ocr/image/tiff/extractText`
 
-The file to be converted is uploaded to the controller and the results (extracted text plus meta data) are returned.
+The file to be converted is uploaded to the controller, and the results (extracted text plus meta data) are returned.
 
 ## Logging
 
@@ -38,12 +38,25 @@ These key log messages contain a map of values that can be used by systems such 
 
 ## Usage
 
-Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `OCR_QUEUE_CAPACITY`, `LOW_CONFIDENCE_TO_LOG`, `HUMAN_LOG` and `LOGLEVEL`
+## Local Docker Setup
+
+Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `OCR_QUEUE_CAPACITY`, `LOW_CONFIDENCE_TO_LOG`, `HUMAN_LOG`, `LOGLEVEL` and `HOST_WHITE_LIST`
 
 - Run `make dev` to build JAR (versioned in target and unversioned in top level d) and run the unit tests **(using Java 11)**
 - Run `docker build -t ocr-api .` to build the docker image
-- Run `docker run -e OCR_TESSERACT_THREAD_POOL_SIZE -e OCR_QUEUE_CAPACITY -e HUMAN_LOG -e LOGLEVEL -t -i -p 8080:8080 ocr-api` to run the docker image
+- Run `docker run -e OCR_TESSERACT_THREAD_POOL_SIZE -e OCR_QUEUE_CAPACITY -e HUMAN_LOG -e LOGLEVEL -e HOST_WHITE_LIST -t -i -p 8080:8080 ocr-api` to run the docker image
+- Alternatively you can create an env file on your machine containing the above variables and reference it in the run command: `docker run --env-file ~/.chs_env/ocr-api/env -t -i -p 8080:8080 ocr-api`
 
+## Docker CHS Setup
+
+- Ensure you have [docker-chs-development](https://github.com/companieshouse/docker-chs-development) installed on your local machine
+- Run `./bin/chs-dev modules enable ocr` in the docker chs directory to enable the project.
+- Run `tilt up` to start the service.
+
+To activate this project in development mode, run the following command before tilting up
+- Run `./bin/chs-dev development enable ocr-api`
+
+The ocr-api should be assessable via http://api.chs.local/ocr-api/
 ## Tesseract Training data
 
 This is used by the Tesseract engine to help in the text recognition. We store the currently used data within configuration management for consistency and speed of the docker build.
@@ -74,11 +87,12 @@ See:
 
 The following is a list of application specific environment variables for the service to run:
 
-Name                                        | Description                                                               | Example Value
-------------------------------------------- | ------------------------------------------------------------------------- | ------------------------
+Name                                        | Description                                                                                                           | Example Value
+------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------| ------------------------
 LOW_CONFIDENCE_TO_LOG                       | The minimum confidence value used for logging low confidence scores (logs lines with lower scores than the value set) | 40
 OCR_TESSERACT_THREAD_POOL_SIZE              | Number of threads to run the Tesseract Conversion process                                                             | 4  (default value)
 OCR_QUEUE_CAPACITY                          | Maximum number of OCR Requests in the OCR Queue before a 503 is returned                                              | 5
+HOST_WHITE_LIST                             | Comma separated list of allowed callback Url hosts                                                                    | localhost,chips.local,testurl.com,chpdev-sl7,chpdev-sl7.internal.ch
 
 ## The stats end point
 

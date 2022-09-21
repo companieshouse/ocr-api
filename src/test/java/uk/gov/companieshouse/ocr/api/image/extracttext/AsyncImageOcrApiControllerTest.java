@@ -19,14 +19,21 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.task.TaskRejectedException;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import uk.gov.companieshouse.ocr.api.SpringConfiguration;
 import uk.gov.companieshouse.ocr.api.groups.TestType;
 
 @Tag(TestType.UNIT)
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = AsyncImageOcrApiController.class)
+@WebMvcTest(controllers = {AsyncImageOcrApiController.class , SpringConfiguration.class})
+@TestPropertySource(properties = {
+    "ocr.queue.capacity=1",
+    "low.confidence.to.log=40",
+    "host.white.list=testurl.com"
+})
 class AsyncImageOcrApiControllerTest {
 
     @Value("${api.endpoint}")
@@ -41,8 +48,9 @@ class AsyncImageOcrApiControllerTest {
     @MockBean
     private MonitoringService monitoringService;
 
+
     @Test
-    void shouldAcceptextractTextRequest() throws Exception {
+    void shouldAcceptExtractTextRequest() throws Exception {
 
         mockMvc.perform(post(apiEndpoint + AsyncImageOcrApiController.TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -99,6 +107,30 @@ class AsyncImageOcrApiControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error_message", is(AsyncImageOcrApiController.CONTROLLER_ERROR_MESSAGE)));
+    }
+
+    @Test
+    void shouldCatchUrlValidationExceptionForUnauthorisedUrl() throws Exception {
+
+        mockMvc.perform(post(apiEndpoint + AsyncImageOcrApiController.TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{ \"app_id\":\"myapp\",\"response_id\": \"9613245852\", \"image_endpoint\": \"http://unauthorisedurl.com/image?id=9613245852\",\"converted_text_endpoint\":\"http://testurl.com/ocr-results/\"}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error_message", is("Bad Url contained in OCR Request")));
+    }
+
+    @Test
+    void shouldCatchUrlValidationExceptionForInvalidUrl() throws Exception {
+
+        mockMvc.perform(post(apiEndpoint + AsyncImageOcrApiController.TIFF_EXTRACT_TEXT_REQUEST_PARTIAL_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{ \"app_id\":\"myapp\",\"response_id\": \"9613245852\", \"image_endpoint\": \"http://testurl.com/image?id=9613245852\",\"converted_text_endpoint\":\"invalidUrl/ocr-results/\"}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error_message", is("Bad Url contained in OCR Request")));
     }
 
 }

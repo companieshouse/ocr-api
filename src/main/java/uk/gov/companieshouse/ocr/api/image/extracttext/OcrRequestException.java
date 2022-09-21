@@ -14,6 +14,7 @@ public class OcrRequestException extends Exception {
         UNEXPECTED_FAILURE(3, HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected Failure"),
 
         BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, "Bad OCR Request"),
+        BAD_URL(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, "Bad Url contained in OCR Request"),
         INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error"),
         APPLICATION_OVERLOADED(HttpStatus.SERVICE_UNAVAILABLE.value(), HttpStatus.SERVICE_UNAVAILABLE, "Service Overloaded"),
 
