@@ -49,7 +49,7 @@ Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `OCR_QUEUE_CAP
 
 ## Docker CHS Setup
 
-- Ensure you have [docker-chs-development](https://github.com/companieshouse/docker-chs-development) installed on your local machine
+- Ensure you have [docker-chs-development](https://github.com/companieshouse/docker-chs-development) installed on your local machine.
 - Run `./bin/chs-dev modules enable ocr` in the docker chs directory to enable the project.
 - Run `tilt up` to start the service.
 
