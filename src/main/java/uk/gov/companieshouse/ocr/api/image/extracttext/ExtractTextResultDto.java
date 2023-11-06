@@ -1,7 +1,5 @@
 package uk.gov.companieshouse.ocr.api.image.extracttext;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
@@ -142,8 +140,4 @@ public class ExtractTextResultDto {
 		this.resultCode = resultCode;
 	}
 
-    public Map<String, Object> metadataMap() {
-        return null;
-    }
-    
 }
