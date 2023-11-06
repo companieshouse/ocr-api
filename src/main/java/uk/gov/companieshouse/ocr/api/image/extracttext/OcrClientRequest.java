@@ -3,8 +3,9 @@ package uk.gov.companieshouse.ocr.api.image.extracttext;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.validation.constraints.NotBlank;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
 
 /**
  * A Pojo used in a Web Request sent by a client to this microservice
