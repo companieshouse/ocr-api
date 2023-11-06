@@ -1,7 +1,7 @@
 # Build:  docker build -t poc-ocr-tools .
 # Run: docker run -t -i -p 8080:8080 poc-ocr-tools
 
-FROM openjdk:17-jdk
+FROM openjdk:11-jdk
 
 RUN apt-get update && apt-get -y upgrade
 
