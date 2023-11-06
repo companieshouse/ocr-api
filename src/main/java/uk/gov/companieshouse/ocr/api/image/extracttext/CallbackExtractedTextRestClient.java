@@ -56,7 +56,7 @@ public class CallbackExtractedTextRestClient {
         ExtractTextResultDto extractedTextError = ExtractTextResultDto
                 .createErrorExtractTextResultDtoFromContextId(contextId, responseId, errorResultCode, totalProcessingTimeMs);
 
-        LOG.infoContext(contextId, "Sending Error Message back to client", extractedTextError.metadataMap());
+        LOG.infoContext(contextId, "Sending Error Message back to client", null);
 
         try {
             HttpEntity<ExtractTextResultDto> entity = new HttpEntity<>(extractedTextError);
@@ -68,6 +68,5 @@ public class CallbackExtractedTextRestClient {
             LOG.errorContext(contextId, "Error sending Error Results for Image to Text Request", e, data);
         }
     }
-    
-    
+
 }

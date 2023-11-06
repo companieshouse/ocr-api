@@ -9,7 +9,7 @@ public class Confidence {
         private Float sum = 0f;
 
         public Float getAverage() {
-            return numberOfDataPoints != 0 ? sum / ((float) numberOfDataPoints) : 0.0f;
+            return numberOfDataPoints != 0 ? sum / numberOfDataPoints : 0.0f;
         }
 
         public Float getMinimum() {
