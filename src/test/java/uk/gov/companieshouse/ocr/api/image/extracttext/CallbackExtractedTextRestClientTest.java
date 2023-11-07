@@ -28,7 +28,7 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 
 @Tag(TestType.UNIT)
 @ExtendWith(MockitoExtension.class)
-public class CallbackExtractedTextRestClientTest {
+class CallbackExtractedTextRestClientTest {
 
     private ExtractTextResultDto extractTextResultDto;
 
