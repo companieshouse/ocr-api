@@ -68,7 +68,7 @@ class IntegrationTest {
 
         var url = System.getenv("OCR_TESSERACT_POC_URL");
         if (StringUtils.isEmpty(url)) {
-            url = "http://localhost:8080";
+            url = "http://localhost:8080/";
         }
 
         url += apiEndpoint + SyncImageOcrApiController.TIFF_EXTRACT_TEXT_PARTIAL_URL;

@@ -5,10 +5,11 @@ FROM openjdk:11-jdk
 
 RUN apt-get update && apt-get -y upgrade
 
-# Install maven for testing & install tesseract library
-RUN apt-get -y install maven \
-        && apt-get -y install tesseract-ocr \
-        && apt-get clean
+# Install maven for testing
+#RUN apt-get -y install maven
+
+# Install tesseract library
+RUN apt-get install tesseract-ocr -y
 
 # Download last language package
 RUN mkdir -p /usr/share/tessdata
