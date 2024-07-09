@@ -1,0 +1,11 @@
+environment = "staging"
+aws_profile = "staging-eu-west-2"
+max_task_count = 8
+# service configs
+use_set_environment_files = true
+log_level = "debug"
+
+# scaling configs
+desired_task_count = 2 # use multi instance in staging
+service_scaledown_schedule = "55 19 * * ? *"
+service_scaleup_schedule   = "5 6 * * ? *"
