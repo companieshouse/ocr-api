@@ -32,8 +32,8 @@
         <spring.boot.version>3.3.1</spring.boot.version>
 
         <!-- Maven -->
-        <maven-compiler-plugin.version>3.9.0</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
         <tomcat.version>9.0.89</tomcat.version>
         <jackson.version>2.15.3</jackson.version>
     </properties>
