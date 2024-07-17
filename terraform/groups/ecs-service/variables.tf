@@ -40,7 +40,7 @@ variable "max_task_count" {
 variable "required_cpus" {
   type        = number
   description = "The required cpu resource for this service. 1024 here is 1 vCPU"
-  default     = 256 # defaulted minimum required for fargate services, override for production
+  default     = 8192 # defaulted minimum required for fargate services, override for production
 }
 variable "required_memory" {
   type        = number
