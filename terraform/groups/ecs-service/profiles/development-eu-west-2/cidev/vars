@@ -1,5 +1,5 @@
 environment = "cidev"
 aws_profile = "development-eu-west-2"
-max_task_count = 8
+max_task_count = 1
 # service configs
 log_level = "debug"

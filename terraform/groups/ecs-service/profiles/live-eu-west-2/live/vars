@@ -1,6 +1,6 @@
 environment = "live"
 aws_profile = "live-eu-west-2"
-max_task_count = 8
+max_task_count = 3
 # service configs
 log_level = "info"
 

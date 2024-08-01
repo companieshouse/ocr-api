@@ -40,7 +40,7 @@ variable "max_task_count" {
 variable "required_cpus" {
   type        = number
   description = "The required cpu resource for this service. 1024 here is 1 vCPU"
-  default     = 8192 # defaulted minimum required for fargate services, override for production
+  default     = 1024 # defaulted minimum required for fargate services, override for production
 }
 variable "required_memory" {
   type        = number
@@ -55,13 +55,13 @@ variable "eric_cpus" {
 variable "eric_memory" {
   type = number
   description = "The required memory for eric"
-  default = 512
+  default = 1024
 }
 
 variable "use_fargate" {
   type        = bool
   description = "If true, sets the required capabilities for all containers in the task definition to use FARGATE, false uses EC2"
-  default     = true
+  default     = false
 }
 
 variable "use_capacity_provider" {

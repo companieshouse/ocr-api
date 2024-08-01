@@ -1,10 +1,9 @@
 environment = "staging"
 aws_profile = "staging-eu-west-2"
-max_task_count = 8
+max_task_count = 1
 # service configs
 log_level = "debug"
 
 # scaling configs
-desired_task_count = 2 # use multi instance in staging
 service_scaledown_schedule = "55 19 * * ? *"
 service_scaleup_schedule   = "5 6 * * ? *"
