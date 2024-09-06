@@ -55,7 +55,7 @@ variable "eric_cpus" {
 variable "eric_memory" {
   type = number
   description = "The required memory for eric"
-  default = 1024
+  default = 512
 }
 
 variable "use_fargate" {

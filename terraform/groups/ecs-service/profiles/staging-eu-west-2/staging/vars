@@ -7,3 +7,6 @@ log_level = "debug"
 # scaling configs
 service_scaledown_schedule = "55 19 * * ? *"
 service_scaleup_schedule   = "5 6 * * ? *"
+
+required_cpus    = 7936
+required_memory  = 31744
