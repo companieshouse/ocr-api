@@ -40,12 +40,12 @@ variable "max_task_count" {
 variable "required_cpus" {
   type        = number
   description = "The required cpu resource for this service. 1024 here is 1 vCPU"
-  default     = 1024 # defaulted minimum required for fargate services, override for production
+  default     = 3840 # current cpu used by legacy ocr api service pipeline
 }
 variable "required_memory" {
   type        = number
   description = "The required memory for this service"
-  default     = 512 # defaulted minimum required for fargate services, override for production
+  default     = 15616 # current memory used by legacy ocr api service pipeline
 }
 variable "eric_cpus" {
   type = number
