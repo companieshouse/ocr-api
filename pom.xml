@@ -36,6 +36,7 @@
         <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
         <tomcat.version>9.0.89</tomcat.version>
         <jackson.version>2.15.3</jackson.version>
+        <sonar.java.binaries>${project.basedir}/target,${project.basedir}/target/*</sonar.java.binaries>
     </properties>
 
     <profiles>
