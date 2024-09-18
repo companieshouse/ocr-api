@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +21,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import uk.gov.companieshouse.ocr.api.SpringConfiguration;
 import uk.gov.companieshouse.ocr.api.common.CallTypeEnum;
 import uk.gov.companieshouse.ocr.api.common.ErrorResponseDto;
 import uk.gov.companieshouse.ocr.api.common.OcrGeneralConstants;
 import uk.gov.companieshouse.ocr.api.image.extracttext.OcrRequestException.ResultCode;
-import uk.gov.companieshouse.ocr.api.urlvalidator.UrlValidatorException;
 import uk.gov.companieshouse.ocr.api.urlvalidator.UrlHostValidator;
+import uk.gov.companieshouse.ocr.api.urlvalidator.UrlValidatorException;
 
 
 @RestController
