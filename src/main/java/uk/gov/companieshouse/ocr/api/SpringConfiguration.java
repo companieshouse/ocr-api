@@ -1,8 +1,9 @@
 package uk.gov.companieshouse.ocr.api;
 
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+
+import jakarta.annotation.PostConstruct;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
