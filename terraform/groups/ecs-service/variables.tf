@@ -45,7 +45,7 @@ variable "required_cpus" {
 variable "required_memory" {
   type        = number
   description = "The required memory for this service"
-  default     = 15616 # current memory used by legacy ocr api service pipeline
+  default     = 15872 # current memory used by legacy ocr api service pipeline
 }
 variable "eric_cpus" {
   type = number

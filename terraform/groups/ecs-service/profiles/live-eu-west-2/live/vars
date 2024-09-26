@@ -8,4 +8,4 @@ log_level = "info"
 desired_task_count = 2 # use multi instance in Live
 
 required_cpus    = 7936
-required_memory  = 31744
+required_memory  = 32256
