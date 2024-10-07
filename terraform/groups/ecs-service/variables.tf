@@ -5,11 +5,13 @@ variable "environment" {
   type        = string
   description = "The environment name, defined in envrionment vars."
 }
+
 variable "aws_region" {
   default     = "eu-west-2"
   type        = string
   description = "The AWS region for deployment."
 }
+
 variable "aws_profile" {
   default     = "development-eu-west-2"
   type        = string
@@ -32,30 +34,41 @@ variable "desired_task_count" {
   description = "The desired ECS task count for this service"
   default     = 1 # defaulted low for dev environments, override for production if required
 }
+
 variable "max_task_count" {
   type        = number
   description = "The maximum number of tasks for this service."
-  default     = 3
+  default     = 1
 }
+
+variable "min_task_count" {
+  type        = number
+  description = "The minimum number of tasks for this service."
+  default     = 1
+}
+
 variable "required_cpus" {
   type        = number
   description = "The required cpu resource for this service. 1024 here is 1 vCPU"
-  default     = 3840 # current cpu used by legacy ocr api service pipeline
+  default     = 1792 # current cpu used by legacy ocr api service pipeline
 }
+
 variable "required_memory" {
   type        = number
   description = "The required memory for this service"
-  default     = 15872 # current memory used by legacy ocr api service pipeline
+  default     = 7168 # current memory used by legacy ocr api service pipeline
 }
+
 variable "eric_cpus" {
-  type = number
+  type        = number
   description = "The required cpu resource for eric. 1024 here is 1 vCPU"
-  default = 256
+  default     = 256
 }
+
 variable "eric_memory" {
-  type = number
+  type        = number
   description = "The required memory for eric"
-  default = 512
+  default     = 512
 }
 
 variable "use_fargate" {

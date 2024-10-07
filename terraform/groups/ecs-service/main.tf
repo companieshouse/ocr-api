@@ -5,7 +5,7 @@ provider "aws" {
 terraform {
   backend "s3" {
   }
-  required_version = "~> 1.3"
+  required_version = ">= 1.3, < 2.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -61,6 +61,7 @@ module "ecs-service" {
   name_prefix                        = local.name_prefix
   desired_task_count                 = var.desired_task_count
   max_task_count                     = var.max_task_count
+  min_task_count                     = var.min_task_count
   required_cpus                      = var.required_cpus
   required_memory                    = var.required_memory
   service_autoscale_enabled          = var.service_autoscale_enabled
