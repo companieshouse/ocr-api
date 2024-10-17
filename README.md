@@ -168,3 +168,9 @@ This allows you to locally test the application does an actual OCR image to text
 ``` bash
 mvn test -Dincluded.tests=integration-test
 ```
+
+Note - If using Docker for local development, e.g. `docker_chs up` or `./chs-dev up`, then you need to run
+```bash
+export OCR_TESSERACT_POC_URL=http://api.chs.local/
+```
+before running `mvn test -Dincluded.tests=integration-test`.

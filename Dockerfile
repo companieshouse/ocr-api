@@ -1,15 +1,15 @@
 # Build:  docker build -t poc-ocr-tools .
 # Run: docker run -t -i -p 8080:8080 poc-ocr-tools
 
-FROM openjdk:11-jdk
+FROM openjdk:21-slim
 
-RUN apt-get update && apt-get -y upgrade
+RUN apt-get -y update && apt-get -y upgrade
 
 # Install maven for testing
 #RUN apt-get -y install maven
 
 # Install tesseract library
-RUN apt-get install tesseract-ocr -y
+RUN apt-get install tesseract-ocr -y && apt-get clean -y
 
 # Download last language package
 RUN mkdir -p /usr/share/tessdata
