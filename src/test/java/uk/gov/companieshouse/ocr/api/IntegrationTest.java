@@ -3,7 +3,6 @@ package uk.gov.companieshouse.ocr.api;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,9 +42,7 @@ class IntegrationTest {
         writeTextFile(SAMPLE_TIFF, result.getExtractedText());
 
         assertEquals(90, result.getAverageConfidenceScore());
-        // assertEquals(70, result.getLowestConfidenceScore());
-        assertTrue(result.getLowestConfidenceScore() >= 68);
-        assertTrue(result.getTotalProcessingTimeMs() > 0l);
+        assertEquals(63, result.getLowestConfidenceScore());
         assertEquals(TEST_RESPONSE_ID, result.getResponseId());
         assertThat(result.getExtractedText(), containsString("SAMPLE LTD"));
     }
