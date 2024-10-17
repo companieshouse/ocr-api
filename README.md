@@ -32,7 +32,7 @@ These key log messages contain a map of values that can be used by systems such 
 
 ## Requirements
 
-- Java 11
+- Java 21
 - Maven
 - Docker
 
@@ -49,12 +49,14 @@ Set the environmental variables `OCR_TESSERACT_THREAD_POOL_SIZE`, `OCR_QUEUE_CAP
 
 ## Docker CHS Setup
 
-- Ensure you have [docker-chs-development](https://github.com/companieshouse/docker-chs-development) installed on your local machine.
-- Run `./bin/chs-dev modules enable ocr` in the docker chs directory to enable the project.
-- Run `tilt up` to start the service.
+If you have `docker_chs` set up, you can replace `chs-dev` below with `docker_chs` which can be run from any directory.
 
-To activate this project in development mode, run the following command before tilting up
-- Run `./bin/chs-dev development enable ocr-api`
+- Ensure you have [docker-chs-development](https://github.com/companieshouse/docker-chs-development) installed on your local machine.
+- Run `chs-dev modules enable ocr` in the docker chs directory to enable the project.
+- Run `chs-dev up` to start the service.
+
+To activate this project in development mode, run the following command before running `chs-dev up`:
+- Run `chs-dev development enable ocr-api`
 
 The ocr-api should be assessable via http://api.chs.local/ocr-api/
 ## Tesseract Training data
@@ -169,7 +171,7 @@ This allows you to locally test the application does an actual OCR image to text
 mvn test -Dincluded.tests=integration-test
 ```
 
-Note - If using Docker for local development, e.g. `docker_chs up` or `./chs-dev up`, then you need to run
+Note - If using Docker for local development, e.g. `docker_chs up` or `chs-dev up`, then you need to run
 ```bash
 export OCR_TESSERACT_POC_URL=http://api.chs.local/
 ```
