@@ -1,13 +1,9 @@
 artifact_name       := ocr-api
 version             := "unversioned"
 
-dependency_check_base_suppressions:=common_suppressions_spring_6.xml
-dependency_check_suppressions_repo_branch:=main
-dependency_check_minimum_cvss := 4
-dependency_check_assembly_analyzer_enabled := false
-dependency_check_suppressions_repo_url:=git@github.com:companieshouse/dependency-check-suppressions.git
-suppressions_file := target/suppressions.xml
 OS := $(shell uname)
+
+dependency_check_runner := 416670754337.dkr.ecr.eu-west-2.amazonaws.com/dependency-check-runner
 
 .PHONY: all
 all: build
@@ -75,32 +71,7 @@ sonar-pr-analysis:
 
 .PHONY: dependency-check
 dependency-check:
-	@ if [ -d "$(DEPENDENCY_CHECK_SUPPRESSIONS_HOME)" ]; then \
-		suppressions_home="$${DEPENDENCY_CHECK_SUPPRESSIONS_HOME}"; \
-	fi; \
-	if [ ! -d "$${suppressions_home}" ]; then \
-	    suppressions_home_target_dir="./target/dependency-check-suppressions"; \
-		if [ -d "$${suppressions_home_target_dir}" ]; then \
-			suppressions_home="$${suppressions_home_target_dir}"; \
-		else \
-			mkdir -p "./target"; \
-			git clone $(dependency_check_suppressions_repo_url) "$${suppressions_home_target_dir}" && \
-				suppressions_home="$${suppressions_home_target_dir}"; \
-			if [ -d "$${suppressions_home_target_dir}" ] && [ -n "$(dependency_check_suppressions_repo_branch)" ]; then \
-				cd "$${suppressions_home}"; \
-				git checkout $(dependency_check_suppressions_repo_branch); \
-				cd -; \
-			fi; \
-		fi; \
-	fi; \
-	suppressions_path="$${suppressions_home}/suppressions/$(dependency_check_base_suppressions)"; \
-	if [  -f "$${suppressions_path}" ]; then \
-		cp -av "$${suppressions_path}" $(suppressions_file); \
-		mvn org.owasp:dependency-check-maven:check -Dformats="json,html" -DprettyPrint -DfailBuildOnCVSS=$(dependency_check_minimum_cvss) -DassemblyAnalyzerEnabled=$(dependency_check_assembly_analyzer_enabled) -DsuppressionFiles=$(suppressions_file); \
-	else \
-		printf -- "\n ERROR Cannot find suppressions file at '%s'\n" "$${suppressions_path}" >&2; \
-		exit 1; \
-	fi
+	docker run --rm -e DEPENDENCY_CHECK_SUPPRESSIONS_HOME=/opt -v "$$(pwd)":/app -w /app ${dependency_check_runner} --repo-name="$(basename "$$(pwd)")"
 
 .PHONY: security-check
 security-check: dependency-check
