@@ -60,6 +60,14 @@
             <artifactId>commons-beanutils</artifactId>
             <version>1.11.0</version>
           </dependency>
+
+          <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>${sonar-maven-plugin.version}</version>
+            <scope>test</scope>
+          </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -120,13 +128,6 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.sonarsource.scanner.maven</groupId>
-            <artifactId>sonar-maven-plugin</artifactId>
-            <version>${sonar-maven-plugin.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
