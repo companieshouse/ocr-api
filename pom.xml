@@ -29,7 +29,7 @@
         <jib-maven-plugin.version>3.3.0</jib-maven-plugin.version>
 
         <!-- Spring General -->
-        <spring.boot.version>3.3.4</spring.boot.version>
+        <spring.boot.version>3.5.7</spring.boot.version>
 
         <!-- Maven -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
@@ -57,6 +57,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+          <!-- CVE-2025-48734 -->
+          <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.11.0</version>
+          </dependency>
         </dependencies>
     </dependencyManagement>
 
