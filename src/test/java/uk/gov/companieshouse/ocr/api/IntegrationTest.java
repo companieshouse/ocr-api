@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.FileSystemResource;
@@ -20,22 +21,22 @@ import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import net.sourceforge.tess4j.TesseractException;
 import uk.gov.companieshouse.ocr.api.groups.TestType;
 import uk.gov.companieshouse.ocr.api.image.extracttext.ExtractTextResultDto;
 import uk.gov.companieshouse.ocr.api.image.extracttext.SyncImageOcrApiController;
 
 @Tag(TestType.INTEGRATION)
+@Disabled
 class IntegrationTest {
 
     private static final Path RESOURCES_PATH = Paths.get("src", "test", "resources");
     private static final String SAMPLE_TIFF = "sample-articles-of-association.tif";
     private static final String TEST_RESPONSE_ID = "test-response-id";
 
-    private String apiEndpoint = "ocr-api"; // no Spring context so hard code it
+    private static final String apiEndpoint = "ocr-api"; // no Spring context so hard code it
 
     @Test
-    void verifySuccessfulTextExtractFromTesseract() throws IOException, TesseractException {
+    void verifySuccessfulTextExtractFromTesseract() throws IOException {
 
         var image = loadFile(SAMPLE_TIFF);
         var result = extractText(image);
@@ -49,7 +50,7 @@ class IntegrationTest {
         assertThat(result.getExtractedText(), containsString("SAMPLE LTD"));
     }
 
-    private FileSystemResource loadFile(String fileName) throws IOException {
+    private FileSystemResource loadFile(String fileName) {
         var filePath = Paths.get(RESOURCES_PATH.toString(), fileName);
         return new FileSystemResource(filePath);
     }

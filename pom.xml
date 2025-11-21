@@ -9,7 +9,6 @@
         <version>2.1.12</version>
         <relativePath/>
     </parent>
-    <groupId>uk.gov.companieshouse</groupId>
     <artifactId>ocr-api</artifactId>
     <version>unversioned</version>
     <name>ocr-api</name>
@@ -34,8 +33,10 @@
         <!-- Maven -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
+      <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
 
-        <!-- Sonar -->
+
+      <!-- Sonar -->
       <sonar-maven-plugin.version>5.3.0.6276</sonar-maven-plugin.version>
     </properties>
 
@@ -180,6 +181,34 @@
                     </container>
                 </configuration>
             </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>${maven-failsafe-plugin.version}</version>
+            <executions>
+              <execution>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <properties>
+                <property>
+                  <name>listener</name>
+                  <value>org.sonar.java.jacoco.JUnitListener</value>
+                </property>
+              </properties>
+              <argLine>-Dfile.encoding=UTF-8</argLine>
+              <argLine>${failsafeArgLine}</argLine>
+              <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+              <skipITs>${skip.integration.tests}</skipITs>
+            </configuration>
+          </plugin>
+
         </plugins>
     </build>
 
