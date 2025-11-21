@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
@@ -20,13 +20,13 @@
 
         <included.tests>unit-test</included.tests>
 
-        <apache-commons-lang.version>2.6</apache-commons-lang.version>
-        <environment-reader.version>1.3.10</environment-reader.version>
-        <structured-logging.version>3.0.8</structured-logging.version>
-        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
+        <environment-reader.version>3.0.5</environment-reader.version>
+        <structured-logging.version>3.0.43</structured-logging.version>
 
         <tess4j.version>5.11.0</tess4j.version>
         <jib-maven-plugin.version>3.3.0</jib-maven-plugin.version>
+        <commons-beanutils.version>1.11.0</commons-beanutils.version>
 
         <!-- Spring General -->
         <spring.boot.version>3.5.7</spring.boot.version>
@@ -34,9 +34,9 @@
         <!-- Maven -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
-        <tomcat.version>11.0.0-M26</tomcat.version>
-        <jackson.version>2.17.2</jackson.version>
-        <sonar.java.binaries>${project.basedir}/target,${project.basedir}/target/*</sonar.java.binaries>
+
+        <!-- Sonar -->
+      <sonar-maven-plugin.version>5.3.0.6276</sonar-maven-plugin.version>
     </properties>
 
     <profiles>
@@ -62,8 +62,15 @@
           <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.11.0</version>
+            <version>${commons-beanutils.version}</version>
           </dependency>
+
+          <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>${sonar-maven-plugin.version}</version>
+          </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -108,10 +115,11 @@
             <version>${environment-reader.version}</version>
         </dependency>
 
+        <!-- CVE-2025-48924-->
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>${apache-commons-lang.version}</version>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
+          <version>${commons-lang3.version}</version>
         </dependency>
 
         <dependency>
@@ -124,13 +132,6 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.sonarsource.scanner.maven</groupId>
-            <artifactId>sonar-maven-plugin</artifactId>
-            <version>${sonar-maven-plugin.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

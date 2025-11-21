@@ -11,7 +11,7 @@ import static uk.gov.companieshouse.ocr.api.TestObjectMother.MOCK_TIFF_CONTENT;
 
 import java.io.IOException;
 
-import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
