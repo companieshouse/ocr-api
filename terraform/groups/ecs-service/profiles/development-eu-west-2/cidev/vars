@@ -1,8 +1,8 @@
 environment = "cidev"
 aws_profile = "development-eu-west-2"
 
-# service configs
-log_level = "debug"
+required_cpus   = 2048
+required_memory = 4096
 
 # scaling configs
 service_scaledown_schedule = "55 19 * * ? *"

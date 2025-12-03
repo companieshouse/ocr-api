@@ -1,15 +1,10 @@
 environment = "live"
 aws_profile = "live-eu-west-2"
 
-# service configs
-log_level = "info"
-
-required_cpus   = 7936
-required_memory = 31744
-
-desired_task_count = 2
-max_task_count     = 3
-min_task_count     = 2
+required_cpus   = 4096
+required_memory = 8192
 
 # scaling configs
 desired_task_count = 2 # use multi instance in Live
+min_task_count     = 2
+max_task_count     = 3

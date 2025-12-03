@@ -50,31 +50,19 @@ variable "min_task_count" {
 variable "required_cpus" {
   type        = number
   description = "The required cpu resource for this service. 1024 here is 1 vCPU"
-  default     = 1792 # current cpu used by legacy ocr api service pipeline
+  default     = 2048 # current cpu used by legacy ocr api service pipeline
 }
 
 variable "required_memory" {
   type        = number
   description = "The required memory for this service"
-  default     = 7168 # current memory used by legacy ocr api service pipeline
-}
-
-variable "eric_cpus" {
-  type        = number
-  description = "The required cpu resource for eric. 1024 here is 1 vCPU"
-  default     = 256
-}
-
-variable "eric_memory" {
-  type        = number
-  description = "The required memory for eric"
-  default     = 512
+  default     = 7680 # current memory used by legacy ocr api service pipeline
 }
 
 variable "use_fargate" {
   type        = bool
   description = "If true, sets the required capabilities for all containers in the task definition to use FARGATE, false uses EC2"
-  default     = false
+  default     = true
 }
 
 variable "use_capacity_provider" {
@@ -134,15 +122,4 @@ variable "use_set_environment_files" {
 variable "ocr_api_version" {
   type        = string
   description = "The version of the ocr-api container to run."
-}
-
-variable "log_level" {
-  default     = "info"
-  type        = string
-  description = "The log level for services to use: trace, debug, info or error"
-}
-
-variable "eric_version" {
-  type        = string
-  description = "The version of the eric container to run."
 }
