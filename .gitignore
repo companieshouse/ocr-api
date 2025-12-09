@@ -23,6 +23,7 @@
 hs_err_pid*
 
 # IDE files
+.idea
 .classpath
 .project
 .settings

@@ -1,4 +1,4 @@
-# `ocr-api`
+s-# `ocr-api`
 
 A microservice to extract text from images. This uses Tess4J which itself is a small (Java Native Access) wrapper around Tesseract. As well as returning the extracted text some metadata relating to this service is also returned [data returned](src/main/java/uk/gov/companieshouse/ocr/api/image/extracttext/ExtractTextResultDto.java).
 
@@ -6,9 +6,25 @@ The `ocr-api` has one thread pool (with a blocking queue) that protects the syst
 
 Supported images types: TIFF
 
+## TLTR for updating for dependency changes
+
+This project has not had any significant changes since it's release in 2021 but needs updates to its dependencies for security 
+fixes. This needs testing within a Docker volume.
+
+We are also now updating how we deploy it (see second confluence document below). Until this is done you should run tests for 
+OCR conversion locally against a newly downloaded docker image or one that you have created yourself
+
+## Confluence Documentation
+
+- [System overview for live running](https://companieshouse.atlassian.net/wiki/spaces/IncVal/pages/2699755729/OCR+Service+Live)
+- [Migration from EC2 to Fargate - WIP](https://companieshouse.atlassian.net/wiki/spaces/IncVal/pages/3067346945/Automated+builds+of+the+ocr-api+to+staging+and+live) ** MUST READ UNTIL WE COMPLETE 
+- [Testing in AWS](https://companieshouse.atlassian.net/wiki/spaces/IncVal/pages/3396206692/Environments+and+Testing) - 
+  Testing in AWS
+  MIGRATION.
+
 ## Call Types
 
-### Asynchronous
+### Asynchronous (CHIPS usage)
 
 Endpoint = `[server address]/ocr-api/api/ocr/image/tiff/extractTextRequest`
 
@@ -18,7 +34,7 @@ The request to the controller is first vetted and then handed off to an asynchro
 - Convert the image to text,
 - Send the results back via a callback URL provided in the OCR Request.
 
-### Synchronous
+### Synchronous (Automated test usage)
 
 Endpoint = `[server address]/ocr-api/api/ocr/image/tiff/extractText`
 
@@ -59,6 +75,7 @@ To activate this project in development mode, run the following command before r
 - Run `chs-dev development enable ocr-api`
 
 The ocr-api should be assessable via http://api.chs.local/ocr-api/
+
 ## Tesseract Training data
 
 This is used by the Tesseract engine to help in the text recognition. We store the currently used data within configuration management for consistency and speed of the docker build.
@@ -149,9 +166,12 @@ curl -w '%{http_code}' http://localhost:8080/ocr-api/statistics
 ## Using CHS docker
 
 ``` bash
-curl --noproxy '*'  http://api.chs.local/ocr-api/healthcheck
+curl  http://api.chs.local/ocr-api/healthcheck
 
-curl --noproxy '*'  http://api.chs.local/ocr-api/statistics
+curl  http://api.chs.local/ocr-api/statistics
+
+# With Context ID
+curl -F file=@"src/test/resources/sample-articles-of-association.tif" -F responseId="curl test response id" -F contextId="SAMPLE_ARTICLES" http://api.chs.local/ocr-api/api/ocr/image/tiff/extractText
 
 curl --noproxy '*' -w '%{http_code}' --header "Content-Type: application/json" \
   --request POST \
