@@ -10,10 +10,6 @@ RUN apt-get install tesseract-ocr -y && apt-get clean -y
 
 # Download last language package
 RUN mkdir -p /usr/share/tessdata
-COPY docker-resources/tessdata/2020-10-21/eng.traineddata /usr/share/tessdata/eng.traineddata
-#ADD https://github.com/tesseract-ocr/tessdata/raw/master/eng.traineddata /usr/share/tessdata/eng.traineddata
-#ADD https://github.com/tesseract-ocr/tessdata_best/raw/master/eng.traineddata /usr/share/tessdata/eng.traineddata
-
 
 # Check the installation status
 RUN tesseract --list-langs
