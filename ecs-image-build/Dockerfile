@@ -5,9 +5,6 @@ FROM eclipse-temurin:21.0.9_10-jre
 
 RUN apt-get -y update && apt-get -y upgrade
 
-# Install maven for testing
-#RUN apt-get -y install maven
-
 # Install tesseract library
 RUN apt-get install tesseract-ocr -y && apt-get clean -y
 
@@ -32,9 +29,6 @@ ENV OMP_THREAD_LIMIT 1
 ENV APP_FILE ocr-api.jar
 
 ENV LC_ALL C
-
-# Copy script to configure location to download dependencies (to enable caching)
-# COPY docker-resources/configure-maven /usr/local/bin/configure-maven
 
 WORKDIR /opt
 COPY /app .
