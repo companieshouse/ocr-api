@@ -34,7 +34,7 @@ ENV APP_FILE ocr-api.jar
 ENV LC_ALL C
 
 # Copy script to configure location to download dependencies (to enable caching)
-COPY docker-resources/configure-maven /usr/local/bin/configure-maven
+# COPY docker-resources/configure-maven /usr/local/bin/configure-maven
 
 WORKDIR /opt
 COPY /app .
