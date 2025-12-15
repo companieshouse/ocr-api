@@ -1,15 +1,23 @@
 # Build:  docker build -t poc-ocr-tools .
 # Run: docker run -t -i -p 8080:8080 poc-ocr-tools
 
-FROM openjdk:21-slim
+ARG IMAGE_VERSION="latest"
+FROM 416670754337.dkr.ecr.eu-west-2.amazonaws.com/ci-corretto-runtime-21:${IMAGE_VERSION}
 
-RUN apt-get -y update && apt-get -y upgrade
+# Update base OS
+RUN yum update -y
+
+# Enable EPEL repository (required for tesseract on Amazon Linux)
+RUN yum install -y epel-release
 
 # Install maven for testing
-#RUN apt-get -y install maven
+#RUN yum install -y maven
 
-# Install tesseract library
-RUN apt-get install tesseract-ocr -y && apt-get clean -y
+# Install tesseract OCR
+RUN yum install -y \
+    tesseract \
+    tesseract-langpack-eng \
+    && yum clean all
 
 # Download last language package
 RUN mkdir -p /usr/share/tessdata
