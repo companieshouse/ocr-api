@@ -1,7 +1,7 @@
 # Build:  docker build -t poc-ocr-tools .
 # Run: docker run -t -i -p 8080:8080 poc-ocr-tools
 
-FROM openjdk:21-slim
+FROM eclipse-temurin:21.0.9_10-jre
 
 RUN apt-get -y update && apt-get -y upgrade
 
