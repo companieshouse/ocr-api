@@ -4,4 +4,4 @@
 
 PORT=8080
 
-exec java -jar -Dserver.port="${PORT}" "ocr-api.jar"
+exec java -jar -Djava.security.egd=file:/dev/./urandom -Dserver.port="${PORT}" "ocr-api.jar"
