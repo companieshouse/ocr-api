@@ -1,17 +1,22 @@
-ARG IMAGE_VERSION="latest"
-FROM 416670754337.dkr.ecr.eu-west-2.amazonaws.com/ci-corretto-runtime-21:${IMAGE_VERSION}
+# Build:  docker build -t poc-ocr-tools .
+# Run: docker run -t -i -p 8080:8080 poc-ocr-tools
 
-# Update base OS
-RUN yum update -y
+FROM openjdk:21-slim
 
-# Enable EPEL repository (required for tesseract on Amazon Linux)
-RUN yum install -y epel-release
+RUN apt-get -y update && apt-get -y upgrade
 
-# Install tesseract OCR
-RUN yum install -y \
-    tesseract \
-    tesseract-langpack-eng \
-    && yum clean all \
+# Install maven for testing
+#RUN apt-get -y install maven
+
+# Install tesseract library
+RUN apt-get install tesseract-ocr -y && apt-get clean -y
+
+# Download last language package
+RUN mkdir -p /usr/share/tessdata
+COPY docker-resources/tessdata/2020-10-21/eng.traineddata /usr/share/tessdata/eng.traineddata
+#ADD https://github.com/tesseract-ocr/tessdata/raw/master/eng.traineddata /usr/share/tessdata/eng.traineddata
+#ADD https://github.com/tesseract-ocr/tessdata_best/raw/master/eng.traineddata /usr/share/tessdata/eng.traineddata
+
 
 # Check the installation status
 RUN tesseract --list-langs
@@ -27,6 +32,9 @@ ENV OMP_THREAD_LIMIT 1
 ENV APP_FILE ocr-api.jar
 
 ENV LC_ALL C
+
+# Copy script to configure location to download dependencies (to enable caching)
+COPY docker-resources/configure-maven /usr/local/bin/configure-maven
 
 WORKDIR /opt
 COPY /app .
