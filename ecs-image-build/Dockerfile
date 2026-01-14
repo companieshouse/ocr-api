@@ -11,7 +11,7 @@ RUN dnf --releasever="${AL2023_MIN_VER}" update -y && \
 
 # Limit number of threads to 1
 ENV OMP_THREAD_LIMIT=1
-
+ENV TESSDATA_PREFIX=/usr/share/tesseract/tessdata
 ENV LC_ALL=C
 
 WORKDIR /opt
