@@ -24,6 +24,9 @@ public class SpringConfiguration {
     @Value("${host.white.list}")
     private String hostWhiteList;
 
+    @Value("${tessdata.path}")
+    private String tessdataPath;
+
     @PostConstruct
 	private void displaySpringProperties() {
 		LOG.info("-------------------- Displaying spring application.properties  ----------------------------------");
@@ -32,6 +35,7 @@ public class SpringConfiguration {
         LOG.info("The value of ${low.confidence.to.log} is       :     " + lowConfidenceToLog);
         LOG.info("The value of ${rest.client.timeout.seconds} is :     " + restClientTimeoutSeconds);
         LOG.info("The value of ${host.white.list.values} is      :     " + hostWhiteList);
+        LOG.info("The value of ${tessdata.path} is               :     " + tessdataPath);
 
 		LOG.info("-------------------- End displaying spring application.properties  ----------------------------------");
 	}
@@ -52,4 +56,7 @@ public class SpringConfiguration {
       return hostWhiteList;
     }
 
+    public String getTessdataPath() {
+        return tessdataPath;
+    }
 }

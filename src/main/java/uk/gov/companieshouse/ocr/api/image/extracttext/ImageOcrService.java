@@ -70,7 +70,7 @@ public class ImageOcrService {
             api = TessAPI.INSTANCE;
             handle = TessAPI.INSTANCE.TessBaseAPICreate();
 
-            api.TessBaseAPIInit3(handle, TesseractConstants.TRAINING_DATA_PATH, TesseractConstants.ENGLISH_LANGUAGE);
+            api.TessBaseAPIInit3(handle, springConfiguration.getTessdataPath(), TesseractConstants.ENGLISH_LANGUAGE);
 
             int totalPages = reader.getNumImages(true); 
 
