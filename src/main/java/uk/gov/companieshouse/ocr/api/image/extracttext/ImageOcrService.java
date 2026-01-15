@@ -28,10 +28,12 @@ public class ImageOcrService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OcrApiApplication.APPLICATION_NAME_SPACE);
     private final int lowConfidenceToLog;
+    private final String tessdataPath;
 
     @Autowired
     public ImageOcrService(SpringConfiguration springConfiguration) {
         lowConfidenceToLog = springConfiguration.getLowConfidenceToLog();
+        tessdataPath = springConfiguration.getTessdataPath();
     }
 
     /**
@@ -70,7 +72,7 @@ public class ImageOcrService {
             api = TessAPI.INSTANCE;
             handle = TessAPI.INSTANCE.TessBaseAPICreate();
 
-            api.TessBaseAPIInit3(handle, TesseractConstants.TRAINING_DATA_PATH, TesseractConstants.ENGLISH_LANGUAGE);
+            api.TessBaseAPIInit3(handle, tessdataPath, TesseractConstants.ENGLISH_LANGUAGE);
 
             int totalPages = reader.getNumImages(true); 
 
