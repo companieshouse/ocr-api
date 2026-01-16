@@ -1,7 +1,7 @@
 ARG IMAGE_VERSION="latest"
-ARG AL2023_MIN_VER=2023.9.20251117
-
 FROM 416670754337.dkr.ecr.eu-west-2.amazonaws.com/ci-corretto-runtime-21:${IMAGE_VERSION}
+
+ARG AL2023_MIN_VER=2023.9.20251117
 
 RUN dnf --releasever="${AL2023_MIN_VER}" update -y && \
     dnf install -y spal-release && \
