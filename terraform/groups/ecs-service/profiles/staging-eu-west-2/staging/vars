@@ -1,8 +1,8 @@
 environment = "staging"
 aws_profile = "staging-eu-west-2"
 
-required_cpus   = 4096
-required_memory = 8192
+required_cpus   = 2048
+required_memory = 6144
 
 # scaling configs
 service_scaledown_schedule = "55 19 * * ? *"
