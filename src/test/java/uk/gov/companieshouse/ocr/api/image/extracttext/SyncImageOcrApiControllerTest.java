@@ -67,7 +67,7 @@ class SyncImageOcrApiControllerTest {
         when(mockResults.getDocumentAverageConfidence()).thenReturn(90f);
         when(mockResults.getDocumentMinimumConfidence()).thenReturn(80f);
         when(mockResults.getResponseId()).thenReturn(RESPONSE_ID);
-        when(mockResults.getExtractTextProcessingTime()).thenReturn(3200l);
+        when(mockResults.getExtractTextProcessingTime()).thenReturn(3200L);
 
         when(ocrRequestService.handleSynchronousRequest(eq(RESPONSE_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
                 .thenReturn(CompletableFuture.completedFuture(mockResults));
@@ -90,7 +90,7 @@ class SyncImageOcrApiControllerTest {
         when(mockResults.getDocumentAverageConfidence()).thenReturn(90f);
         when(mockResults.getDocumentMinimumConfidence()).thenReturn(80f);
         when(mockResults.getResponseId()).thenReturn(RESPONSE_ID);
-        when(mockResults.getExtractTextProcessingTime()).thenReturn(3200l);
+        when(mockResults.getExtractTextProcessingTime()).thenReturn(3200L);
 
         when(ocrRequestService.handleSynchronousRequest(eq(CONTEXT_ID), eq(file.getBytes()), eq(RESPONSE_ID), any(StopWatch.class)))
                 .thenReturn(CompletableFuture.completedFuture(mockResults));
