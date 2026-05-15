@@ -28,7 +28,7 @@
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
 
         <!-- Spring General -->
-        <spring.boot.version>3.5.7</spring.boot.version>
+        <spring.boot.version>3.5.14</spring.boot.version>
 
         <!-- Maven -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
@@ -63,13 +63,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-          <!-- CVE-2025-48734 -->
-          <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>${commons-beanutils.version}</version>
-          </dependency>
 
           <dependency>
             <groupId>org.sonarsource.scanner.maven</groupId>
