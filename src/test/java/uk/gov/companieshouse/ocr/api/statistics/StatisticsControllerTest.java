@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,11 +23,11 @@ import uk.gov.companieshouse.ocr.api.groups.TestType;
 @WebMvcTest(controllers = StatisticsController.class)
 class StatisticsControllerTest {
 
-    private final static String TEST_UUID = "UUID_123";
-    private final static int TEST_QUEUE_SIZE = 11;
-    private final static int TEST_POOL_SIZE = 13;
-    private final static int TEST_ACTIVE_POOL_SIZE = 12;
-    private final static int TEST_LARGEST_POOL_SIZE = 14;
+    private static final String TEST_UUID = "UUID_123";
+    private static final int TEST_QUEUE_SIZE = 11;
+    private static final int TEST_POOL_SIZE = 13;
+    private static final int TEST_ACTIVE_POOL_SIZE = 12;
+    private static final int TEST_LARGEST_POOL_SIZE = 14;
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,7 +35,7 @@ class StatisticsControllerTest {
     @Value("${api.endpoint}")
     private String apiEndpoint;
 
-    @MockBean
+    @MockitoBean
     private StatisticsService mockStatisticsService;
 
     @Test

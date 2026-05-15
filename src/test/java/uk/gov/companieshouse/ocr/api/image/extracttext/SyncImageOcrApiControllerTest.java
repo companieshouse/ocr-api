@@ -17,13 +17,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.core.task.TaskRejectedException;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -44,20 +43,19 @@ class SyncImageOcrApiControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private OcrRequestService ocrRequestService;
 
-    @MockBean
+    @MockitoBean
     private MonitoringService monitoringService;
 
-    @Mock
+    @MockitoBean
     private TextConversionResult mockResults;
 
     private MockMultipartFile file ;
 
     @BeforeEach
-    private void setUpTests() throws Exception {
-         
+    void setUpTests() {
         file = new MockMultipartFile(SyncImageOcrApiController.FILE_REQUEST_PARAMETER_NAME, "hello.txt",
         "application/octet-stream", FILE_TEXT.getBytes());
     }
