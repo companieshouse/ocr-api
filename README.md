@@ -206,6 +206,7 @@ This library contains two vulnerabilities, https://nvd.nist.gov/vuln/detail/CVE-
 https://nvd.nist.gov/vuln/detail/cve-2026-23907.
 
 Both of these are introduced by the transitive dependency, jbig2-imageio-3.0.4.  This library has not been updated since
+2022.
 
 Suppression put in place.
 
