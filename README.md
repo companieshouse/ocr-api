@@ -106,22 +106,22 @@ See:
 
 The following is a list of application specific environment variables for the service to run:
 
-Name                                        | Description                                                                                                           | Example Value
-------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------| ------------------------
-LOW_CONFIDENCE_TO_LOG                       | The minimum confidence value used for logging low confidence scores (logs lines with lower scores than the value set) | 40
-OCR_TESSERACT_THREAD_POOL_SIZE              | Number of threads to run the Tesseract Conversion process                                                             | 4  (default value)
-OCR_QUEUE_CAPACITY                          | Maximum number of OCR Requests in the OCR Queue before a 503 is returned                                              | 5
-HOST_WHITE_LIST                             | Comma separated list of allowed callback Url hosts                                                                    | localhost,chips.local,testurl.com,chpdev-sl7,chpdev-sl7.internal.ch
+| Name                           | Description                                                                                                           | Example Value|
+|--------------------------------| ----------------------------------------------------------------------------------------------------------------------| ------------------------|
+| LOW_CONFIDENCE_TO_LOG          | The minimum confidence value used for logging low confidence scores (logs lines with lower scores than the value set) | 40|
+| OCR_TESSERACT_THREAD_POOL_SIZE | Number of threads to run the Tesseract Conversion process                                                             | 4  (default value)|
+| OCR_QUEUE_CAPACITY             | Maximum number of OCR Requests in the OCR Queue before a 503 is returned                                              | 5|
+|  HOST_WHITE_LIST               | Comma separated list of allowed callback Url hosts                                                                    | localhost,chips.local,testurl.com,chpdev-sl7,chpdev-sl7.internal.ch|
 
 ## The stats end point
 
-Name                       | Description
----------------------------| ------------------------------------------------------------
-instance_uuid              | UUID for when multiple instance of `ocr-api` are running in the same AWS ECS Cluster (or instance restarts)
-queue_size                 | The number of items on the internal queue waiting to be processed by the Tesseract threads
-active_pool_size           | the largest size of the pool since it was created.
-pool_size                  | count of threads in the thread pool.
-largest_pool_size          | count of threads in the thread pool currently running tasks.
+| Name               | Description|
+|--------------------| ------------------------------------------------------------|
+| instance_uuid      | UUID for when multiple instance of `ocr-api` are running in the same AWS ECS Cluster (or instance restarts)|
+| queue_size         | The number of items on the internal queue waiting to be processed by the Tesseract threads|
+| active_pool_size   | the largest size of the pool since it was created.|
+| pool_size          | count of threads in the thread pool.|
+|  largest_pool_size | count of threads in the thread pool currently running tasks.|
 
 ## Testing Deployment
 
@@ -196,3 +196,23 @@ Note - If using Docker for local development, e.g. `docker_chs up` or `chs-dev u
 export OCR_TESSERACT_POC_URL=http://api.chs.local/
 ```
 before running `mvn test -Dincluded.tests=integration-test`.
+
+## Security Vulnerability Status.
+
+### 15th May 2026.
+
+pdfbox version 3.0.7
+This library contains two vulnerabilities, https://nvd.nist.gov/vuln/detail/CVE-2026-33929 and 
+https://nvd.nist.gov/vuln/detail/cve-2026-23907.
+
+Both of these are introduced by the transitive dependency, jbig2-imageio-3.0.4.  This library has not been updated since
+2022.
+
+Suppression put in place.
+
+### 19th May 2026.
+
+Added permanent suppression for https://nvd.nist.gov/vuln/detail/CVE-2026-39882 and 
+https://nvd.nist.gov/vuln/detail/CVE-2026-39883.
+
+These are both opentelemetry related - but in Go library not Java.
