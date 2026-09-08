@@ -21,7 +21,7 @@
 
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <environment-reader.version>3.0.5</environment-reader.version>
-        <structured-logging.version>3.0.57</structured-logging.version>
+        <structured-logging.version>4.0.4</structured-logging.version>
 
         <tess4j.version>5.18.0</tess4j.version>
         <jib-maven-plugin.version>3.3.0</jib-maven-plugin.version>
