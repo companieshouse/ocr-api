@@ -30,7 +30,7 @@ class OpenTelemetryAppenderInitializerTest {
     void installAppenderDelegatesToStaticOpenTelemetryAppenderInstall() {
         OpenTelemetry openTelemetry = OpenTelemetry.noop();
         OpenTelemetryAppenderInitializer initializer =
-                new OpenTelemetryAppenderInitializer(openTelemetry);
+               new OpenTelemetryAppenderInitializer(openTelemetry);
 
         // Exercises the real static OpenTelemetryAppender.install(...)
         // call so the seam method itself is covered, rather than only
