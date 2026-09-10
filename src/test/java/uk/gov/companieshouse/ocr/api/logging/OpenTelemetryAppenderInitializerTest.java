@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.ocr.api.logging;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -24,4 +25,17 @@ class OpenTelemetryAppenderInitializerTest {
 
         verify(initializer).installAppender(openTelemetry);
     }
+
+    @Test
+    void installAppenderDelegatesToStaticOpenTelemetryAppenderInstall() {
+        OpenTelemetry openTelemetry = OpenTelemetry.noop();
+        OpenTelemetryAppenderInitializer initializer =
+                new OpenTelemetryAppenderInitializer(openTelemetry);
+
+        // Exercises the real static OpenTelemetryAppender.install(...)
+        // call so the seam method itself is covered, rather than only
+        // the delegation from afterPropertiesSet.
+        assertDoesNotThrow(() -> initializer.installAppender(openTelemetry));
+    }
+
 }
