@@ -20,8 +20,6 @@
         <included.tests>unit-test</included.tests>
 
         <commons-lang3.version>3.20.0</commons-lang3.version>
-        <environment-reader.version>3.0.5</environment-reader.version>
-        <structured-logging.version>4.0.4</structured-logging.version>
 
         <tess4j.version>5.18.0</tess4j.version>
         <jib-maven-plugin.version>3.3.0</jib-maven-plugin.version>
@@ -30,9 +28,7 @@
         <!-- Spring General -->
         <spring.boot.version>4.0.7</spring.boot.version>
 
-        <!-- OpenTelemetry -->
-        <opentelemetry.version>2.31.1</opentelemetry.version>
-        <opentelemetry.logback.appender.version>2.31.1-alpha</opentelemetry.logback.appender.version>
+        <ch-boms.version>0.1.34</ch-boms.version>
 
         <!-- Maven -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
@@ -47,9 +43,7 @@
       <sonar.projectName>ocr-api</sonar.projectName>
 
       <!-- CVE overrides -->
-      <tomcat.override.version>11.0.22</tomcat.override.version>
       <pdfbox.override.version>3.0.7</pdfbox.override.version>
-      <opentelemetry-semconv.override.version>1.41.1</opentelemetry-semconv.override.version>
     </properties>
 
     <profiles>
@@ -63,18 +57,19 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Must be imported before spring-boot-dependencies so its OpenTelemetry, Tomcat and CVE pins take precedence -->
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
+                <groupId>uk.gov.companieshouse</groupId>
+                <artifactId>ch-dependency-bom</artifactId>
+                <version>${ch-boms.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
             <dependency>
-                <groupId>io.opentelemetry.instrumentation</groupId>
-                <artifactId>opentelemetry-instrumentation-bom</artifactId>
-                <version>${opentelemetry.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -84,24 +79,6 @@
             <artifactId>sonar-maven-plugin</artifactId>
             <version>${sonar-maven-plugin.version}</version>
           </dependency>
-
-            <!-- CVE-2026-41284(7.5), CVE-2026-42498(7.3) -->
-            <!-- Source: https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core -->
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-core</artifactId>
-                <version>${tomcat.override.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- CVE-2026-41284(7.5), CVE-2026-42498(7.3) -->
-            <!-- Source: https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core -->
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-websocket</artifactId>
-                <version>${tomcat.override.version}</version>
-                <scope>compile</scope>
-            </dependency>
 
             <!-- CVE-2026-23907(5.3), CVE-2026-33929(4.3) -->
             <!-- Source: https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
@@ -118,15 +95,6 @@
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>pdfbox-tools</artifactId>
                 <version>${pdfbox.override.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- CVE-2026-39882(5.3), CVE-2026-39883(7.3), CVE-2026-29181(7.5) -->
-            <!-- Source: https://mvnrepository.com/artifact/io.opentelemetry.semconv/opentelemetry-semconv -->
-            <dependency>
-                <groupId>io.opentelemetry.semconv</groupId>
-                <artifactId>opentelemetry-semconv</artifactId>
-                <version>${opentelemetry-semconv.override.version}</version>
                 <scope>compile</scope>
             </dependency>
         </dependencies>
@@ -167,7 +135,6 @@
         <dependency>
             <groupId>io.opentelemetry.instrumentation</groupId>
             <artifactId>opentelemetry-logback-appender-1.0</artifactId>
-            <version>${opentelemetry.logback.appender.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -186,13 +153,11 @@
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>structured-logging</artifactId>
-            <version>${structured-logging.version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>environment-reader-library</artifactId>
-            <version>${environment-reader.version}</version>
         </dependency>
 
         <!-- CVE-2025-48924-->
